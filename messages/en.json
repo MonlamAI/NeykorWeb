@@ -1,0 +1,9 @@
+{
+  "index": {
+    "title": "hello world"
+  },
+  "navbar": {
+    "tibetan": "Tibetan",
+    "selectlanguage": "Select a Language"
+  }
+}

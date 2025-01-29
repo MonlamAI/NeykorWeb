@@ -4,7 +4,7 @@ Neykor is a platform designed for one-stop access to detailed information about 
 
 ## Tech Stack
 
-- **Frontend**: Nexxtjs14 - A full-stack web framework for building fast, modern web applications.
+- **Frontend**: [Nextjs14](https://nextjs.org/) - A full-stack web framework for building fast, modern web applications.
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework for rapid UI development.
 
 ## Installation
@@ -12,20 +12,22 @@ Neykor is a platform designed for one-stop access to detailed information about 
 To run the project locally, follow these steps:
 
 1. **Clone the repository**:
-    ```bash
-    git clone git@github.com:OpenPecha/GompaTourWeb.git .
-    cd neykor
-    ```
+
+   ```bash
+   git clone git@github.com:OpenPecha/GompaTourWeb.git .
+   cd neykor
+   ```
 
 2. **Install frontend dependencies**:
-    ```bash
-    npm install
-    ```
+
+   ```bash
+   npm install
+   ```
 
 3. **Run the frontend**:
-    ```bash
-    npm run dev
-    ```
+   ```bash
+   npm run dev
+   ```
 
 ## Contributing
 
