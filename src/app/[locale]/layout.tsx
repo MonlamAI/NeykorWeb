@@ -6,6 +6,7 @@ import Navbar from "../LocalComponents/Navbarthings/Navbar";
 import Footer from "../LocalComponents/Footer";
 import AuthProvider from "../Providers/AuthProvider";
 import { NextIntlClientProvider } from "next-intl";
+import { QueryProviders } from "../Providers/QueryProvider";
 const inter = Inter({ subsets: ["latin"] });
 const monlamTb = localFont({
   src: "../fonts/MonlamTBslim.ttf",
@@ -54,13 +55,15 @@ export default async function RootLayout({
         className={`${inter.className} ${monlamuchen.variable} ${monlam22.variable} ${tsumachu.variable} ${monlamTb.variable} antialiased `}
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <AuthProvider>
-            <div className="items-center  max-screen mx-auto flex flex-col justify-between min-h-screen p-2  ">
-              <Navbar />
-              {children}
-              <Footer />
-            </div>
-          </AuthProvider>
+          <QueryProviders>
+            <AuthProvider>
+              <div className="items-center  max-screen mx-auto flex flex-col justify-between min-h-screen p-2  ">
+                <Navbar />
+                {children}
+                <Footer />
+              </div>
+            </AuthProvider>
+          </QueryProviders>
         </NextIntlClientProvider>
       </body>
     </html>

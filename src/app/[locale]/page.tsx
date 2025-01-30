@@ -11,7 +11,7 @@ export default function Home() {
         <p
           className={`text-neutral-100 p-2 ${
             activelocale == "bod"
-              ? "font-tsumachu text-4xl "
+              ? "font-tsumachu text-3xl mt-2"
               : "font-bold text-xl  uppercase"
           }`}
         >

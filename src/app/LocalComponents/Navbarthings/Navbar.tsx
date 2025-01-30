@@ -7,25 +7,40 @@ import Link from "next/link";
 
 const Navbar = () => {
   const t = useTranslations("navbar");
-  const activelocale = useLocale();
+  const activeLocale = useLocale();
 
   return (
-    <div className="flex items-center w-full justify-around">
-      <Link href="/">
-        <p className={`${activelocale == "bod" && "font-tsumachu "} p-2`}>
-          {t("name")}
-        </p>
-      </Link>
+    <nav className="w-full ">
+      <div className=" mx-auto px-4">
+        <div className="flex justify-between items-center h-16">
+          <div className="flex items-center gap-x-2">
+            <Link href="/" className="max-w-sm">
+              <h1
+                className={`text-lg font-semibold  ${
+                  activeLocale == "bod"
+                    ? "font-tsumachu"
+                    : " uppercase font-bold"
+                }`}
+              >
+                {t("name")}
+              </h1>
+            </Link>
+            <div className="hidden md:block max-w-xs  border-l-2 px-2 text-start">
+              <h2 className="text-xs font-medium ">
+                Department of Religion and Culture <br /> Central Tibetan
+                Administration
+              </h2>
+            </div>
+          </div>
 
-      <div className="flex items-center space-x-4">
-        <NavItems />
+          <div className="flex items-center space-x-4">
+            <NavItems />
+            <LocaleSelector tibtext={t("tibetan")} />
+            <UserProfile />
+          </div>
+        </div>
       </div>
-
-      <div className="flex items-center space-x-2">
-        <LocaleSelector tibtext={t("tibetan")} />
-        <UserProfile />
-      </div>
-    </div>
+    </nav>
   );
 };
 
