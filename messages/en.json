@@ -4,6 +4,12 @@
   },
   "navbar": {
     "tibetan": "Tibetan",
-    "selectlanguage": "Select a Language"
+    "selectlanguage": "Select a Language",
+    "name": "Neykor",
+    "fes": "Festival",
+    "stas": "Statues",
+    "mons": "Monastery",
+    "cont": "Contact",
+    "sacred": "Sacred Site"
   }
 }
