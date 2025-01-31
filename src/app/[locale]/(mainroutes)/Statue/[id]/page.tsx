@@ -92,7 +92,10 @@ export default function StatuePage({ params }: { params: { id: string } }) {
               </span>
             </Link>
             <ChevronRight className="w-4 h-4" />
-            <Link href="/Statue" className="hover:text-gray-900 ">
+            <Link
+              href="/Statue"
+              className="hover:text-gray-900 flex items-center "
+            >
               <span
                 className={activeLocale === "bod" ? "font-monlamuchen" : ""}
               >

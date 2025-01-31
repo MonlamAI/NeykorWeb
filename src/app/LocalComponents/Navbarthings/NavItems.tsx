@@ -32,10 +32,9 @@ const NavItems = () => {
         {navlinks.map((link) => (
           <NavigationMenuItem key={link.key}>
             <Link href={`/${localActive}${link.href}`} legacyBehavior passHref>
-              {/* Added text-xl class to increase font size */}
               <NavigationMenuLink
                 className={`${navigationMenuTriggerStyle()}  ${
-                  localActive == "bod" && "text-lg"
+                  localActive == "bod" && " text-[18px]"
                 }`}
               >
                 {t(link.key)}

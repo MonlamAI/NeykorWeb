@@ -36,7 +36,7 @@ const Navbar = () => {
           <div className="flex items-center space-x-4">
             <NavItems />
             <LocaleSelector tibtext={t("tibetan")} />
-            <UserProfile />
+            {/* <UserProfile /> */}
           </div>
         </div>
       </div>

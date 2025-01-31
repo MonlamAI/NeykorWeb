@@ -60,7 +60,7 @@ export default async function RootLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <QueryProviders>
             <AuthProvider>
-              <div className="items-center  max-screen mx-auto flex flex-col justify-between min-h-screen p-2  ">
+              <div className="items-center  max-screen mx-auto flex flex-col justify-between min-h-screen   ">
                 <Navbar />
                 {children}
                 <Footer />
