@@ -1,7 +1,6 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility";
@@ -29,13 +28,11 @@ const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), {
 interface MonasteryMapProps {
   geoLocation: string;
   monasteryName: string;
-  locale: string;
 }
 
 const CtaMap: React.FC<MonasteryMapProps> = ({
   geoLocation,
   monasteryName,
-  locale,
 }) => {
   const [lat, lng] = geoLocation
     .split(",")

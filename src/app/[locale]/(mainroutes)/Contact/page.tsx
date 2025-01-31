@@ -68,7 +68,6 @@ const ContactPage = ({ params }: any) => {
                 <CtaMap
                   geoLocation={"32.22609238023078, 76.32543320353723"}
                   monasteryName={"Department of Religion & Culture, CTA"}
-                  locale={params.locale}
                 />
               </div>
             </CardContent>
