@@ -113,7 +113,10 @@ export default function FestivalPage({ params }: { params: { id: string } }) {
               </span>
             </Link>
             <ChevronRight className="w-4 h-4" />
-            <Link href="/Festival" className="hover:text-gray-900">
+            <Link
+              href="/Festival"
+              className="hover:text-gray-900 flex items-center "
+            >
               <span
                 className={activeLocale === "bod" ? "font-monlamuchen" : ""}
               >
@@ -122,7 +125,7 @@ export default function FestivalPage({ params }: { params: { id: string } }) {
             </Link>
             <ChevronRight className="w-4 h-4" />
             <span
-              className={`text-gray-900 ${
+              className={`text-gray-900 items-center flex ${
                 activeLocale === "bod" ? "font-monlamuchen" : ""
               }`}
             >
@@ -132,7 +135,6 @@ export default function FestivalPage({ params }: { params: { id: string } }) {
         </div>
       </div>
 
-      {/* Rest of the component remains the same */}
       <div className="max-w-6xl mx-auto p-4 space-y-6">
         <audio
           ref={audioRef}

@@ -34,7 +34,7 @@ const NavItems = () => {
             <Link href={`/${localActive}${link.href}`} legacyBehavior passHref>
               <NavigationMenuLink
                 className={`${navigationMenuTriggerStyle()}  ${
-                  localActive == "bod" && " text-[18px]"
+                  localActive == "bod" && " text-[1.125rem]"
                 }`}
               >
                 {t(link.key)}

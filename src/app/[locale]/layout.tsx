@@ -29,7 +29,7 @@ const tsumachu = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Neykor",
+  title: "གནས་སྐོར། | Neykor",
   description:
     "Neykor is a platform designed for one-stop access to detailed information about holy places, festivals, and sacred statues",
 };

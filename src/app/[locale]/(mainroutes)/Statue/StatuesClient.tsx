@@ -129,6 +129,7 @@ const StatuesClient = ({ statuesData }: any) => {
                         src={statue.image}
                         alt={translation.name}
                         className="w-full h-48 object-cover"
+                        style={{ objectPosition: "center 20%" }}
                       />
                     )}
                     <div className="p-4">
