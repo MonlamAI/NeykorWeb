@@ -7,6 +7,9 @@ import Footer from "../LocalComponents/Footer";
 import AuthProvider from "../Providers/AuthProvider";
 import { NextIntlClientProvider } from "next-intl";
 import { QueryProviders } from "../Providers/QueryProvider";
+import "leaflet/dist/leaflet.css";
+import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
+import { Toaster } from "@/components/ui/toaster";
 const inter = Inter({ subsets: ["latin"] });
 const monlamTb = localFont({
   src: "../fonts/MonlamTBslim.ttf",
@@ -62,6 +65,7 @@ export default async function RootLayout({
                 {children}
                 <Footer />
               </div>
+              <Toaster />
             </AuthProvider>
           </QueryProviders>
         </NextIntlClientProvider>

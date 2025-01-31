@@ -13,11 +13,11 @@ import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 
 const navlinks = [
+  { key: "stas", href: "/Statue" },
   { key: "mons", href: "/Monastary" },
   { key: "fes", href: "/Festival" },
-  { key: "cont", href: "/Contact" },
-  { key: "stas", href: "/Statue" },
   { key: "sacred", href: "/Sacred" },
+  { key: "cont", href: "/Contact" },
 ];
 
 const NavItems = () => {
