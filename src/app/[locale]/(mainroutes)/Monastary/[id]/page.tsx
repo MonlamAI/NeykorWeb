@@ -8,8 +8,8 @@ function Loading() {
   return (
     <div className="container mx-auto py-8">
       <div className="flex items-center justify-between mb-8">
-        <div className="h-10 w-48 bg-gray-200 rounded animate-pulse" />
-        <div className="h-10 w-32 bg-gray-200 rounded animate-pulse" />
+        <div className="h-10 w-48 bg-gray-200 dark:bg-neutral-900 rounded animate-pulse" />
+        <div className="h-10 w-32 bg-gray-200 dark:bg-neutral-900 rounded animate-pulse" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {[...Array(6)].map((_, index) => (

@@ -65,10 +65,13 @@ async function MonasteryContent({
 
   return (
     <div className="container py-8">
-      <div className="sticky top-0 bg-white z-10 mb-2">
+      <div className="sticky top-0 bg-white dark:bg-neutral-950 z-10 mb-2">
         <div className="max-w-6xl mx-auto p-4">
-          <nav className="flex items-center space-x-2 text-sm text-gray-600">
-            <Link href="/" className="flex items-center hover:text-gray-900">
+          <nav className="flex items-center space-x-2 text-sm dark:text-gray-200 text-gray-600">
+            <Link
+              href="/"
+              className="flex items-center hover:text-gray-900 dark:hover:text-gray-300"
+            >
               <Home className="w-4 h-4 mr-1" />
               <span
                 className={activeLocale === "bod" ? "font-monlamuchen" : ""}
@@ -77,7 +80,10 @@ async function MonasteryContent({
               </span>
             </Link>
             <ChevronRight className="w-4 h-4" />
-            <Link href="/Monastary" className="hover:text-gray-900">
+            <Link
+              href="/Monastary"
+              className="hover:text-gray-900 dark:hover:text-gray-300"
+            >
               <span
                 className={activeLocale === "bod" ? "font-monlamuchen" : ""}
               >
@@ -87,7 +93,7 @@ async function MonasteryContent({
             <ChevronRight className="w-4 h-4" />
             <Link
               href={`/Monastary/${params.id}`}
-              className="hover:text-gray-900"
+              className="hover:text-gray-900 dark:hover:text-gray-300"
             >
               <span
                 className={activeLocale === "bod" ? "font-monlamuchen" : ""}
@@ -97,7 +103,7 @@ async function MonasteryContent({
             </Link>
             <ChevronRight className="w-4 h-4" />
             <span
-              className={`text-gray-900 ${
+              className={`text-gray-900 dark:text-gray-300 ${
                 activeLocale === "bod" ? "font-monlamuchen" : ""
               }`}
             >
@@ -146,7 +152,7 @@ async function MonasteryContent({
                   {params.locale === "bod" ? "བརྗོད་གཞི" : "Description"}
                 </h3>
                 <p
-                  className={`text-gray-600 whitespace-pre-line text-lg text-justify ${
+                  className={`text-gray-600 dark:text-gray-400 whitespace-pre-line text-lg text-justify ${
                     params.locale === "bod" && "font-monlamuchen"
                   }`}
                 >
@@ -186,7 +192,7 @@ async function MonasteryContent({
                 >
                   {params.locale === "bod" ? "ཁ་བྱང་།" : "Address"}
                 </p>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   {contactEn?.address}
                   <br />
                   {contactEn?.city}
@@ -204,7 +210,7 @@ async function MonasteryContent({
                 >
                   {params.locale === "bod" ? "ཁ་པར་།" : "Phone"}
                 </p>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   {monastery.contact.phone_number}
                 </p>
               </div>
@@ -216,7 +222,9 @@ async function MonasteryContent({
                 >
                   {params.locale === "bod" ? "ཡིག་འཕྲིན།" : "Email"}
                 </p>
-                <p className="text-gray-600">{monastery.contact.email}</p>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {monastery.contact.email}
+                </p>
               </div>
             </CardContent>
           </Card>

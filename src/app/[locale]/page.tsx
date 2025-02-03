@@ -45,6 +45,13 @@ export default function Home() {
         >
           {t("stanza4")}
         </p>
+        <p
+          className={`text-neutral-300 max-w-xl ${
+            activelocale == "bod" ? "font-monlamuchen text-lg" : " text-sm "
+          }`}
+        >
+          {t("stanza5")}
+        </p>
       </div>
     </div>
   );

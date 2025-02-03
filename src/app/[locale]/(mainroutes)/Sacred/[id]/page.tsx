@@ -103,10 +103,13 @@ function PilgrimSiteContent({
         onEnded={() => setIsPlaying(false)}
       />
 
-      <div className="sticky top-0 bg-white z-10 mb-6">
+      <div className="sticky top-0 bg-white dark:bg-neutral-950 z-10 mb-6">
         <div className="max-w-6xl mx-auto p-4">
-          <nav className="flex items-center space-x-2 text-sm text-gray-600">
-            <Link href="/" className="flex items-center hover:text-gray-900">
+          <nav className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
+            <Link
+              href="/"
+              className="flex items-center hover:text-gray-900 dark:hover:text-gray-400"
+            >
               <Home className="w-4 h-4 mr-1" />
               <span
                 className={params.locale === "bod" ? "font-monlamuchen" : ""}
@@ -115,7 +118,10 @@ function PilgrimSiteContent({
               </span>
             </Link>
             <ChevronRight className="w-4 h-4" />
-            <Link href="/Sacred" className="hover:text-gray-900">
+            <Link
+              href="/Sacred"
+              className="hover:text-gray-900 flex items-center dark:hover:text-gray-400"
+            >
               <span
                 className={params.locale === "bod" ? "font-monlamuchen" : ""}
               >
@@ -124,8 +130,8 @@ function PilgrimSiteContent({
             </Link>
             <ChevronRight className="w-4 h-4" />
             <span
-              className={`text-gray-900 ${
-                params.locale === "bod" ? "font-monlamuchen" : ""
+              className={`text-gray-900 dark:text-gray-300 ${
+                params.locale === "bod" && "font-monlamuchen"
               }`}
             >
               {currentTranslation?.name || breadcrumbLabels.details}
@@ -161,7 +167,7 @@ function PilgrimSiteContent({
                         onClick={() =>
                           toggleAudio(currentTranslation.description_audio)
                         }
-                        className="p-2 rounded-full hover:bg-gray-100"
+                        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900"
                         aria-label={isPlaying ? "Pause audio" : "Play audio"}
                       >
                         {isPlaying ? (
@@ -184,7 +190,7 @@ function PilgrimSiteContent({
                   {params.locale === "bod" ? "བརྗོད་གཞི" : "Description"}
                 </h3>
                 <p
-                  className={`text-gray-700 text-justify leading-relaxed ${
+                  className={`text-gray-700 dark:text-gray-400 text-justify leading-relaxed ${
                     params.locale === "bod" && "font-monlamuchen"
                   }`}
                 >
@@ -195,7 +201,6 @@ function PilgrimSiteContent({
           </Card>
         </div>
 
-        {/* Right Column - Map and Contact Info */}
         <div className="space-y-6">
           {siteData.geo_location && (
             <MonasteryMap
@@ -227,7 +232,7 @@ function PilgrimSiteContent({
                   >
                     {params.locale === "bod" ? "ཁ་བྱང་།" : "Address"}
                   </p>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 dark:text-gray-400">
                     {contactInfo.address}
                     <br />
                     {contactInfo.city}
@@ -247,7 +252,7 @@ function PilgrimSiteContent({
                   >
                     {params.locale === "bod" ? "ཁ་པར་།" : "Phone"}
                   </p>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 dark:text-gray-400">
                     {siteData.contact.phone_number}
                   </p>
                 </div>
@@ -261,7 +266,9 @@ function PilgrimSiteContent({
                   >
                     {params.locale === "bod" ? "ཡིག་འཕྲིན།" : "Email"}
                   </p>
-                  <p className="text-gray-600">{siteData.contact.email}</p>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {siteData.contact.email}
+                  </p>
                 </div>
               )}
             </CardContent>

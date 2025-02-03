@@ -94,7 +94,7 @@ const FestivalClient = ({ fesdata }: any) => {
 
   return (
     <div className="relative min-h-screen w-full">
-      <div className="sticky top-0 bg-white z-10 py-4 shadow-sm">
+      <div className="sticky  bg-white dark:bg-neutral-950 top-0 z-10 py-4 shadow-sm">
         <div className="w-full max-w-xl mx-auto px-6">
           <Input
             type="search"
@@ -128,7 +128,7 @@ const FestivalClient = ({ fesdata }: any) => {
                   <Link
                     href={`/Festival/${fes.id}`}
                     key={fes.id}
-                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                    className="bg-white dark:bg-neutral-900 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
                   >
                     <div
                       className={`w-full h-48 ${
@@ -150,10 +150,18 @@ const FestivalClient = ({ fesdata }: any) => {
                       )}
                     </div>
                     <div className="p-4">
-                      <h3 className="text-xl font-semibold mb-2">
+                      <h3
+                        className={`text-xl font-semibold mb-2 ${
+                          activelocale == "bod" && " font-monlamuchen"
+                        }`}
+                      >
                         {translation.name}
                       </h3>
-                      <p className="text-gray-600 line-clamp-3">
+                      <p
+                        className={` ${
+                          activelocale == "bod" && " font-monlamuchen"
+                        }text-gray-600 dark:text-gray-300 line-clamp-3`}
+                      >
                         {translation.description}
                       </p>
                     </div>

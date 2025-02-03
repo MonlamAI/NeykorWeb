@@ -101,10 +101,13 @@ export default function FestivalPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="relative">
-      <div className="sticky top-0 bg-white z-10 border-b">
+      <div className="sticky top-0 bg-white dark:bg-neutral-950 z-10 border-b">
         <div className="max-w-6xl mx-auto p-4">
-          <nav className="flex items-center space-x-2 text-sm text-gray-600">
-            <Link href="/" className="flex items-center hover:text-gray-900">
+          <nav className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-200">
+            <Link
+              href="/"
+              className="flex items-center hover:text-gray-900 dark:hover:text-gray-300"
+            >
               <Home className="w-4 h-4 mr-2" />
               <span
                 className={activeLocale === "bod" ? "font-monlamuchen" : ""}
@@ -115,7 +118,7 @@ export default function FestivalPage({ params }: { params: { id: string } }) {
             <ChevronRight className="w-4 h-4" />
             <Link
               href="/Festival"
-              className="hover:text-gray-900 flex items-center "
+              className="hover:text-gray-900 dark:hover:text-gray-300 flex items-center "
             >
               <span
                 className={activeLocale === "bod" ? "font-monlamuchen" : ""}
@@ -125,7 +128,7 @@ export default function FestivalPage({ params }: { params: { id: string } }) {
             </Link>
             <ChevronRight className="w-4 h-4" />
             <span
-              className={`text-gray-900 items-center flex ${
+              className={`text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 items-center flex ${
                 activeLocale === "bod" ? "font-monlamuchen" : ""
               }`}
             >
@@ -155,7 +158,7 @@ export default function FestivalPage({ params }: { params: { id: string } }) {
               />
             </div>
             <CardContent className="p-4">
-              <div className="space-y-2 text-sm text-gray-600">
+              <div className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
                 <p className={activeLocale === "bod" ? "font-monlamuchen" : ""}>
                   {activeLocale === "bod"
                     ? "འགོ་འཛུགས་ཚེས་གྲངས།"
@@ -199,7 +202,7 @@ export default function FestivalPage({ params }: { params: { id: string } }) {
                     )}
                 </div>
                 <p
-                  className={`text-gray-700 text-justify leading-relaxed ${
+                  className={`text-gray-700 dark:text-gray-400 text-justify leading-relaxed ${
                     activeLocale === "bod" && "font-monlamuchen"
                   }`}
                 >

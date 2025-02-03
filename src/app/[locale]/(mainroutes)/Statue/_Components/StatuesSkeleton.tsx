@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function StatueSkeleton() {
   return (
-    <div className="bg-white rounded-lg overflow-hidden ">
+    <div className="bg-white dark:bg-neutral-900 rounded-lg overflow-hidden ">
       <Skeleton className="w-full h-48" />
       <div className="p-4">
         <Skeleton className="h-6 w-3/4 mb-2" />

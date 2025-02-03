@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
+import { twMerge } from "tailwind-merge";
 
 const navlinks = [
   { key: "stas", href: "/Statue" },
@@ -33,9 +34,10 @@ const NavItems = () => {
           <NavigationMenuItem key={link.key}>
             <Link href={`/${localActive}${link.href}`} legacyBehavior passHref>
               <NavigationMenuLink
-                className={`${navigationMenuTriggerStyle()}  ${
-                  localActive == "bod" && " text-[1.125rem]"
-                }`}
+                className={twMerge(
+                  navigationMenuTriggerStyle(),
+                  localActive == "bod" && "text-lg"
+                )}
               >
                 {t(link.key)}
               </NavigationMenuLink>

@@ -10,6 +10,7 @@ import { QueryProviders } from "../Providers/QueryProvider";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "../Providers/ThemeProvider";
 const inter = Inter({ subsets: ["latin"] });
 const monlamTb = localFont({
   src: "../fonts/MonlamTBslim.ttf",
@@ -57,18 +58,25 @@ export default async function RootLayout({
       <body
         className={`${inter.className} ${monlamuchen.variable} ${monlam22.variable} ${tsumachu.variable} ${monlamTb.variable} antialiased `}
       >
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <QueryProviders>
-            <AuthProvider>
-              <div className="items-center  max-screen mx-auto flex flex-col justify-between min-h-screen   ">
-                <Navbar />
-                {children}
-                <Footer />
-              </div>
-              <Toaster />
-            </AuthProvider>
-          </QueryProviders>
-        </NextIntlClientProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <QueryProviders>
+              <AuthProvider>
+                <div className="items-center  max-screen mx-auto flex flex-col justify-between min-h-screen   ">
+                  <Navbar />
+                  {children}
+                  <Footer />
+                </div>
+                <Toaster />
+              </AuthProvider>
+            </QueryProviders>
+          </NextIntlClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

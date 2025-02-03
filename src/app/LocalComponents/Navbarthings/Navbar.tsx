@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import UserProfile from "../UserProfile";
 import NavItems from "./NavItems";
 import Link from "next/link";
+import { ModeToggle } from "../ModeToggle";
 
 const Navbar = () => {
   const t = useTranslations("navbar");
@@ -37,6 +38,7 @@ const Navbar = () => {
             <NavItems />
             <LocaleSelector tibtext={t("tibetan")} />
             {/* <UserProfile /> */}
+            <ModeToggle />
           </div>
         </div>
       </div>

@@ -88,7 +88,7 @@ const StatuesClient = ({ statuesData }: any) => {
 
   return (
     <div className="relative min-h-screen w-full">
-      <div className="sticky top-0 bg-white z-10 py-4 shadow-sm">
+      <div className="sticky top-0 bg-white dark:bg-neutral-950 z-10 py-4 shadow-sm">
         <div className="w-full max-w-xl mx-auto px-6">
           <Input
             type="search"
@@ -122,7 +122,7 @@ const StatuesClient = ({ statuesData }: any) => {
                   <Link
                     href={`/Statue/${statue.id}`}
                     key={statue.id}
-                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                    className="bg-white dark:bg-neutral-900 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
                   >
                     {statue.image && (
                       <img
@@ -133,10 +133,18 @@ const StatuesClient = ({ statuesData }: any) => {
                       />
                     )}
                     <div className="p-4">
-                      <h3 className="text-xl font-semibold mb-2">
+                      <h3
+                        className={`text-xl font-semibold mb-2 ${
+                          activelocale == "bod" && " font-monlamuchen"
+                        }`}
+                      >
                         {translation.name}
                       </h3>
-                      <p className="text-gray-600 line-clamp-3">
+                      <p
+                        className={`text-gray-600 dark:text-gray-300 line-clamp-3  ${
+                          activelocale == "bod" && " font-monlamuchen"
+                        }`}
+                      >
                         {translation.description}
                       </p>
                     </div>

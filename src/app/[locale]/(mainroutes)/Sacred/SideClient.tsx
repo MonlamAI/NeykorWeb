@@ -89,7 +89,7 @@ const SideClient = ({ pilgrimData }: any) => {
 
   return (
     <div className="relative min-h-screen w-full">
-      <div className="sticky top-0 bg-white z-10 py-4 shadow-sm">
+      <div className="sticky top-0 bg-white dark:bg-neutral-950 z-10 py-4 shadow-sm">
         <div className="w-full max-w-xl mx-auto px-6">
           <Input
             type="search"
@@ -123,7 +123,7 @@ const SideClient = ({ pilgrimData }: any) => {
                   <Link
                     href={`/Sacred/${site.id}`}
                     key={site.id}
-                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                    className="bg-white dark:bg-neutral-900 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
                   >
                     {site.image && (
                       <img
@@ -136,7 +136,7 @@ const SideClient = ({ pilgrimData }: any) => {
                       <h3 className="text-xl font-semibold mb-2">
                         {translation.name}
                       </h3>
-                      <p className="text-gray-600 line-clamp-3">
+                      <p className="text-gray-600 dark:text-gray-400 line-clamp-3">
                         {translation.description}
                       </p>
                     </div>

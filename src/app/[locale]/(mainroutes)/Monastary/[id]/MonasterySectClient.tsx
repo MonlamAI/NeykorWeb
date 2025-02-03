@@ -113,7 +113,7 @@ const MonasterySectClient = ({
         </Link>
       </div>
 
-      <div className="sticky top-0 bg-white z-10 py-4 shadow-sm">
+      <div className="sticky top-0 bg-white dark:bg-neutral-950 z-10 py-4 shadow-sm">
         <div className="w-full max-w-xl mx-auto">
           <Input
             type="search"
@@ -151,7 +151,7 @@ const MonasterySectClient = ({
                   <Link
                     href={`/Monastary/${sect}/${monastery.id}`}
                     key={monastery.id}
-                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                    className="bg-white dark:bg-neutral-900 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
                   >
                     <div className="relative w-full h-48">
                       {monastery.image &&
@@ -177,7 +177,7 @@ const MonasterySectClient = ({
                     <div className="p-4">
                       <div className="flex justify-between items-start mb-2">
                         <h3
-                          className={`text-lg font-semibold text-neutral-800 ${
+                          className={`text-lg font-semibold dark:text-neutral-300 text-neutral-800 ${
                             activelocale == "bod" && "font-monlamuchen"
                           }`}
                         >
@@ -186,7 +186,7 @@ const MonasterySectClient = ({
                         <Badge variant="secondary">{monastery.type}</Badge>
                       </div>
                       <p
-                        className={`text-gray-600 line-clamp-3 ${
+                        className={`text-gray-600 dark:text-neutral-400 line-clamp-3 ${
                           activelocale == "bod" && "font-monlamuchen"
                         }`}
                       >
