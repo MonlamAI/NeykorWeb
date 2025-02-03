@@ -15,12 +15,13 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
+import { ChevronLeft } from "lucide-react";
 
 const localeAlias: { [key: string]: string } = {
   bod: "bo",
 };
 
-const ITEMS_PER_PAGE = 8;
+const ITEMS_PER_PAGE = 9;
 
 const MonasterySectClient = ({
   monasteriesData,
@@ -104,13 +105,13 @@ const MonasterySectClient = ({
 
   return (
     <div className="container mx-auto py-8">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-4xl font-bold">{sect.toUpperCase()} Monasteries</h1>
+      <div className="flex items-center ml-3  space-x-2 mb-8">
         <Link href="/Monastary">
-          <button className="px-4 py-2 border rounded-md hover:bg-gray-100">
-            Back to Directory
+          <button className="  px-3 py-2 border rounded-md hover:bg-gray-100 dark:hover:bg-neutral-900">
+            <ChevronLeft />
           </button>
         </Link>
+        <h1 className="text-4xl font-bold">{sect.toUpperCase()}</h1>
       </div>
 
       <div className="sticky top-0 bg-white dark:bg-neutral-950 z-10 py-4 shadow-sm">
@@ -132,7 +133,7 @@ const MonasterySectClient = ({
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
               {currentMonasteries.map((monastery: any) => {
                 const backendLocale = localeAlias[activelocale] || activelocale;
                 const translation = monastery.translations.find(
@@ -209,7 +210,6 @@ const MonasterySectClient = ({
                 );
               })}
             </div>
-
             {totalPages > 1 && (
               <Pagination className="my-6">
                 <PaginationContent>

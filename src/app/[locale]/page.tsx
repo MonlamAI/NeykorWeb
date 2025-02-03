@@ -5,7 +5,7 @@ export default function Home() {
   const activelocale = useLocale();
 
   return (
-    <div className="relative flex-col flex p-4 h-[32rem] w-full  bg-fixed bg-cover bg-center bg-[url('../../public/background.jpg')]">
+    <div className="relative flex-col flex p-4 h-[40rem] w-full  bg-fixed bg-cover bg-center bg-[url('../../public/background.jpg')]">
       <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-black/0 rounded-xl" />
       <div className="relative z-10">
         <p
