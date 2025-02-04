@@ -8,6 +8,7 @@ import { getfestivaldetail } from "@/app/actions/getactions";
 import { useLocale } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import LoadingSkeleton from "../../Statue/_Components/DetailSkeleton";
+import Breadcrumb from "@/app/LocalComponents/Breadcrumb";
 
 interface Translation {
   id: string;
@@ -94,49 +95,26 @@ export default function FestivalPage({ params }: { params: { id: string } }) {
   const currentTranslation = data.translations.find(
     (t) => t.languageCode === languageCode
   );
-
+  const breadcrumbItems = [
+    {
+      label: breadcrumbLabels.festivals,
+      href: "/Festival",
+    },
+    {
+      label: currentTranslation?.name || breadcrumbLabels.details,
+    },
+  ];
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString();
   };
 
   return (
     <div className="relative">
-      <div className="sticky mt-2 top-0 bg-white dark:bg-neutral-950 z-10 border-b">
-        <div className="max-w-6xl mx-auto p-4">
-          <nav className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-200">
-            <Link
-              href={`/${activeLocale}`}
-              className="flex items-center hover:text-gray-900 dark:hover:text-gray-300"
-            >
-              <Home className="w-4 h-4 mr-2" />
-              <span
-                className={activeLocale === "bod" ? "font-monlamuchen" : ""}
-              >
-                {breadcrumbLabels.home}
-              </span>
-            </Link>
-            <ChevronRight className="w-4 h-4" />
-            <Link
-              href="/Festival"
-              className="hover:text-gray-900 dark:hover:text-gray-300 flex items-center "
-            >
-              <span
-                className={activeLocale === "bod" ? "font-monlamuchen" : ""}
-              >
-                {breadcrumbLabels.festivals}
-              </span>
-            </Link>
-            <ChevronRight className="w-4 h-4" />
-            <span
-              className={`text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 items-center flex ${
-                activeLocale === "bod" ? "font-monlamuchen" : ""
-              }`}
-            >
-              {currentTranslation?.name || breadcrumbLabels.details}
-            </span>
-          </nav>
-        </div>
-      </div>
+      <Breadcrumb
+        items={breadcrumbItems}
+        locale={activeLocale}
+        labels={{ home: breadcrumbLabels.home }}
+      />
 
       <div className="max-w-6xl mx-auto p-4 space-y-6">
         <audio

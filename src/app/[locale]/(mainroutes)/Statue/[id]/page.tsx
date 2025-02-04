@@ -1,13 +1,13 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { Volume2, Pause, ChevronRight, Home } from "lucide-react";
+import { Volume2, Pause } from "lucide-react";
 import { getStatuesdetail } from "@/app/actions/getactions";
 import LoadingSkeleton from "../_Components/DetailSkeleton";
 import { useLocale } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
+import Breadcrumb from "@/app/LocalComponents/Breadcrumb";
 
 export default function StatuePage({ params }: { params: { id: string } }) {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -80,42 +80,19 @@ export default function StatuePage({ params }: { params: { id: string } }) {
 
   return (
     <div className="relative">
-      <div className="sticky mt-2 top-0 bg-white dark:bg-neutral-950 z-10 border-b">
-        <div className="max-w-6xl mx-auto p-4">
-          <nav className="flex items-center  space-x-2 text-sm text-gray-600 dark:text-gray-200">
-            <Link
-              href={`/${activeLocale}`}
-              className="flex items-center hover:text-gray-900 dark:hover:text-gray-400  "
-            >
-              <Home className="w-4 h-4 mr-2" />
-              <span
-                className={activeLocale === "bod" ? "font-monlamuchen" : ""}
-              >
-                {breadcrumbLabels.home}
-              </span>
-            </Link>
-            <ChevronRight className="w-4 h-4" />
-            <Link
-              href="/Statue"
-              className="hover:text-gray-900 dark:hover:text-gray-400  flex items-center "
-            >
-              <span
-                className={activeLocale === "bod" ? "font-monlamuchen" : ""}
-              >
-                {breadcrumbLabels.statues}
-              </span>
-            </Link>
-            <ChevronRight className="w-4 h-4" />
-            <span
-              className={`text-gray-900 dark:text-gray-400 ${
-                activeLocale === "bod" ? "font-monlamuchen" : ""
-              }`}
-            >
-              {currentTranslation?.name || breadcrumbLabels.details}
-            </span>
-          </nav>
-        </div>
-      </div>
+      <Breadcrumb
+        items={[
+          {
+            label: breadcrumbLabels.statues,
+            href: "/Statue",
+          },
+          {
+            label: currentTranslation?.name || breadcrumbLabels.details,
+          },
+        ]}
+        locale={activeLocale}
+        labels={{ home: breadcrumbLabels.home }}
+      />
 
       <div className="max-w-6xl mx-auto p-4 space-y-6">
         <audio

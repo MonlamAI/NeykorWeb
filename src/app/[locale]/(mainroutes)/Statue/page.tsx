@@ -1,4 +1,3 @@
-// app/statues/page.tsx
 import { Suspense } from "react";
 import { getStatues } from "@/app/actions/getactions";
 import StatuesClient from "./StatuesClient";

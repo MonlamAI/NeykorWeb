@@ -5,8 +5,8 @@ import { getgonpa } from "@/app/actions/getactions";
 import { Suspense } from "react";
 import Loading from "./Loading";
 import MonasteryMap from "@/app/LocalComponents/MonasteryMap";
-import Link from "next/link";
-import { ChevronRight, Home } from "lucide-react";
+
+import Breadcrumb from "@/app/LocalComponents/Breadcrumb";
 
 export default function MonasteryPage({
   params,
@@ -62,57 +62,27 @@ async function MonasteryContent({
   const contactEn = monastery.contact.translations.find(
     (t: any) => t.languageCode === "en"
   );
-
+  const breadcrumbItems = [
+    {
+      label: breadcrumbLabels.monastery,
+      href: "/Monastary",
+    },
+    {
+      label: params.id,
+      href: `/Monastary/${params.id}`,
+    },
+    {
+      label: currentTranslation?.name || breadcrumbLabels.details,
+    },
+  ];
   return (
     <div className="container py-8">
-      <div className="sticky top-0 bg-white dark:bg-neutral-950 z-10 mb-6">
-        <div className=" mx-auto ">
-          <nav className="flex items-center space-x-2 text-sm dark:text-gray-200 text-gray-600">
-            <Link
-              href={`/${activeLocale}`}
-              className="flex items-center hover:text-gray-900 dark:hover:text-gray-300"
-            >
-              <Home className="w-4 h-4 mr-1" />
-              <span
-                className={activeLocale === "bod" ? "font-monlamuchen" : ""}
-              >
-                {breadcrumbLabels.home}
-              </span>
-            </Link>
-            <ChevronRight className="w-4 h-4" />
-            <Link
-              href="/Monastary"
-              className="hover:text-gray-900 dark:hover:text-gray-300"
-            >
-              <span
-                className={activeLocale === "bod" ? "font-monlamuchen" : ""}
-              >
-                {breadcrumbLabels.monastery}
-              </span>
-            </Link>
-            <ChevronRight className="w-4 h-4" />
-            <Link
-              href={`/Monastary/${params.id}`}
-              className="hover:text-gray-900 dark:hover:text-gray-300"
-            >
-              <span
-                className={activeLocale === "bod" ? "font-monlamuchen" : ""}
-              >
-                {params.id}
-              </span>
-            </Link>
-            <ChevronRight className="w-4 h-4" />
-            <span
-              className={`text-gray-900 dark:text-gray-300 ${
-                activeLocale === "bod" ? "font-monlamuchen" : ""
-              }`}
-            >
-              {currentTranslation?.name || breadcrumbLabels.details}
-            </span>
-          </nav>
-        </div>
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <Breadcrumb
+        items={breadcrumbItems}
+        locale={activeLocale}
+        labels={{ home: breadcrumbLabels.home }}
+      />
+      <div className="grid max-w-6xl  p-4 mx-auto grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           <Card>
             <Image

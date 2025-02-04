@@ -11,12 +11,9 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Input } from "@/components/ui/input";
-import Link from "next/link";
-
-const localeAlias: { [key: string]: string } = {
-  bod: "bo",
-};
+import { SearchComponent } from "@/app/LocalComponents/Searchbar";
+import { localeAlias } from "@/lib/utils";
+import PilgrimSiteCard from "@/app/LocalComponents/Cards/Pligrimcard";
 
 const ITEMS_PER_PAGE = 9;
 
@@ -60,8 +57,8 @@ const SideClient = ({ pilgrimData }: any) => {
     setCurrentPage(page);
   };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
   };
 
   const visiblePages = useMemo(() => {
@@ -90,15 +87,11 @@ const SideClient = ({ pilgrimData }: any) => {
   return (
     <div className="relative min-h-screen w-full">
       <div className="sticky top-0 bg-white dark:bg-neutral-950 z-10 py-4 shadow-sm">
-        <div className="w-full max-w-xl mx-auto px-6">
-          <Input
-            type="search"
-            placeholder="Search pilgrim sites..."
-            value={searchQuery}
-            onChange={handleSearchChange}
-            className="w-full"
-          />
-        </div>
+        <SearchComponent
+          onSearch={handleSearch}
+          placeholder="Search pilgrim sites..."
+          initialQuery={searchQuery}
+        />
       </div>
 
       <div className="pt-4">
@@ -120,27 +113,13 @@ const SideClient = ({ pilgrimData }: any) => {
                   };
 
                 return (
-                  <Link
-                    href={`/Sacred/${site.id}`}
+                  <PilgrimSiteCard
                     key={site.id}
-                    className="bg-white dark:bg-neutral-900 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-                  >
-                    {site.image && (
-                      <img
-                        src={site.image}
-                        alt={translation.name}
-                        className="w-full h-48 object-cover"
-                      />
-                    )}
-                    <div className="p-4">
-                      <h3 className="text-xl font-semibold mb-2">
-                        {translation.name}
-                      </h3>
-                      <p className="text-gray-600 dark:text-gray-400 line-clamp-3">
-                        {translation.description}
-                      </p>
-                    </div>
-                  </Link>
+                    id={site.id}
+                    image={site.image}
+                    translation={translation}
+                    locale={activelocale}
+                  />
                 );
               })}
             </div>

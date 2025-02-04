@@ -1,7 +1,6 @@
 "use client";
 import React, { Suspense, useRef, useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight, Home, Volume2, Pause } from "lucide-react";
@@ -9,6 +8,7 @@ import { getsitedetail } from "@/app/actions/getactions";
 import MonasteryMap from "@/app/LocalComponents/MonasteryMap";
 import LoadingSkeleton from "../../Statue/_Components/DetailSkeleton";
 import { useQuery } from "@tanstack/react-query";
+import Breadcrumb from "@/app/LocalComponents/Breadcrumb";
 
 export default function PilgrimSitePage({
   params,
@@ -94,7 +94,15 @@ function PilgrimSiteContent({
   const contactInfo = siteData.contact.translations.find(
     (t: any) => t.languageCode === "en"
   );
-
+  const breadcrumbItems = [
+    {
+      label: breadcrumbLabels.details,
+      href: "/Sacred",
+    },
+    {
+      label: currentTranslation?.name || breadcrumbLabels.details,
+    },
+  ];
   return (
     <div className="container py-8">
       <audio
@@ -103,54 +111,24 @@ function PilgrimSiteContent({
         onEnded={() => setIsPlaying(false)}
       />
 
-      <div className="sticky top-0 bg-white dark:bg-neutral-950 z-10 mb-6">
-        <div className=" mx-auto">
-          <nav className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
-            <Link
-              href={`/${params.locale}`}
-              className="flex items-center hover:text-gray-900 dark:hover:text-gray-400"
-            >
-              <Home className="w-4 h-4 mr-1" />
-              <span
-                className={params.locale === "bod" ? "font-monlamuchen" : ""}
-              >
-                {breadcrumbLabels.home}
-              </span>
-            </Link>
-            <ChevronRight className="w-4 h-4" />
-            <Link
-              href="/Sacred"
-              className="hover:text-gray-900 flex items-center dark:hover:text-gray-400"
-            >
-              <span
-                className={params.locale === "bod" ? "font-monlamuchen" : ""}
-              >
-                {breadcrumbLabels.pilgrimage}
-              </span>
-            </Link>
-            <ChevronRight className="w-4 h-4" />
-            <span
-              className={`text-gray-900 dark:text-gray-300 ${
-                params.locale === "bod" && "font-monlamuchen"
-              }`}
-            >
-              {currentTranslation?.name || breadcrumbLabels.details}
-            </span>
-          </nav>
-        </div>
-      </div>
+      <Breadcrumb
+        items={breadcrumbItems}
+        locale={params.locale}
+        labels={{ home: breadcrumbLabels.home }}
+      />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 max-w-6xl p-4 mx-auto lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           <Card>
-            <div className="relative aspect-square">
-              <Image
-                src={siteData.image}
-                alt={currentTranslation?.name || "Pilgrim site image"}
-                fill
-                className="object-cover"
-              />
-            </div>
+            <Image
+              src={siteData.image}
+              alt={currentTranslation?.name || "Pilgrim site image"}
+              className="w-full h-64 object-cover rounded-t-lg"
+              width={1200}
+              height={800}
+              priority
+            />
+
             <CardHeader>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">

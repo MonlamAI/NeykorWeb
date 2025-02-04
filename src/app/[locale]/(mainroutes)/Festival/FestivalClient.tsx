@@ -10,25 +10,16 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Input } from "@/components/ui/input";
-import Link from "next/link";
-
-const localeAlias: { [key: string]: string } = {
-  bod: "bo",
-};
+import { SearchComponent } from "@/app/LocalComponents/Searchbar";
+import { localeAlias } from "@/lib/utils";
+import FestivalCard from "@/app/LocalComponents/Cards/Festivalcard";
 
 const ITEMS_PER_PAGE = 9;
-const VALID_S3_PREFIX = "https://gompa-tour.s3.ap-south-1.amazonaws.com";
 
 const FestivalClient = ({ fesdata }: any) => {
   const activelocale = useLocale();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-
-  const isValidImageUrl = (url: string | null | undefined) => {
-    if (!url) return false;
-    return url.startsWith(VALID_S3_PREFIX);
-  };
 
   const filteredfestival = useMemo(() => {
     if (!searchQuery.trim()) return fesdata;
@@ -65,8 +56,8 @@ const FestivalClient = ({ fesdata }: any) => {
     setCurrentPage(page);
   };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
   };
 
   const visiblePages = useMemo(() => {
@@ -94,22 +85,18 @@ const FestivalClient = ({ fesdata }: any) => {
 
   return (
     <div className="relative min-h-screen w-full">
-      <div className="sticky  bg-white dark:bg-neutral-950 top-0 z-10 py-4 shadow-sm">
-        <div className="w-full max-w-xl mx-auto px-6">
-          <Input
-            type="search"
-            placeholder="Search statues..."
-            value={searchQuery}
-            onChange={handleSearchChange}
-            className="w-full"
-          />
-        </div>
+      <div className="sticky top-0 bg-white dark:bg-neutral-950 z-10 py-4 shadow-sm">
+        <SearchComponent
+          onSearch={handleSearch}
+          placeholder="Search festivals..."
+          initialQuery={searchQuery}
+        />
       </div>
 
       <div className="pt-4">
         {filteredfestival.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
-            No statues found matching your search.
+            No festivals found matching your search.
           </div>
         ) : (
           <>
@@ -120,52 +107,18 @@ const FestivalClient = ({ fesdata }: any) => {
                   (t: any) => t.languageCode === backendLocale
                 ) ||
                   fes.translations[0] || {
-                    name: "Unnamed fes",
+                    name: "Unnamed Festival",
                     description: "No description available",
                   };
 
                 return (
-                  <Link
-                    href={`/Festival/${fes.id}`}
+                  <FestivalCard
                     key={fes.id}
-                    className="bg-white dark:bg-neutral-900 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-                  >
-                    <div
-                      className={`w-full h-48 ${
-                        !isValidImageUrl(fes.image)
-                          ? "bg-gradient-to-br from-gray-700 to-gray-900"
-                          : ""
-                      }`}
-                    >
-                      {isValidImageUrl(fes.image) ? (
-                        <img
-                          src={fes.image}
-                          alt={translation.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-300">
-                          <span className="text-lg">No Image Available</span>
-                        </div>
-                      )}
-                    </div>
-                    <div className="p-4">
-                      <h3
-                        className={`text-xl font-semibold mb-2 ${
-                          activelocale == "bod" && " font-monlamuchen"
-                        }`}
-                      >
-                        {translation.name}
-                      </h3>
-                      <p
-                        className={` ${
-                          activelocale == "bod" && " font-monlamuchen"
-                        }text-gray-600 dark:text-gray-300 line-clamp-3`}
-                      >
-                        {translation.description}
-                      </p>
-                    </div>
-                  </Link>
+                    id={fes.id}
+                    image={fes.image}
+                    translation={translation}
+                    locale={activelocale}
+                  />
                 );
               })}
             </div>

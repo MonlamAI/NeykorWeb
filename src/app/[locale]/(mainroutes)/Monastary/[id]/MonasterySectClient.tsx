@@ -11,15 +11,11 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Input } from "@/components/ui/input";
-import Link from "next/link";
-import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
-import { ChevronLeft } from "lucide-react";
 
-const localeAlias: { [key: string]: string } = {
-  bod: "bo",
-};
+import { SearchComponent } from "@/app/LocalComponents/Searchbar";
+import MonasteryCard from "@/app/LocalComponents/Cards/MonasteryCard";
+import Breadcrumb from "@/app/LocalComponents/Breadcrumb";
+import { localeAlias } from "@/lib/utils";
 
 const ITEMS_PER_PAGE = 9;
 
@@ -76,8 +72,8 @@ const MonasterySectClient = ({
     setCurrentPage(page);
   };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
   };
 
   const visiblePages = useMemo(() => {
@@ -102,28 +98,32 @@ const MonasterySectClient = ({
 
     return pages;
   }, [currentPage, totalPages]);
-
+  const breadcrumbLabels = {
+    en: { home: "Home", monasteries: "Monasteries", sect },
+    bod: { home: "གཙོ་ངོས།", monasteries: "དགོན་པ།", sect },
+  }[activelocale] || { home: "Home", monasteries: "Monasteries", sect };
+  const breadcrumbItems = [
+    { label: breadcrumbLabels.monasteries, href: "/Monastary" },
+    { label: breadcrumbLabels.sect },
+  ];
   return (
     <div className="container mx-auto py-8">
-      <div className="flex items-center ml-3  space-x-2 mb-8">
-        <Link href="/Monastary">
-          <button className="  px-3 py-2 border rounded-md hover:bg-gray-100 dark:hover:bg-neutral-900">
-            <ChevronLeft />
-          </button>
-        </Link>
-        <h1 className="text-4xl font-bold">{sect.toUpperCase()}</h1>
-      </div>
+      <div className="sticky  top-0 bg-white dark:bg-neutral-950 z-10 py-4 ">
+        <div className=" ml-4 flex items-center space-x-20">
+          <Breadcrumb
+            items={breadcrumbItems}
+            locale={activelocale}
+            labels={{ home: breadcrumbLabels.home }}
+          />
 
-      <div className="sticky top-0 bg-white dark:bg-neutral-950 z-10 py-4 shadow-sm">
-        <div className="w-full max-w-xl mx-auto">
-          <Input
-            type="search"
+          <SearchComponent
+            onSearch={handleSearch}
             placeholder="Search monasteries..."
-            value={searchQuery}
-            onChange={handleSearchChange}
-            className="w-full"
+            initialQuery={searchQuery}
           />
         </div>
+
+        <div />
       </div>
 
       <div className="pt-4">
@@ -149,67 +149,20 @@ const MonasterySectClient = ({
                   ) || monastery.contact?.translations?.[0];
 
                 return (
-                  <Link
-                    href={`/Monastary/${sect}/${monastery.id}`}
+                  <MonasteryCard
                     key={monastery.id}
-                    className="bg-white dark:bg-neutral-900 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-                  >
-                    <div className="relative w-full h-48">
-                      {monastery.image &&
-                      monastery.image.startsWith(
-                        "https://gompa-tour.s3.ap-south-1.amazonaws.com"
-                      ) ? (
-                        <Image
-                          src={monastery.image}
-                          alt={translation.name}
-                          fill
-                          className="object-cover"
-                          onError={(e) => {
-                            e.currentTarget.src = "/path/to/fallback-image.jpg";
-                          }}
-                        />
-                      ) : (
-                        <div
-                          className="w-full h-full bg-gradient-to-br from-neutral-800 to-neutral-900"
-                          aria-label={`Placeholder image for ${translation.name}`}
-                        ></div>
-                      )}
-                    </div>
-                    <div className="p-4">
-                      <div className="flex justify-between items-start mb-2">
-                        <h3
-                          className={`text-lg font-semibold dark:text-neutral-300 text-neutral-800 ${
-                            activelocale == "bod" && "font-monlamuchen"
-                          }`}
-                        >
-                          {translation.name}
-                        </h3>
-                        <Badge variant="secondary">{monastery.type}</Badge>
-                      </div>
-                      <p
-                        className={`text-gray-600 dark:text-neutral-400 line-clamp-3 ${
-                          activelocale == "bod" && "font-monlamuchen"
-                        }`}
-                      >
-                        {translation.description}
-                      </p>
-                      {contactTranslation && (
-                        <div className="mt-2 text-sm text-gray-500">
-                          <p>
-                            {contactTranslation.address},{" "}
-                            {contactTranslation.city}
-                          </p>
-                          <p>
-                            {contactTranslation.state},{" "}
-                            {contactTranslation.postal_code}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </Link>
+                    id={monastery.id}
+                    sect={sect}
+                    image={monastery.image}
+                    translation={translation}
+                    contactTranslation={contactTranslation}
+                    type={monastery.type}
+                    locale={activelocale}
+                  />
                 );
               })}
             </div>
+
             {totalPages > 1 && (
               <Pagination className="my-6">
                 <PaginationContent>
