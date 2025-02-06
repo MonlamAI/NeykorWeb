@@ -12,6 +12,12 @@ const nextConfig = {
         port: "",
         pathname: "/media/images/**",
       },
+      {
+        protocol: "https",
+        hostname: "monlam-ai-web-testing.s3.ap-south-1.amazonaws.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
   typescript: {
@@ -19,7 +25,7 @@ const nextConfig = {
   },
   eslint: {
     ignoreDuringBuilds: true,
-  }
+  },
 };
 
 export default withNextIntl(nextConfig);

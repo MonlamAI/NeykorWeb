@@ -16,9 +16,10 @@ import { SearchComponent } from "@/app/LocalComponents/Searchbar";
 import MonasteryCard from "@/app/LocalComponents/Cards/MonasteryCard";
 import Breadcrumb from "@/app/LocalComponents/Breadcrumb";
 import { localeAlias } from "@/lib/utils";
+import MonsModal from "./MonsModal";
+import { useRole } from "@/app/Providers/ContextProvider";
 
 const ITEMS_PER_PAGE = 9;
-
 const MonasterySectClient = ({
   monasteriesData,
   sect,
@@ -29,11 +30,14 @@ const MonasterySectClient = ({
   const activelocale = useLocale();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const {role}=useRole()
+  const isadmin = role=="ADMIN";
 
+ const [monastery,setmonastery]=useState(monasteriesData);
   const filteredMonasteries = useMemo(() => {
-    if (!searchQuery.trim()) return monasteriesData;
+    if (!searchQuery.trim()) return monastery;
 
-    return monasteriesData.filter((monastery: any) => {
+    return monastery.filter((monastery: any) => {
       const backendLocale = localeAlias[activelocale] || activelocale;
       const translation = monastery.translations.find(
         (t: any) => t.languageCode === backendLocale
@@ -56,7 +60,7 @@ const MonasterySectClient = ({
         contactTranslation?.city.toLowerCase().includes(searchLower)
       );
     });
-  }, [monasteriesData, searchQuery, activelocale]);
+  }, [monastery, searchQuery, activelocale]);
 
   const totalPages = Math.ceil(filteredMonasteries.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -107,9 +111,9 @@ const MonasterySectClient = ({
     { label: breadcrumbLabels.sect },
   ];
   return (
-    <div className="container mx-auto py-8">
+    <div className="container min-h-screen mx-auto py-8">
       <div className="sticky  top-0 bg-white dark:bg-neutral-950 z-10 py-4 ">
-        <div className=" ml-4 flex items-center space-x-20">
+        <div className=" flex items-center justify-between ">
           <Breadcrumb
             items={breadcrumbItems}
             locale={activelocale}
@@ -121,6 +125,15 @@ const MonasterySectClient = ({
             placeholder="Search monasteries..."
             initialQuery={searchQuery}
           />
+          {isadmin && (
+            <MonsModal
+            id={sect}
+            onSuccess={(newmons: any) => {
+              setmonastery(prev => [newmons, ...prev]);
+              setSearchQuery("");
+              }}
+            />
+          )}
         </div>
 
         <div />

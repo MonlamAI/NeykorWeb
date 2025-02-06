@@ -13,18 +13,21 @@ import {
 import { SearchComponent } from "@/app/LocalComponents/Searchbar";
 import { localeAlias } from "@/lib/utils";
 import FestivalCard from "@/app/LocalComponents/Cards/Festivalcard";
-
+import { useRole } from "@/app/Providers/ContextProvider";
+import FestModal from "./FestModal";
 const ITEMS_PER_PAGE = 9;
 
 const FestivalClient = ({ fesdata }: any) => {
   const activelocale = useLocale();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-
+  const [festival,setfestival] = useState(fesdata);
+  const { role } = useRole();
+  const isadmin = role=="ADMIN";
   const filteredfestival = useMemo(() => {
-    if (!searchQuery.trim()) return fesdata;
+    if (!searchQuery.trim()) return festival;
 
-    return fesdata.filter((fes: any) => {
+    return festival.filter((fes: any) => {
       const backendLocale = localeAlias[activelocale] || activelocale;
       const translation = fes.translations.find(
         (t: any) => t.languageCode === backendLocale
@@ -40,7 +43,7 @@ const FestivalClient = ({ fesdata }: any) => {
         translation.description.toLowerCase().includes(searchLower)
       );
     });
-  }, [fesdata, searchQuery, activelocale]);
+  }, [festival, searchQuery, activelocale]);
 
   const totalPages = Math.ceil(filteredfestival.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -86,11 +89,24 @@ const FestivalClient = ({ fesdata }: any) => {
   return (
     <div className="relative min-h-screen w-full">
       <div className="sticky top-0 bg-white dark:bg-neutral-950 z-10 py-4 shadow-sm">
+        <div className=" flex justify-between items-center px-6">
         <SearchComponent
           onSearch={handleSearch}
           placeholder="Search festivals..."
           initialQuery={searchQuery}
         />
+          {isadmin && (
+            
+            <FestModal
+            onSuccess={(newfes: any) => {
+              setfestival(prev => [newfes, ...prev]);
+              setSearchQuery("");
+              }} />
+            )}
+                
+        </div>
+      
+         
       </div>
 
       <div className="pt-4">

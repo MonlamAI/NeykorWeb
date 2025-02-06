@@ -1,9 +1,8 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { Volume2, Pause, ChevronRight, Home } from "lucide-react";
+import { Volume2, Pause, } from "lucide-react";
 import { getfestivaldetail } from "@/app/actions/getactions";
 import { useLocale } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
@@ -109,7 +108,7 @@ export default function FestivalPage({ params }: { params: { id: string } }) {
   };
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <Breadcrumb
         items={breadcrumbItems}
         locale={activeLocale}

@@ -14,18 +14,25 @@ import {
 import { SearchComponent } from "@/app/LocalComponents/Searchbar";
 import { localeAlias } from "@/lib/utils";
 import PilgrimSiteCard from "@/app/LocalComponents/Cards/Pligrimcard";
+import SacredModal from "./SacredModal";
+import { useRole } from "@/app/Providers/ContextProvider";
 
 const ITEMS_PER_PAGE = 9;
-
 const SideClient = ({ pilgrimData }: any) => {
   const activelocale = useLocale();
   const [currentPage, setCurrentPage] = useState(1);
+   const {role}=useRole()
+   const isadmin = role=="ADMIN";
   const [searchQuery, setSearchQuery] = useState("");
+ const [place,setplace]=useState(pilgrimData)
+ const handleDeleteStatue = (deletedId: string) => {
+  setplace(prev => prev.filter((places: any) => places.id !== deletedId));
+};
 
   const filteredPilgrimSites = useMemo(() => {
-    if (!searchQuery.trim()) return pilgrimData;
+    if (!searchQuery.trim()) return place;
 
-    return pilgrimData.filter((site: any) => {
+    return place.filter((site: any) => {
       const backendLocale = localeAlias[activelocale] || activelocale;
       const translation = site.translations.find(
         (t: any) => t.languageCode === backendLocale
@@ -41,7 +48,7 @@ const SideClient = ({ pilgrimData }: any) => {
         translation.description.toLowerCase().includes(searchLower)
       );
     });
-  }, [pilgrimData, searchQuery, activelocale]);
+  }, [place, searchQuery, activelocale]);
 
   const totalPages = Math.ceil(filteredPilgrimSites.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -87,11 +94,23 @@ const SideClient = ({ pilgrimData }: any) => {
   return (
     <div className="relative min-h-screen w-full">
       <div className="sticky top-0 bg-white dark:bg-neutral-950 z-10 py-4 shadow-sm">
+        <div className=" flex items-center justify-between  px-2">
         <SearchComponent
           onSearch={handleSearch}
           placeholder="Search pilgrim sites..."
           initialQuery={searchQuery}
         />
+        {isadmin && (
+            <SacredModal
+            onSuccess={(newplace: any) => {
+              setplace(prev => [newplace, ...prev]);
+              setSearchQuery("");
+              }}
+            />
+          )}
+        </div>
+        
+
       </div>
 
       <div className="pt-4">
@@ -119,6 +138,8 @@ const SideClient = ({ pilgrimData }: any) => {
                     image={site.image}
                     translation={translation}
                     locale={activelocale}
+                    isadmin={isadmin}
+                    ondelelte={handleDeleteStatue}
                   />
                 );
               })}

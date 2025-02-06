@@ -167,3 +167,68 @@ export async function getsitedetail(id: string) {
     throw error;
   }
 }
+
+export async function getuser() {
+  try {
+    const response = await axios.get(
+      `https://gompa-tour-api.onrender.com/user`,
+      {
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error("API Error:", error.response?.data || error.message);
+      throw new Error(`Failed to check user status: ${error.message}`);
+    }
+    throw error;
+  }
+}
+
+export async function getrole(email: string) {
+  try {
+    const response = await axios.get(
+      `https://gompa-tour-api.onrender.com/user/${email}`,
+      {
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data.role;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error("API Error:", error.response?.data || error.message);
+      throw new Error(`Failed to check user status: ${error.message}`);
+    }
+    throw error;
+  }
+}
+
+export async function getgonpatype(){
+  try {
+    const response = await axios.get(
+      `https://gompa-tour-api.onrender.com/gonpa/types`,
+      {
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error("API Error:", error.response?.data || error.message);
+      throw new Error(`Failed to fetch statues: ${error.message}`);
+    }
+    throw error;
+  }
+}

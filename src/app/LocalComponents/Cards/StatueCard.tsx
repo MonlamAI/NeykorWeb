@@ -1,6 +1,10 @@
 import React from "react";
 import Link from "next/link";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { deleteSacred } from "@/app/actions/delaction";
+import { TrashIcon } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const StatueCard = ({
   id,
@@ -8,12 +12,53 @@ const StatueCard = ({
   translation,
   locale = "en",
   className = "",
+  onDelete,
+  isAdmin ,
 }: any) => {
+  const { toast } = useToast();
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    try {
+      const confirm = window.confirm("Are you sure you want to delete this statue?");
+      if (!confirm) return;
+      
+      await deleteSacred(id);
+      
+      if (onDelete) {
+        onDelete(id);
+      }
+      
+      toast({
+        title: "Success",
+        description: "Statue has been deleted successfully",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Failed to delete statue:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete statue. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <Link href={`/Statue/${id}`}>
       <Card
-        className={`overflow-hidden hover:shadow-lg dark:bg-neutral-900 h-full transition-shadow ${className}`}
+        className={`relative overflow-hidden hover:shadow-lg dark:bg-neutral-900 h-full transition-shadow ${className}`}
       >
+        {isAdmin && (
+          <Button
+            variant="destructive"
+            size="icon"
+            className="absolute top-2 right-2 z-10 bg-white/20 backdrop-blur-md border border-white/30 rounded-md shadow-lg"
+            onClick={handleDelete}
+          >
+            <TrashIcon />
+          </Button>
+        )}
         {image && (
           <div className="w-full h-48 overflow-hidden">
             <img

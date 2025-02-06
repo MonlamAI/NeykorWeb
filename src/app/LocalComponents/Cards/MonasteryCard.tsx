@@ -21,7 +21,11 @@ const MonasteryCard = ({
       >
         <div className="relative w-full h-48">
           {image &&
-          image.startsWith("https://gompa-tour.s3.ap-south-1.amazonaws.com") ? (
+           (
+            image.startsWith("https://gompa-tour.s3.ap-south-1.amazonaws.com") ||
+            image.startsWith("https://monlam-ai-web-testing.s3.ap-south-1.amazonaws.com")
+          ) 
+          ? (
             <Image
               src={image}
               alt={translation.name}
@@ -29,7 +33,7 @@ const MonasteryCard = ({
               className="object-cover"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-300">
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-700 to-gray-900 text-gray-300">
               <span className="text-lg">No Image Available</span>
             </div>
           )}

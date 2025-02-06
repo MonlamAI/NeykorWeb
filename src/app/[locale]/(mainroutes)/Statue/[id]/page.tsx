@@ -8,12 +8,14 @@ import LoadingSkeleton from "../_Components/DetailSkeleton";
 import { useLocale } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import Breadcrumb from "@/app/LocalComponents/Breadcrumb";
+import { useRole } from "@/app/Providers/ContextProvider";
 
 export default function StatuePage({ params }: { params: { id: string } }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const activeLocale = useLocale();
-
+  const {role}=useRole()
+  const isadmin = role=="ADMIN";
   const { data, isLoading, error } = useQuery({
     queryKey: ["statue", params.id],
     queryFn: () => getStatuesdetail(params.id),
@@ -74,12 +76,8 @@ export default function StatuePage({ params }: { params: { id: string } }) {
     (t: any) => t.languageCode === languageCode
   );
 
-  const englishTranslation = data.translations.find(
-    (t: any) => t.languageCode === "en"
-  );
-
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <Breadcrumb
         items={[
           {
@@ -131,22 +129,21 @@ export default function StatuePage({ params }: { params: { id: string } }) {
                   >
                     {currentTranslation?.name}
                   </h1>
-                  {currentTranslation?.description_audio &&
-                    activeLocale === "bod" && (
-                      <button
-                        onClick={() =>
-                          toggleAudio(currentTranslation.description_audio)
-                        }
-                        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900"
-                        aria-label={isPlaying ? "Pause audio" : "Play audio"}
-                      >
-                        {isPlaying ? (
-                          <Pause className="w-6 h-6" />
-                        ) : (
-                          <Volume2 className="w-6 h-6" />
-                        )}
-                      </button>
-                    )}
+                  {currentTranslation?.description_audio && (
+                    <button
+                      onClick={() =>
+                        toggleAudio(currentTranslation.description_audio)
+                      }
+                      className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900"
+                      aria-label={isPlaying ? "Pause audio" : "Play audio"}
+                    >
+                      {isPlaying ? (
+                        <Pause className="w-6 h-6" />
+                      ) : (
+                        <Volume2 className="w-6 h-6" />
+                      )}
+                    </button>
+                  )}
                 </div>
                 <p
                   className={`text-gray-700 dark:text-neutral-400 text-justify leading-relaxed ${

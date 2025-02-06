@@ -13,18 +13,27 @@ import {
 import { SearchComponent } from "@/app/LocalComponents/Searchbar";
 import { localeAlias } from "@/lib/utils";
 import StatueCard from "@/app/LocalComponents/Cards/StatueCard";
+import StatueFormModal from "./_Components/statueformmodal";
+import { useRole } from "@/app/Providers/ContextProvider";
 
 const ITEMS_PER_PAGE = 9;
-
 const StatuesClient = ({ statuesData }: any) => {
   const activelocale = useLocale();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [statues, setStatues] = useState(statuesData); 
+ const {role}=useRole()
+ const isadmin = role=="ADMIN";
+  console.log(isadmin,role)
+  const handleDeleteStatue = (deletedId: string) => {
+    setStatues(prev => prev.filter((statue: any) => statue.id !== deletedId));
+  };
+  
 
   const filteredStatues = useMemo(() => {
-    if (!searchQuery.trim()) return statuesData;
+    if (!searchQuery.trim()) return statues;
 
-    return statuesData.filter((statue: any) => {
+    return statues.filter((statue: any) => {
       const backendLocale = localeAlias[activelocale] || activelocale;
       const translation = statue.translations.find(
         (t: any) => t.languageCode === backendLocale
@@ -40,7 +49,7 @@ const StatuesClient = ({ statuesData }: any) => {
         translation.description.toLowerCase().includes(searchLower)
       );
     });
-  }, [statuesData, searchQuery, activelocale]);
+  }, [statues, searchQuery, activelocale]);
 
   const totalPages = Math.ceil(filteredStatues.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -85,12 +94,22 @@ const StatuesClient = ({ statuesData }: any) => {
 
   return (
     <div className="relative min-h-screen w-full">
-      <div className="sticky top-0 bg-white dark:bg-neutral-950 z-10 py-4 shadow-sm">
-        <SearchComponent
-          onSearch={handleSearch}
-          placeholder="Search statues..."
-          initialQuery={searchQuery}
-        />
+      <div className="sticky p-2 top-0 bg-white dark:bg-neutral-950 z-30 py-4 shadow-sm">
+        <div className="flex  items-center ">
+          <SearchComponent
+            onSearch={handleSearch}
+            placeholder="Search statues..."
+            initialQuery={searchQuery}
+          />
+          {isadmin && (
+            <StatueFormModal
+            onSuccess={(newStatue: any) => {
+              setStatues(prev => [newStatue, ...prev]);
+              setSearchQuery("");
+              }}
+            />
+          )}
+        </div>
       </div>
 
       <div className="pt-4">
@@ -113,12 +132,14 @@ const StatuesClient = ({ statuesData }: any) => {
 
                 return (
                   <StatueCard
-                    key={statue.id}
-                    id={statue.id}
-                    image={statue.image}
-                    translation={translation}
-                    locale={activelocale}
-                  />
+  key={statue.id}
+  id={statue.id}
+  image={statue.image}
+  translation={translation}
+  locale={activelocale}
+  isAdmin={isadmin}
+  onDelete={handleDeleteStatue}
+/>
                 );
               })}
             </div>

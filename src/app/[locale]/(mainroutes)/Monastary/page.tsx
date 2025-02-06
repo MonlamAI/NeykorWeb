@@ -6,9 +6,10 @@ import LoadingSkeleton from "./Skeleton";
 
 export default function MonasteryDashboardPage({ params }: any) {
   const { locale } = params;
+
   return (
     <Suspense fallback={<LoadingSkeleton />}>
-      <MonasteryDashboardContent locales={locale} />
+      <MonasteryDashboardContent locales={locale}  />
     </Suspense>
   );
 }
@@ -17,10 +18,11 @@ async function MonasteryDashboardContent(locales: any) {
   const gonpadata = await getgonpa();
 
   const groupedMonasteries = {
-    sakya: gonpadata.filter((m: any) => m.sect === "SAKYA"),
-    nyingma: gonpadata.filter((m: any) => m.sect === "NYINGMA"),
-    kargye: gonpadata.filter((m: any) => m.sect === "KAGYU"),
-    bon: gonpadata.filter((m: any) => m.sect === "BON"),
+    SAKYA: gonpadata.filter((m: any) => m.sect === "SAKYA"),
+    NYINGMA: gonpadata.filter((m: any) => m.sect === "NYINGMA"),
+    KAGYU: gonpadata.filter((m: any) => m.sect === "KAGYU"),
+    BHON: gonpadata.filter((m: any) => m.sect === "BHON"),
+    GELUG: gonpadata.filter((m: any) => m.sect === "GELUG"),
     other: gonpadata.filter((m: any) => !m.sect || m.sect === "OTHER"),
   };
   console.log(locales);
@@ -45,7 +47,7 @@ async function MonasteryDashboardContent(locales: any) {
       <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {Object.entries(groupedMonasteries).map(([sect, monasteries]) => (
           <Link
-            href={`/Monastary/${sect.toLowerCase()}`}
+            href={`/Monastary/${sect}`}
             key={sect}
             className="block"
           >
