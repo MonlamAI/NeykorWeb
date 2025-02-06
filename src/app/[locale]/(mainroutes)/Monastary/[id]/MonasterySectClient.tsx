@@ -34,6 +34,10 @@ const MonasterySectClient = ({
   const isadmin = role=="ADMIN";
 
  const [monastery,setmonastery]=useState(monasteriesData);
+ const handledeletemons = (deletedId: string) => {
+  setmonastery(prev => prev.filter((mons: any) => mons.id !== deletedId));
+};
+
   const filteredMonasteries = useMemo(() => {
     if (!searchQuery.trim()) return monastery;
 
@@ -112,7 +116,7 @@ const MonasterySectClient = ({
   ];
   return (
     <div className="container min-h-screen mx-auto py-8">
-      <div className="sticky  top-0 bg-white dark:bg-neutral-950 z-10 py-4 ">
+      <div className="sticky  top-0 bg-white dark:bg-neutral-950 z-30 py-4 ">
         <div className=" flex items-center justify-between ">
           <Breadcrumb
             items={breadcrumbItems}
@@ -171,11 +175,14 @@ const MonasterySectClient = ({
                     contactTranslation={contactTranslation}
                     type={monastery.type}
                     locale={activelocale}
+                    onDelete={handledeletemons}
+                    isAdmin={isadmin}
+
                   />
                 );
               })}
             </div>
-
+              
             {totalPages > 1 && (
               <Pagination className="my-6">
                 <PaginationContent>

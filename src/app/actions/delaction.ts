@@ -60,3 +60,45 @@ export async function deleteSacred(statueId: string) {
       throw error;
     }
   }
+
+  export async function deletegonpa(gonpaid:string)
+  {
+    try {
+      const response = await axios.delete(
+        `https://gompa-tour-api.onrender.com/gonpa/${gonpaid}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return { success: true, data: response.data };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error("API Error:", error.response?.data || error.message);
+        throw new Error(`Failed to delete statue: ${error.message}`);
+      }
+      throw error;
+    }
+  }
+
+  export async function deletefest(festid:string)
+  {
+    try {
+      const response = await axios.delete(
+        `https://gompa-tour-api.onrender.com/festival/${festid}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return { success: true, data: response.data };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error("API Error:", error.response?.data || error.message);
+        throw new Error(`Failed to delete statue: ${error.message}`);
+      }
+      throw error;
+    }
+  }

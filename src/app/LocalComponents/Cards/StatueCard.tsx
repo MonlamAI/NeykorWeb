@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { deleteSacred } from "@/app/actions/delaction";
-import { TrashIcon } from "lucide-react";
+import { Loader, TrashIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const StatueCard = ({
@@ -17,33 +17,39 @@ const StatueCard = ({
 }: any) => {
   const { toast } = useToast();
 
-  const handleDelete = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    try {
-      const confirm = window.confirm("Are you sure you want to delete this statue?");
-      if (!confirm) return;
-      
-      await deleteSacred(id);
-      
-      if (onDelete) {
-        onDelete(id);
-      }
-      
-      toast({
-        title: "Success",
-        description: "Statue has been deleted successfully",
-        variant: "default",
-      });
-    } catch (error) {
-      console.error("Failed to delete statue:", error);
-      toast({
-        title: "Error",
-        description: "Failed to delete statue. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
+  const [isDeleting, setIsDeleting] = useState(false);
+ 
 
+  const handleDelete = async (e: React.MouseEvent) => {
+     e.preventDefault();
+     try {
+       const confirm = window.confirm("Are you sure you want to delete this Statue?");
+       if (!confirm) return;
+       
+       setIsDeleting(true);
+       await deleteSacred(id);
+       
+       if (onDelete) {
+         onDelete(id);
+       }
+       
+       toast({
+         title: "Success",
+         description: "Statue has been deleted successfully",
+         variant: "default",
+       });
+     } catch (error) {
+       console.error("Failed to delete Statue:", error);
+       toast({
+         title: "Error",
+         description: "Failed to delete Statue. Please try again.",
+         variant: "destructive",
+       });
+     } finally {
+       setIsDeleting(false);
+     }
+   };
+ 
   return (
     <Link href={`/Statue/${id}`}>
       <Card
@@ -53,11 +59,12 @@ const StatueCard = ({
           <Button
             variant="destructive"
             size="icon"
+            disabled={isDeleting}
             className="absolute top-2 right-2 z-10 bg-white/20 backdrop-blur-md border border-white/30 rounded-md shadow-lg"
             onClick={handleDelete}
           >
-            <TrashIcon />
-          </Button>
+            {isDeleting ? <span className="animate-spin"> <Loader /></span> : <TrashIcon />}
+            </Button>
         )}
         {image && (
           <div className="w-full h-48 overflow-hidden">

@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { TrashIcon } from "lucide-react";
+import { Loader, TrashIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { deletepilgrim } from "@/app/actions/delaction";
 
@@ -15,33 +15,37 @@ const PilgrimSiteCard = ({
 }: any) => {
   const { toast } = useToast();
 
-  const handleDelete = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    try {
-      const confirm = window.confirm("Are you sure you want to delete this pilgrim site?");
-      if (!confirm) return;
-
-      await deletepilgrim(id);
-      
-      if (ondelelte) {
-        ondelelte(id);
+   const [isDeleting, setIsDeleting] = useState(false);
+  
+    const handleDelete = async (e: React.MouseEvent) => {
+      e.preventDefault();
+      try {
+        const confirm = window.confirm("Are you sure you want to delete this Pilgrim?");
+        if (!confirm) return;
+        
+        setIsDeleting(true);
+        await deletepilgrim(id);
+        
+        if (ondelelte) {
+          ondelelte(id);
+        }
+        
+        toast({
+          title: "Success",
+          description: "Pilgrim has been deleted successfully",
+          variant: "default",
+        });
+      } catch (error) {
+        console.error("Failed to delete Pilgrim:", error);
+        toast({
+          title: "Error",
+          description: "Failed to delete Pilgrim. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsDeleting(false);
       }
-
-      toast({
-        title: "Success",
-        description: "Pilgrim site has been deleted successfully",
-        variant: "default",
-      });
-    } catch (error) {
-      console.error("Failed to delete pilgrim site:", error);
-      toast({
-        title: "Error",
-        description: "Failed to delete pilgrim site. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
+    };
   return (
     <Link
       href={`/Sacred/${id}`}
@@ -54,8 +58,8 @@ const PilgrimSiteCard = ({
           className="absolute top-2 right-2 z-10 bg-white/20 backdrop-blur-md border border-white/30 rounded-md shadow-lg"
           onClick={handleDelete}
         >
-          <TrashIcon />
-        </Button>
+            {isDeleting ? <span className="animate-spin"> <Loader /></span> : <TrashIcon />}
+            </Button>
       )}
       {image && (
         <img

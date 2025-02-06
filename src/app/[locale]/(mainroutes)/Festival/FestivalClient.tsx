@@ -24,6 +24,9 @@ const FestivalClient = ({ fesdata }: any) => {
   const [festival,setfestival] = useState(fesdata);
   const { role } = useRole();
   const isadmin = role=="ADMIN";
+  const handledeletefestival = (deletedId: string) => {
+    setfestival(prev => prev.filter((fes: any) => fes.id !== deletedId));
+  };
   const filteredfestival = useMemo(() => {
     if (!searchQuery.trim()) return festival;
 
@@ -88,7 +91,7 @@ const FestivalClient = ({ fesdata }: any) => {
 
   return (
     <div className="relative min-h-screen w-full">
-      <div className="sticky top-0 bg-white dark:bg-neutral-950 z-10 py-4 shadow-sm">
+      <div className="sticky top-0 bg-white dark:bg-neutral-950 z-30 py-4 shadow-sm">
         <div className=" flex justify-between items-center px-6">
         <SearchComponent
           onSearch={handleSearch}
@@ -134,6 +137,8 @@ const FestivalClient = ({ fesdata }: any) => {
                     image={fes.image}
                     translation={translation}
                     locale={activelocale}
+                    isadmin={isadmin}
+                    onDelete={handledeletefestival}
                   />
                 );
               })}

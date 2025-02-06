@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { deletegonpa } from "@/app/actions/delaction";
+import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { Loader, TrashIcon } from "lucide-react";
 
 const MonasteryCard = ({
   id,
@@ -13,13 +17,60 @@ const MonasteryCard = ({
   type,
   locale = "en",
   className = "",
+  onDelete,
+  isAdmin,
 }: any) => {
+  const { toast } = useToast();
+    const [isDeleting, setIsDeleting] = useState(false);
+  
+   const handleDelete = async (e: React.MouseEvent) => {
+       e.preventDefault();
+       try {
+         const confirm = window.confirm("Are you sure you want to delete this Gonpa?");
+         if (!confirm) return;
+         
+         setIsDeleting(true);
+         await deletegonpa(id);
+         
+         if (onDelete) {
+           onDelete(id);
+         }
+         
+         toast({
+           title: "Success",
+           description: "Gonpa has been deleted successfully",
+           variant: "default",
+         });
+       } catch (error) {
+         console.error("Failed to delete Gonpa:", error);
+         toast({
+           title: "Error",
+           description: "Failed to delete Gonpa. Please try again.",
+           variant: "destructive",
+         });
+       } finally {
+         setIsDeleting(false);
+       }
+     };
+  
   return (
     <Link href={`/Monastary/${sect}/${id}`}>
       <Card
         className={`overflow-hidden hover:shadow-lg dark:bg-neutral-900 h-full transition-shadow ${className} `}
       >
+         
         <div className="relative w-full h-48">
+        {isAdmin && (
+          <Button
+            variant="destructive"
+            size="icon"
+            disabled={isDeleting}
+            className="absolute top-2 right-2 z-10 bg-white/20 backdrop-blur-md border border-white/30 rounded-md shadow-lg"
+            onClick={handleDelete}
+          >
+            {isDeleting ? <span className="animate-spin"> <Loader /></span> : <TrashIcon />}
+            </Button>
+        )}
           {image &&
            (
             image.startsWith("https://gompa-tour.s3.ap-south-1.amazonaws.com") ||
