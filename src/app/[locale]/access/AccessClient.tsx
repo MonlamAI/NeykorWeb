@@ -112,7 +112,7 @@ const AccessClient = ({ users: initialUsers }: AccessClientProps) => {
     setIsEditDialogOpen(true)
   }
   const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/access'
-  console.log(currentPath)
+ 
   return (
     <div className="w-full min-h-screen px-4 sm:px-6 lg:px-8 py-8">
       <div className="">
@@ -241,13 +241,26 @@ const AccessClient = ({ users: initialUsers }: AccessClientProps) => {
               <p className="text-neutral-500 mb-6">
                 Sorry, you need administrator privileges to access this page.
               </p>
-              <Link
-                href={`/api/auth/login?returnTo=${encodeURIComponent(currentPath)}`}
-             className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-black dark:text-white  border-neutral-200  "
-              >
-                <LogIn className="mr-2 h-4 w-4" />
-                Login
-              </Link>
+              {
+                user && role != "ADMIN" ?(
+                    <Link
+                  href={`/api/auth/logout?returnTo=${encodeURIComponent(currentPath)}`}
+                className="inline-flex items-center px-4 py-2 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white dark:bg-neutral-900 dark:text-neutral-100 hover:bg-gray-50 dark:hover:bg-neutral-800"
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Logout
+                </Link>
+                ):(
+                    <Link
+                    href={`/api/auth/login?returnTo=${encodeURIComponent(currentPath)}`}
+                 className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-black dark:text-white  border-neutral-200  "
+                  >
+                    <LogIn className="mr-2 h-4 w-4" />
+                    Login
+                  </Link>
+                )
+              }
+             
             </div>
           )}
         </div>
