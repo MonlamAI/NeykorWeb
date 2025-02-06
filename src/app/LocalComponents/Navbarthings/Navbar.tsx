@@ -19,7 +19,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center gap-x-2">
             <Image src={iconimage} height={35} width={35} alt="icon" />
-            <Link href="/" className="max-w-sm">
+            <Link href={`/${activeLocale}`} className="max-w-sm">
               <h1
                 className={`text-lg font-semibold ${
                   activeLocale === "bod"
