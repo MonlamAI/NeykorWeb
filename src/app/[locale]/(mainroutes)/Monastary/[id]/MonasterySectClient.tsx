@@ -31,7 +31,7 @@ const MonasterySectClient = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const {role}=useRole()
-  const isadmin = role=="ADMIN";
+  const isadmin = useMemo(() => role === "ADMIN", [role]);
 
  const [monastery,setmonastery]=useState(monasteriesData);
  const handledeletemons = (deletedId: string) => {

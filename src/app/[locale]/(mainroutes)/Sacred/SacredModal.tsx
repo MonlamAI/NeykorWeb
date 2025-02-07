@@ -197,7 +197,7 @@ const SacredModal = ({onSuccess }: any) => {
         contactId: contactId,
         translations: translationsWithAudioUrls,
       };
-  
+      console.log('prepareddata',preparedData)
       const result = await createSacred(preparedData);
   
       if (result) {

@@ -23,7 +23,7 @@ const FestivalClient = ({ fesdata }: any) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [festival,setfestival] = useState(fesdata);
   const { role } = useRole();
-  const isadmin = role=="ADMIN";
+  const isadmin = useMemo(() => role === "ADMIN", [role]);
   const handledeletefestival = (deletedId: string) => {
     setfestival(prev => prev.filter((fes: any) => fes.id !== deletedId));
   };

@@ -1,22 +1,30 @@
 import React, { Suspense } from "react";
 import Link from "next/link";
 import { getgonpa } from "@/app/actions/getactions";
-import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import LoadingSkeleton from "./Skeleton";
 
-export default function MonasteryDashboardPage({ params }: any) {
-  const { locale } = params;
+const bgimagelink = [
+  {
+    sakya: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1732251070GP205684.jpg",
+    nyingma: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1732078167GP205668.jpg",
+    kagyu: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1731493541GP205597.jpg",
+    bhon: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1731914731GP205645.jpg",
+    gelug: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1731488192GP205592.jpg",
+    other: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1732603251GP205716.jpg",
+  }
+];
 
+export default function MonasteryDashboardPage({ params }: any) {
   return (
     <Suspense fallback={<LoadingSkeleton />}>
-      <MonasteryDashboardContent locales={locale}  />
+      <MonasteryDashboardContent locales={params.locale} />
     </Suspense>
   );
 }
 
 async function MonasteryDashboardContent(locales: any) {
   const gonpadata = await getgonpa();
-
   const groupedMonasteries = {
     SAKYA: gonpadata.filter((m: any) => m.sect === "SAKYA"),
     NYINGMA: gonpadata.filter((m: any) => m.sect === "NYINGMA"),
@@ -25,42 +33,43 @@ async function MonasteryDashboardContent(locales: any) {
     GELUG: gonpadata.filter((m: any) => m.sect === "GELUG"),
     other: gonpadata.filter((m: any) => !m.sect || m.sect === "OTHER"),
   };
-  console.log(locales);
+
+  const getBackgroundImage = (sect: string) => {
+    const lowerSect = sect.toLowerCase();
+    return bgimagelink[0][lowerSect as keyof typeof bgimagelink[0]];
+  };
 
   return (
     <div className="container mx-auto pt-8 px-4">
-      <div className="relative h-[20rem] w-full rounded-xl bg-fixed bg-cover bg-center bg-[url('../../public/mons.jpg')]">
-        <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-black/0 rounded-xl" />
-        <div className="relative flex flex-col items-center justify-center  w-full h-full z-10 p-6">
-          <p className={`text-white text-3xl font-bold font-monlamuchen`}>
-            དགོན་པའི་ཐོ་གཞུང་
-          </p>
-          <p className={`text-white text-center  font-monlamuchen`}>
-            ༄༅། །གནས་མཆོག་དམ་པར་བགྲོད་པའི་ལམ་ཡངས་པོར། །
-            བདེ་དགའི་འོད་སྣང་འཕྲོ་བའི་སྐྱེད་ཚལ་དུ། །
-            དད་གུས་སེམས་ཀྱིས་གོམ་པ་མདུན་བསྐྱོད་ནས། །
-            ཕྱོགས་བཞིའི་གནས་ཆེན་རྣམས་ལ་མཇལ་བར་ཤོག །
-          </p>
-        </div>
-      </div>
-
-      <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {Object.entries(groupedMonasteries).map(([sect, monasteries]) => (
           <Link
             href={`/Monastary/${sect}`}
             key={sect}
-            className="block"
+            className="group block overflow-hidden"
           >
-            <div className="group p-4 border rounded-lg  transition-all hover:shadow-md dark:bg-neutral-900 bg-white">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-800 dark:text-gray-200 font-medium capitalize">
-                  {sect}
-                </span>
-                <Badge variant="secondary" className="ml-2">
-                  {monasteries.length}
-                </Badge>
+            <Card className="relative aspect-[4/5] overflow-hidden">
+              <div 
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover:scale-105"
+                style={{ backgroundImage: `url(${getBackgroundImage(sect)})` }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-transparent" />
+              <div className="absolute inset-0 p-6 flex flex-col justify-end">
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-semibold text-white capitalize">
+                    {sect.toLowerCase()}
+                  </h3>
+                  <p className="text-white/80 text-sm">
+                    {monasteries.length} Monasteries
+                  </p>
+                </div>
+                <div className="mt-4">
+                  <span className="inline-flex items-center rounded-full bg-white/10 px-4 py-1 text-sm text-white backdrop-blur-sm">
+                    View collection
+                  </span>
+                </div>
               </div>
-            </div>
+            </Card>
           </Link>
         ))}
       </div>
