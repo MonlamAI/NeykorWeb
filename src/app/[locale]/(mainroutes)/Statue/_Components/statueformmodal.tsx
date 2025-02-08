@@ -227,7 +227,7 @@ const StatueFormModal = ({ onSuccess }: any) => {
                           e.target.value
                         )
                       }
-                      placeholder="e.g., en, es, fr"
+                      placeholder="e.g. bo"
                     />
                   </div>
                   <div className="space-y-2">

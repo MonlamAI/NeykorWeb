@@ -29,6 +29,7 @@ import { Loader2, Pause, Pen, Volume2,  } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { validateFile } from '@/lib/utils';
+import ContactEditSection from '@/app/LocalComponents/ContactEditSection';
 
 const SUPPORTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 const SUPPORTED_AUDIO_TYPES = ['audio/mpeg', 'audio/mp3'];
@@ -73,11 +74,13 @@ const [editedType, setEditedType] = useState("");
     queryFn: () => getgonpadetail(params.slug),
   });
 
-   
-  const languageCode = useMemo(() => 
-    ({ en: "en", bod: "bo" }[params.locale] || "en"), 
-    [params.locale]
-  );
+  const handleContactUpdate = (updatedContact:any) => {
+    queryClient.setQueryData(["gonpa", params.slug], {
+      ...monastery,
+      contact: updatedContact
+    });
+  };
+  const languageCode = params.locale === "bod" ? "bo" : "en";
 
   const currentTranslation = useMemo(() => {
     if (!monastery?.translations) return null;
@@ -498,55 +501,12 @@ useEffect(() => {
               locale={activeLocale}
             />
           )}
-
-          <Card>
-            <CardHeader>
-              <CardTitle className={`text-xl ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
-                {activeLocale === "bod" ? "འབྲེལ་གཏུགས་ཀྱི་གནས་ཚུལ" : "Contact Information"}
-              </CardTitle>
-            </CardHeader>
-            
-            <CardContent className="space-y-2">
-              {contactEn?.address && (
-                <div>
-                  <p className={`font-medium ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
-                    {activeLocale === "bod" ? "ཁ་བྱང་།" : "Address"}
-                  </p>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    {contactEn.address}
-                    <br />
-                    {contactEn.city}
-                    {contactEn.state && <>, {contactEn.state}</>}
-                    {contactEn.postal_code && <> {contactEn.postal_code}</>}
-                    <br />
-                    {contactEn.country}
-                  </p>
-                </div>
-              )}
-              
-              {monastery.contact.phone_number && (
-                <div>
-                  <p className={`font-medium ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
-                    {activeLocale === "bod" ? "ཁ་པར་།" : "Phone"}
-                  </p>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    {monastery.contact.phone_number}
-                  </p>
-                </div>
-              )}
-              
-              {monastery.contact.email && (
-                <div>
-                  <p className={`font-medium ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
-                    {activeLocale === "bod" ? "ཡིག་འཕྲིན།" : "Email"}
-                  </p>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    {monastery.contact.email}
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+            <ContactEditSection 
+  contact={monastery.contact}
+  activeLocale={activeLocale}
+  isAdmin={isAdmin}
+  onUpdate={handleContactUpdate}
+/>
         </div>
       </div>
     </div>

@@ -324,7 +324,7 @@ const SacredModal = ({onSuccess }: any) => {
                         required
                         value={translation.languageCode}
                         onChange={(e) => handleContactTranslationChange(index, "languageCode", e.target.value)}
-                        placeholder="e.g., en, es, fr"
+                        placeholder="e.g. bo"
                       />
                     </div>
                     <div className="space-y-2">
@@ -421,7 +421,7 @@ const SacredModal = ({onSuccess }: any) => {
                       onChange={(e) =>
                         handleTranslationChange(index, "languageCode", e.target.value)
                       }
-                      placeholder="e.g., en, es, fr"
+                      placeholder="e.g. bo"
                     />
                   </div>
                   <div className="space-y-2">

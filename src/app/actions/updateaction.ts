@@ -104,3 +104,24 @@ export async function updateUser(email: string, userData:any) {
       throw error
     }
   }
+
+  export async function updatecontact(contactid: string, data:any) {
+    try {
+      const response = await axios.put(
+        `https://gompa-tour-api.onrender.com/contact/${contactid}`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      return { success: true, data: response.data }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error("API Error:", error.response?.data || error.message)
+        throw new Error(`Failed to update user: ${error.message}`)
+      }
+      throw error
+    }
+  }

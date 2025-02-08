@@ -16,6 +16,7 @@ import Breadcrumb from "@/app/LocalComponents/Breadcrumb";
 import { useRole } from "@/app/Providers/ContextProvider";
 import { toast } from "@/hooks/use-toast";
 import { validateFile } from "@/lib/utils";
+import ContactEditSection from "@/app/LocalComponents/ContactEditSection";
 
 export default function PilgrimSitePage({
   params,
@@ -58,7 +59,12 @@ function PilgrimSiteContent({
     queryKey: ["pilgrimsite", params.id],
     queryFn: () => getsitedetail(params.id),
   });
-
+  const handleContactUpdate = (updatedContact:any) => {
+    queryClient.setQueryData(["pilgrimsite", params.id], {
+      ...siteData,
+      contact: updatedContact
+    });
+  };
   const languageCode = params.locale === "bod" ? "bo" : "en";
   const currentTranslation = useMemo(() => {
     if (!siteData?.translations) return null;
@@ -427,70 +433,12 @@ function PilgrimSiteContent({
               locale={params.locale}
             />
           )}
-
-          <Card>
-            <CardHeader>
-              <CardTitle
-                className={`text-xl ${
-                  params.locale === "bod" && "font-monlamuchen"
-                }`}
-              >
-                {params.locale === "bod"
-                  ? "འབྲེལ་གཏུགས་ཀྱི་གནས་ཚུལ"
-                  : "Contact Information"}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {contactInfo?.address && (
-                <div>
-                  <p
-                    className={`font-medium ${
-                      params.locale === "bod" && "font-monlamuchen"
-                    }`}
-                  >
-                    {params.locale === "bod" ? "ཁ་བྱང་།" : "Address"}
-                  </p>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    {contactInfo.address}
-                    <br />
-                    {contactInfo.city}
-                    {contactInfo.state && <>, {contactInfo.state}</>}
-                    {contactInfo.postal_code && <> {contactInfo.postal_code}</>}
-                    <br />
-                    {contactInfo.country}
-                  </p>
-                </div>
-              )}
-              {siteData.contact.phone_number && (
-                <div>
-                  <p
-                    className={`font-medium ${
-                      params.locale === "bod" && "font-monlamuchen"
-                    }`}
-                  >
-                    {params.locale === "bod" ? "ཁ་པར་།" : "Phone"}
-                  </p>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    {siteData.contact.phone_number}
-                  </p>
-                </div>
-              )}
-              {siteData.contact.email && (
-                <div>
-                  <p
-                    className={`font-medium ${
-                      params.locale === "bod" && "font-monlamuchen"
-                    }`}
-                  >
-                    {params.locale === "bod" ? "ཡིག་འཕྲིན།" : "Email"}
-                  </p>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    {siteData.contact.email}
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+ <ContactEditSection 
+  contact={siteData.contact}
+  activeLocale={params.locale}
+  isAdmin={isAdmin}
+  onUpdate={handleContactUpdate}
+/>
         </div>
       </div>
     </div>
