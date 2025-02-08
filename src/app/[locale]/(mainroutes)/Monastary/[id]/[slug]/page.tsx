@@ -28,10 +28,10 @@ import { Input } from "@/components/ui/input";
 import { Loader2, Pause, Pen, Volume2,  } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { validateFile } from '@/lib/utils';
 
 const SUPPORTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 const SUPPORTED_AUDIO_TYPES = ['audio/mpeg', 'audio/mp3'];
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 export default function MonasteryPage({ params }: { params: any}) {
   return (
@@ -136,16 +136,7 @@ const [editedType, setEditedType] = useState("");
     return () => audio?.removeEventListener("ended", handleEnded);
   }, []);
 
-  const validateFile = (file: File, type: 'image' | 'audio') => {
-    if (file.size > MAX_FILE_SIZE) {
-      throw new Error(`File size should be less than 10MB`);
-    }
-
-    const allowedTypes = type === 'image' ? SUPPORTED_IMAGE_TYPES : SUPPORTED_AUDIO_TYPES;
-    if (!allowedTypes.includes(file.type)) {
-      throw new Error(`Please upload a valid ${type} file`);
-    }
-  };
+ 
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'audio') => {
     const file = e.target.files?.[0];

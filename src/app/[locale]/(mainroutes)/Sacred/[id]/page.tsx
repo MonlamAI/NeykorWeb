@@ -15,6 +15,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Breadcrumb from "@/app/LocalComponents/Breadcrumb";
 import { useRole } from "@/app/Providers/ContextProvider";
 import { toast } from "@/hooks/use-toast";
+import { validateFile } from "@/lib/utils";
 
 export default function PilgrimSitePage({
   params,
@@ -82,25 +83,7 @@ function PilgrimSiteContent({
     }
   }, [isEditing, editedDescription]);
 
-  const validateFile = (file: File, type: 'image' | 'audio') => {
-    const maxSize = 10 * 1024 * 1024; // 10MB limit
-    
-    if (file.size > maxSize) {
-      throw new Error(`File size should be less than 10MB`);
-    }
-
-    if (type === 'image') {
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-      if (!allowedTypes.includes(file.type)) {
-        throw new Error('Please upload a valid image file (JPEG, PNG, or WebP)');
-      }
-    } else if (type === 'audio') {
-      const allowedTypes = ['audio/mpeg', 'audio/mp3'];
-      if (!allowedTypes.includes(file.type)) {
-        throw new Error('Please upload a valid MP3 file');
-      }
-    }
-  };
+ 
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'audio') => {
     const file = e.target.files?.[0];

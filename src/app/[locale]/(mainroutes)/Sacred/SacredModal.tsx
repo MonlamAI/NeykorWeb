@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Plus, X, Loader2 } from "lucide-react";
 import { createcontact, createS3UploadUrl, createSacred } from "@/app/actions/postactions";
 import { toast } from "@/hooks/use-toast";
+import { validateFile } from "@/lib/utils";
 
 const SacredModal = ({onSuccess }: any) => {
   const [open, setOpen] = useState(false);
@@ -79,24 +80,7 @@ const SacredModal = ({onSuccess }: any) => {
   };
 
 
-  const validateFile = (file: File, type: 'image' | 'audio') => {
-    const maxSize = 10 * 1024 * 1024;
-    if (file.size > maxSize) {
-      throw new Error(`File size should be less than 10MB`);
-    }
-    if (type === 'image') {
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-      if (!allowedTypes.includes(file.type)) {
-        throw new Error('Please upload a valid image file (JPEG, PNG, or WebP)');
-      }
-    } else if (type === 'audio') {
-      const allowedTypes = ['audio/mpeg', 'audio/mp3'];
-      if (!allowedTypes.includes(file.type)) {
-        throw new Error('Please upload a valid MP3 file');
-      }
-    }
-  };
-
+ 
   const handleAddTranslation = () => {
     setFormData((prev) => ({
       ...prev,

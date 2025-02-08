@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Plus, X, Loader2 } from "lucide-react";
 import { createS3UploadUrl, postfestival } from "@/app/actions/postactions";
 import { toast } from "@/hooks/use-toast";
+import { validateFile } from "@/lib/utils";
 
 const FestModal = ({ onSuccess }: any) => {
   const [open, setOpen] = useState(false);
@@ -32,26 +33,6 @@ const FestModal = ({ onSuccess }: any) => {
       },
     ],
   });
-
-  const validateFile = (file: File, type: 'image' | 'audio') => {
-    const maxSize = 10 * 1024 * 1024;
-    
-    if (file.size > maxSize) {
-      throw new Error(`File size should be less than 10MB`);
-    }
-
-    if (type === 'image') {
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-      if (!allowedTypes.includes(file.type)) {
-        throw new Error('Please upload a valid image file (JPEG, PNG, or WebP)');
-      }
-    } else if (type === 'audio') {
-      const allowedTypes = ['audio/mpeg', 'audio/mp3'];
-      if (!allowedTypes.includes(file.type)) {
-        throw new Error('Please upload a valid MP3 file');
-      }
-    }
-  };
 
   const handleAddTranslation = () => {
     setFormData((prev) => ({
@@ -203,7 +184,7 @@ const FestModal = ({ onSuccess }: any) => {
               <label className="text-sm font-medium">Start Date</label>
               <Input
                 required
-                type="datetime-local"
+                type="date"
                 value={formData.start_date}
                 onChange={(e) => setFormData(prev => ({ ...prev, start_date: e.target.value }))}
               />
@@ -212,7 +193,7 @@ const FestModal = ({ onSuccess }: any) => {
               <label className="text-sm font-medium">End Date</label>
               <Input
                 required
-                type="datetime-local"
+                type="date"
                 value={formData.end_date}
                 onChange={(e) => setFormData(prev => ({ ...prev, end_date: e.target.value }))}
               />

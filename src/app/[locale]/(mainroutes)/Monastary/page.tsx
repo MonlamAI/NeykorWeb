@@ -65,7 +65,7 @@ async function MonasteryDashboardContent(locales: any) {
                 </div>
                 <div className="mt-4">
                   <span className="inline-flex items-center rounded-full bg-white/10 px-4 py-1 text-sm text-white backdrop-blur-sm">
-                    View collection
+                    View Monastery
                   </span>
                 </div>
               </div>
