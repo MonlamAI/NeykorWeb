@@ -24,7 +24,6 @@ const StatuesClient = ({ statuesData }: any) => {
   const [statues, setStatues] = useState(statuesData); 
  const {role}=useRole()
   const isadmin = useMemo(() => role === "ADMIN", [role]);
-  console.log(isadmin,role)
   const handleDeleteStatue = (deletedId: string) => {
     setStatues(prev => prev.filter((statue: any) => statue.id !== deletedId));
   };

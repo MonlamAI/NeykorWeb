@@ -17,7 +17,6 @@ export const RoleProvider = ({ children }: { children: ReactNode }) => {
         try {
           if (user.email) {
             const userRole = await getrole(user.email);
-            console.log('i user', userRole, user.email);
             setRole(userRole);
           }
         } catch (error) {

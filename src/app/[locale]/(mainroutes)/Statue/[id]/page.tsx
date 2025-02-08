@@ -49,6 +49,22 @@ export default function StatuePage({ params }: { params: { id: string } }) {
   }, [data?.translations, languageCode]);
 
   useEffect(() => {
+    if (audioRef.current && currentTranslation?.description_audio) {
+      audioRef.current.src = currentTranslation.description_audio;
+      
+      const handleLoadedMetadata = () => {
+        audioRef.current?.pause();
+        setIsPlaying(false);
+      };
+      
+      audioRef.current.addEventListener('loadedmetadata', handleLoadedMetadata);
+      return () => {
+        audioRef.current?.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      };
+    }
+  }, [currentTranslation?.description_audio]);
+
+  useEffect(() => {
     if (currentTranslation) {
       setEditedName(currentTranslation.name || "");
       setEditedDescription(currentTranslation.description || "");
@@ -63,7 +79,24 @@ export default function StatuePage({ params }: { params: { id: string } }) {
     }
   }, [isEditing, editedDescription]);
 
- 
+  const toggleAudio = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    const handleEnded = () => setIsPlaying(false);
+    audio?.addEventListener("ended", handleEnded);
+    return () => audio?.removeEventListener("ended", handleEnded);
+  }, []);
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'audio') => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -90,16 +123,12 @@ export default function StatuePage({ params }: { params: { id: string } }) {
     
     try {
       setIsUpdating(true);
-      
-      // Handle image upload if there's a new image
       let imageUrl = data.image;
       if (newImage) {
         const imageFormData = new FormData();
         imageFormData.append('file', newImage);
         imageUrl = await createS3UploadUrl(imageFormData);
       }
-
-      // Handle audio upload if there's a new audio
       let audioUrl = currentTranslation.description_audio;
       if (newAudio) {
         const audioFormData = new FormData();
@@ -154,25 +183,6 @@ export default function StatuePage({ params }: { params: { id: string } }) {
     }
   };
 
-  const toggleAudio = (audioUrl: string) => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.src = audioUrl;
-        audioRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    const handleEnded = () => setIsPlaying(false);
-    audio?.addEventListener("ended", handleEnded);
-    return () => audio?.removeEventListener("ended", handleEnded);
-  }, []);
-
   if (isLoading) return <LoadingSkeleton />;
   if (error) return <div className="text-red-500 p-8">Failed to load statue details</div>;
   if (!data || !currentTranslation) return <div className="p-8">No data found</div>;
@@ -214,7 +224,7 @@ export default function StatuePage({ params }: { params: { id: string } }) {
                     <Input
                       type="file"
                       accept="image/jpeg,image/png,image/webp"
-                      className=" bg-white/40 text-white cursor-pointer"
+                      className="bg-white/40 text-white cursor-pointer"
                       onChange={(e) => handleFileChange(e, 'image')}
                     />
                     {newImage && (
@@ -246,7 +256,7 @@ export default function StatuePage({ params }: { params: { id: string } }) {
                   <div className="flex gap-2">
                     {currentTranslation.description_audio && !isEditing && (
                       <button
-                        onClick={() => toggleAudio(currentTranslation.description_audio)}
+                        onClick={toggleAudio}
                         className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900"
                         aria-label={isPlaying ? "Pause audio" : "Play audio"}
                       >

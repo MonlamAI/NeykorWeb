@@ -1,4 +1,3 @@
-// components/StatueSkeleton.tsx
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function StatueSkeleton() {

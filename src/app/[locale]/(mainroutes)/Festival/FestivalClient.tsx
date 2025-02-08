@@ -99,17 +99,13 @@ const FestivalClient = ({ fesdata }: any) => {
           initialQuery={searchQuery}
         />
           {isadmin && (
-            
             <FestModal
             onSuccess={(newfes: any) => {
               setfestival(prev => [newfes, ...prev]);
               setSearchQuery("");
               }} />
             )}
-                
         </div>
-      
-         
       </div>
 
       <div className="pt-4">

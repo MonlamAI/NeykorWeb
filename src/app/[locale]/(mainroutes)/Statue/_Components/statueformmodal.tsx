@@ -88,7 +88,7 @@ const StatueFormModal = ({ onSuccess }: any) => {
         description: error.message,
         variant: "destructive",
       });
-      e.target.value = ''; // Reset input
+      e.target.value = '';
     }
   };
 
@@ -97,15 +97,12 @@ const StatueFormModal = ({ onSuccess }: any) => {
     setLoading(true);
     
     try {
-      // Upload image
       let imageUrl = "";
       if (formData.image) {
         const imageFormData = new FormData();
         imageFormData.append('file', formData.image);
         imageUrl = await createS3UploadUrl(imageFormData);
       }
-
-      // Upload audio files and get URLs
       const translationsWithAudioUrls = await Promise.all(
         formData.translations.map(async (translation) => {
           let audioUrl = translation.description_audio;

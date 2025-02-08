@@ -1,6 +1,5 @@
-// app/statues/page.tsx
 import { Suspense } from "react";
-import { getfestival, getStatues } from "@/app/actions/getactions";
+import { getfestival } from "@/app/actions/getactions";
 import { StatueSkeleton } from "../Statue/_Components/StatuesSkeleton";
 import FestivalClient from "./FestivalClient";
 

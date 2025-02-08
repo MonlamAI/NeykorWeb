@@ -16,7 +16,7 @@ interface FormData {
   message: string;
 }
 
-const ContactPage = ({ params }: any) => {
+const ContactPage = () => {
   const { toast } = useToast();
   const {
     register,
@@ -28,7 +28,6 @@ const ContactPage = ({ params }: any) => {
   const onSubmit = async (data: FormData) => {
     try {
       const result = await sendEmail(data);
-      console.log("Email send result:", result);
       if (result.success) {
         toast({
           title: "Success",

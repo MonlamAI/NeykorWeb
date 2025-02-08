@@ -84,7 +84,37 @@ function PilgrimSiteContent({
   }, [isEditing, editedDescription]);
 
  
-
+ useEffect(() => {
+    if (audioRef.current && currentTranslation?.description_audio) {
+      audioRef.current.src = currentTranslation.description_audio;
+      
+      const handleLoadedMetadata = () => {
+        audioRef.current?.pause();
+        setIsPlaying(false);
+      };
+      
+      audioRef.current.addEventListener('loadedmetadata', handleLoadedMetadata);
+      return () => {
+        audioRef.current?.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      };
+    }
+  }, [currentTranslation?.description_audio]);
+  const toggleAudio = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+  useEffect(() => {
+    const audio = audioRef.current;
+    const handleEnded = () => setIsPlaying(false);
+    audio?.addEventListener("ended", handleEnded);
+    return () => audio?.removeEventListener("ended", handleEnded);
+  }, []);
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'audio') => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -137,9 +167,7 @@ function PilgrimSiteContent({
           description_audio: t.languageCode === languageCode ? audioUrl : t.description_audio
         }))
       };
-  
-      console.log('Sending update data:', updatedData);
-  
+    
       await updatesite(params.id, updatedData);
       setIsEditing(false);
       setNewImage(null);
@@ -179,24 +207,7 @@ function PilgrimSiteContent({
     }
   };
 
-  const toggleAudio = (audioUrl: string) => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.src = audioUrl;
-        audioRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
 
-  useEffect(() => {
-    const audio = audioRef.current;
-    const handleEnded = () => setIsPlaying(false);
-    audio?.addEventListener("ended", handleEnded);
-    return () => audio?.removeEventListener("ended", handleEnded);
-  }, []);
 
   if (isLoading) return <LoadingSkeleton />;
   if (error)
@@ -306,9 +317,7 @@ function PilgrimSiteContent({
                     {currentTranslation?.description_audio && !isEditing &&
                       (
                         <button
-                          onClick={() =>
-                            toggleAudio(currentTranslation.description_audio)
-                          }
+                          onClick={toggleAudio}
                           className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900"
                           aria-label={isPlaying ? "Pause audio" : "Play audio"}
                         >

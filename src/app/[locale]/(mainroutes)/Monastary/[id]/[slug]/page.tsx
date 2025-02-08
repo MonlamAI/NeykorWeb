@@ -73,6 +73,7 @@ const [editedType, setEditedType] = useState("");
     queryFn: () => getgonpadetail(params.slug),
   });
 
+   
   const languageCode = useMemo(() => 
     ({ en: "en", bod: "bo" }[params.locale] || "en"), 
     [params.locale]
@@ -82,6 +83,22 @@ const [editedType, setEditedType] = useState("");
     if (!monastery?.translations) return null;
     return monastery.translations.find(t => t.languageCode === languageCode);
   }, [monastery?.translations, languageCode]);
+
+  useEffect(() => {
+    if (audioRef.current && currentTranslation?.description_audio) {
+      audioRef.current.src = currentTranslation.description_audio;
+      
+      const handleLoadedMetadata = () => {
+        audioRef.current?.pause();
+        setIsPlaying(false);
+      };
+      
+      audioRef.current.addEventListener('loadedmetadata', handleLoadedMetadata);
+      return () => {
+        audioRef.current?.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      };
+    }
+  }, [currentTranslation?.description_audio]);
 
   const breadcrumbLabels= {
     en: {
@@ -236,24 +253,22 @@ const [editedType, setEditedType] = useState("");
     }
   };
 
-  const toggleAudio = (audioUrl: string) => {
+  const toggleAudio = () => {
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
-        audioRef.current.src = audioUrl;
-        audioRef.current.play().catch(error => {
-          console.error('Audio playback error:', error);
-          toast({
-            title: "Error",
-            description: "Failed to play audio",
-            variant: "destructive",
-          });
-        });
+        audioRef.current.play();
       }
       setIsPlaying(!isPlaying);
     }
   };
+useEffect(() => {
+    const audio = audioRef.current;
+    const handleEnded = () => setIsPlaying(false);
+    audio?.addEventListener("ended", handleEnded);
+    return () => audio?.removeEventListener("ended", handleEnded);
+  }, []);
 
   if (isLoading) return <LoadingSkeleton />;
   if (error) return <div className="text-red-500 p-8">Failed to load monastery details</div>;
@@ -340,7 +355,7 @@ const [editedType, setEditedType] = useState("");
                  }
                     {currentTranslation.description_audio && !isEditing && (
                       <button
-                        onClick={() => toggleAudio(currentTranslation.description_audio!)}
+                        onClick={toggleAudio}
                         className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900"
                         aria-label={isPlaying ? "Pause audio" : "Play audio"}
                       >
