@@ -9,14 +9,12 @@ interface BackgroundWrapperProps {
 }
 
 const BackgroundWrapper = ({ children }: BackgroundWrapperProps) => {
-  const { theme } = useTheme();
   const pathname = usePathname();
   
   const shouldShowBackground = pathname === '/en' || pathname === '/bod';
-  console.log(pathname)
- console.log(shouldShowBackground)
+
   return (
-    <div className="relative min-h-screen w-full">
+    <div className={`relative min-h-screen  ${shouldShowBackground && "bg-white"}  w-full`}>
       {shouldShowBackground && (
         <div
           className="fixed top-0 left-0 right-0 w-full pointer-events-none"
