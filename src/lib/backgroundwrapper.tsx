@@ -30,7 +30,7 @@ const BackgroundWrapper = ({ children }: BackgroundWrapperProps) => {
           }}
         />
       )}
-      <div className={`relative z-10 min-h-screen ${!shouldShowBackground ? theme === 'dark' ? 'bg-black' : 'bg-white' : ''}`}>
+      <div className={`relative z-10 min-h-screen `}>
         {children}
       </div>
     </div>
