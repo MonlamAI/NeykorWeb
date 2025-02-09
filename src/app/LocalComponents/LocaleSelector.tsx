@@ -24,7 +24,10 @@ export function LocaleSelector({ tibtext }: { tibtext: string }) {
       const remainingPath = segments.slice(2).join("/") || "/";
       router.replace(`/${nextLocale}/${remainingPath}`);
     });
-  };
+  };  
+  const pathname = usePathname();
+  const checkcolor = pathname === '/en' || pathname === '/bod';
+
 
   return (
     <Select
@@ -33,11 +36,11 @@ export function LocaleSelector({ tibtext }: { tibtext: string }) {
       disabled={isPending}
     >
       <SelectTrigger
-        className={`${localActive === "bod" && "font-monlamuchen"} w-[120px]`}
+        className={`${localActive === "bod" && "font-monlamuchen"} border-none  ${!checkcolor?" text-black dark:text-white":"text-white "}  bg-neutral-100/30 hover:bg-neutral-100/40 w-[120px] focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none`}
       >
         <SelectValue placeholder="Select language" />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className=" bg-neutral-100/40 text-gray-500">
         <SelectItem value="en">English</SelectItem>
         <SelectItem
           value="bod"

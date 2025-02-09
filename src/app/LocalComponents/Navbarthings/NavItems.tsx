@@ -1,5 +1,4 @@
 "use client";
-
 import React from "react";
 import Link from "next/link";
 import {
@@ -12,6 +11,7 @@ import {
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 import { twMerge } from "tailwind-merge";
+import { usePathname } from "next/navigation";
 
 const navlinks = [
   { key: "stas", href: "/Statue" },
@@ -24,11 +24,13 @@ const navlinks = [
 const NavItems = () => {
   const t = useTranslations("navbar");
   const localActive = useLocale();
+  const pathname = usePathname();
+  const checkcolor = pathname === '/en' || pathname === '/bod';
 
   return (
     <NavigationMenu>
       <NavigationMenuList
-        className={`${localActive == "bod" && " font-monlamuchen"}`}
+        className={`${localActive == "bod" && "font-monlamuchen"}`}
       >
         {navlinks.map((link) => (
           <NavigationMenuItem key={link.key}>
@@ -36,7 +38,9 @@ const NavItems = () => {
               <NavigationMenuLink
                 className={twMerge(
                   navigationMenuTriggerStyle(),
-                  localActive == "bod" && "text-lg"
+                  localActive == "bod" ? "text-lg" : "",
+                  "bg-transparent hover:bg-neutral-100/40",
+                  checkcolor ? "text-white hover:text-white" : "text-black dark:text-white"
                 )}
               >
                 {t(link.key)}

@@ -12,6 +12,8 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "../Providers/ThemeProvider";
 import { RoleProvider } from "../Providers/ContextProvider";
+import BackgroundWrapper from "@/lib/backgroundwrapper";
+
 const inter = Inter({ subsets: ["latin"] });
 const monlamTb = localFont({
   src: "../fonts/MonlamTBslim.ttf",
@@ -69,15 +71,19 @@ export default async function RootLayout({
             <QueryProviders>
               <AuthProvider>
               <RoleProvider>
+             
+<div className="relative min-h-screen">
+  <BackgroundWrapper>
+    <div className="relative items-center px-2 max-screen mx-auto flex flex-col justify-between min-h-screen">
+      <Navbar />
+      {children}
+      <Footer />
+    </div>
+    <Toaster />
+  </BackgroundWrapper>
 
-                <div className="items-center  max-screen mx-auto flex flex-col justify-between min-h-screen   ">
-                  <Navbar />
-                  {children}
-                  <Footer />
-                </div>
-                <Toaster />
+        </div>
                 </RoleProvider>
-
               </AuthProvider>
             </QueryProviders>
           </NextIntlClientProvider>
