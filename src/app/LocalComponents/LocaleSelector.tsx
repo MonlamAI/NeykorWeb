@@ -36,11 +36,11 @@ export function LocaleSelector({ tibtext }: { tibtext: string }) {
       disabled={isPending}
     >
       <SelectTrigger
-        className={`${localActive === "bod" && "font-monlamuchen"} border-none  ${!checkcolor?" text-black dark:text-white":"text-white "}  bg-neutral-100/30 hover:bg-neutral-100/40 w-[120px] focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none`}
+        className={`${localActive === "bod" && "font-monlamuchen"} border-none  ${!checkcolor?" text-black bg-neutral-100/40 dark:bg-neutral-900 dark:hover:bg-neutral-950  dark:text-white":"text-white bg-neutral-100/40 "} w-[120px] focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none`}
       >
         <SelectValue placeholder="Select language" />
       </SelectTrigger>
-      <SelectContent className=" bg-neutral-100/40 text-gray-500">
+      <SelectContent className={` border-none ${!checkcolor?" text-black bg-neutral-100/40 dark:bg-neutral-900 dark:hover:bg-neutral-950  dark:text-white":"text-white  bg-neutral-100/40 "}`}>
         <SelectItem value="en">English</SelectItem>
         <SelectItem
           value="bod"
