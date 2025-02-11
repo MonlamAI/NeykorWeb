@@ -6,11 +6,11 @@ import LoadingSkeleton from "./Skeleton";
 
 const bgimagelink = [
   {
-    sakya: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1732251070GP205684.jpg",
     nyingma: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1732078167GP205668.jpg",
     kagyu: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1731493541GP205597.jpg",
-    bhon: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1731914731GP205645.jpg",
+    sakya: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1732251070GP205684.jpg",
     gelug: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1731488192GP205592.jpg",
+    bhon: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1731914731GP205645.jpg",
     other: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1732603251GP205716.jpg",
   }
 ];
@@ -26,11 +26,11 @@ export default function MonasteryDashboardPage({ params }: any) {
 async function MonasteryDashboardContent(locales: any) {
   const gonpadata = await getgonpa();
   const groupedMonasteries = {
-    SAKYA: gonpadata.filter((m: any) => m.sect === "SAKYA"),
     NYINGMA: gonpadata.filter((m: any) => m.sect === "NYINGMA"),
     KAGYU: gonpadata.filter((m: any) => m.sect === "KAGYU"),
-    BHON: gonpadata.filter((m: any) => m.sect === "BHON"),
+    SAKYA: gonpadata.filter((m: any) => m.sect === "SAKYA"),
     GELUG: gonpadata.filter((m: any) => m.sect === "GELUG"),
+    BHON: gonpadata.filter((m: any) => m.sect === "BHON"),
     other: gonpadata.filter((m: any) => !m.sect || m.sect === "OTHER"),
   };
 
