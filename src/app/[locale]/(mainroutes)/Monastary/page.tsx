@@ -11,6 +11,10 @@ const bgimagelink = [
     sakya: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1732251070GP205684.jpg",
     gelug: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1731488192GP205592.jpg",
     bhon: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1731914731GP205645.jpg",
+    remey:"https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1732603840GP205717.jpg",
+    jonang:"https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1731559304GP205604.jpg",
+    shalu:"https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1732605178GP205720.jpg",
+    bodong:"https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1732602550GP205715.jpg",
     other: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1732603251GP205716.jpg",
   }
 ];
@@ -31,6 +35,10 @@ async function MonasteryDashboardContent(locales: any) {
     SAKYA: gonpadata.filter((m: any) => m.sect === "SAKYA"),
     GELUG: gonpadata.filter((m: any) => m.sect === "GELUG"),
     BHON: gonpadata.filter((m: any) => m.sect === "BHON"),
+    REMEY: gonpadata.filter((m:any)=>m.sect==="REMEY"),
+    JONANG: gonpadata.filter((m:any)=>m.sect==="JONANG"),
+    SHALU: gonpadata.filter((m:any)=>m.sect==="SHALU"),
+    BODONG: gonpadata.filter((m:any)=>m.sect==="BODONG"),
     other: gonpadata.filter((m: any) => !m.sect || m.sect === "OTHER"),
   };
 
