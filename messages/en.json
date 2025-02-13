@@ -16,5 +16,17 @@
     "mons": "Monastery",
     "cont": "Contact",
     "sacred": "Sacred Site"
+  },
+  "monastery":{
+    "m1":"NYINGMA",
+    "m2":"KAGYU",
+    "m3":"SAKYA",
+    "m4":"GELUG",
+    "m5":"BHON",
+    "m6":"REMEY",
+    "m7":"JONANG",
+    "m8":"SHALU",
+    "m9":"BODONG",
+    "m10":"OTHER"
   }
 }

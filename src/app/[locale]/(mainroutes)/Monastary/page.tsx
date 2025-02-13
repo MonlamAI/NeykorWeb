@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getgonpa } from "@/app/actions/getactions";
 import { Card } from "@/components/ui/card";
 import LoadingSkeleton from "./Skeleton";
+import { getTranslations } from 'next-intl/server';
 
 const bgimagelink = [
   {
@@ -22,24 +23,39 @@ const bgimagelink = [
 export default function MonasteryDashboardPage({ params }: any) {
   return (
     <Suspense fallback={<LoadingSkeleton />}>
-      <MonasteryDashboardContent locales={params.locale} />
+      <MonasteryDashboardContent locale={params.locale} />
     </Suspense>
   );
 }
 
-async function MonasteryDashboardContent(locales: any) {
+const sectTranslationKeys: Record<string, string> = {
+  'NYINGMA': 'm1',
+  'KAGYU': 'm2',
+  'SAKYA': 'm3',
+  'GELUG': 'm4',
+  'BHON': 'm5',
+  'REMEY': 'm6',
+  'JONANG': 'm7',
+  'SHALU': 'm8',
+  'BODONG': 'm9',
+  'OTHER': 'm10'
+};
+
+async function MonasteryDashboardContent({ locale }: { locale: string }) {
+  const t = await getTranslations('monastery');
   const gonpadata = await getgonpa();
+  
   const groupedMonasteries = {
     NYINGMA: gonpadata.filter((m: any) => m.sect === "NYINGMA"),
     KAGYU: gonpadata.filter((m: any) => m.sect === "KAGYU"),
     SAKYA: gonpadata.filter((m: any) => m.sect === "SAKYA"),
     GELUG: gonpadata.filter((m: any) => m.sect === "GELUG"),
     BHON: gonpadata.filter((m: any) => m.sect === "BHON"),
-    REMEY: gonpadata.filter((m:any)=>m.sect==="REMEY"),
-    JONANG: gonpadata.filter((m:any)=>m.sect==="JONANG"),
-    SHALU: gonpadata.filter((m:any)=>m.sect==="SHALU"),
-    BODONG: gonpadata.filter((m:any)=>m.sect==="BODONG"),
-    other: gonpadata.filter((m: any) => !m.sect || m.sect === "OTHER"),
+    REMEY: gonpadata.filter((m: any) => m.sect === "REMEY"),
+    JONANG: gonpadata.filter((m: any) => m.sect === "JONANG"),
+    SHALU: gonpadata.filter((m: any) => m.sect === "SHALU"),
+    BODONG: gonpadata.filter((m: any) => m.sect === "BODONG"),
+    OTHER: gonpadata.filter((m: any) => !m.sect || m.sect === "OTHER"),
   };
 
   const getBackgroundImage = (sect: string) => {
@@ -57,15 +73,17 @@ async function MonasteryDashboardContent(locales: any) {
             className="group block overflow-hidden"
           >
             <Card className="relative aspect-[4/5] overflow-hidden">
-              <div 
+              <div
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover:scale-105"
                 style={{ backgroundImage: `url(${getBackgroundImage(sect)})` }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-transparent" />
               <div className="absolute inset-0 p-6 flex flex-col justify-end">
                 <div className="space-y-2">
-                  <h3 className="text-2xl font-semibold text-white capitalize">
-                    {sect.toLowerCase()}
+                  <h3 className={`text-2xl font-semibold text-white ${
+                    locale === 'bod' ? ' font-monlamuchen' : ' font-bold'
+                  }`}>
+                    {t(sectTranslationKeys[sect])}
                   </h3>
                   <p className="text-white/80 text-sm">
                     {monasteries.length} Monasteries
