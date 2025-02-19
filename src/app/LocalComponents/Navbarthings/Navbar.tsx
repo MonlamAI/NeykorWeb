@@ -7,7 +7,7 @@ import Link from "next/link";
 import { ModeToggle } from "../ModeToggle";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
-import iconimage from "@/public/icon.png";
+import iconimage from "../../../../public/icon.png";
 import { usePathname } from "next/navigation";
 import MobileNav from "./Mobnav";
 const Navbar = () => {
@@ -25,7 +25,7 @@ const Navbar = () => {
             <Image src={iconimage} height={35} width={35} alt="icon" />
             <Link href={`/${activeLocale}`} className="max-w-sm">
               <h1
-                className={`text-lg font-semibold hidden md:block ${!checkcolor?" text-black dark:text-white":"text-white "} ${
+                className={`text-lg font-semibold hidden md:block ${!checkcolor?" text-black dark:text-black":"text-black "} ${
                   activeLocale === "bod"
                     ? "font-tsumachu"
                     : "uppercase font-bold"
@@ -35,7 +35,7 @@ const Navbar = () => {
               </h1>
             </Link>
             <div className="hidden lg:block max-w-xs border-l-2 px-2 text-start">
-              <h2 className={`text-xs ${!checkcolor?" text-black dark:text-white":"text-white "}  font-medium`}>
+              <h2 className={`text-xs ${!checkcolor?" text-black dark:text-black":"text-black "}  font-medium`}>
                 Department of Religion and Culture <br /> Central Tibetan
                 Administration
               </h2>
