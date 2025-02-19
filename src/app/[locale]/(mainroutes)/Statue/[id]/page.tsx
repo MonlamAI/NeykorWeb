@@ -16,6 +16,7 @@ import { updatestatue } from "@/app/actions/updateaction";
 import { createS3UploadUrl } from "@/app/actions/postactions";
 import { toast } from "@/hooks/use-toast";
 import { validateFile } from "@/lib/utils";
+import DynamicQRCode from "@/app/LocalComponents/generators/Qrcode";
 
 export default function StatuePage({ params }: { params: { id: string } }) {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -236,6 +237,7 @@ export default function StatuePage({ params }: { params: { id: string } }) {
                 </div>
               )}
             </div>
+            <DynamicQRCode/>
           </Card>
 
           <div className="space-y-6">

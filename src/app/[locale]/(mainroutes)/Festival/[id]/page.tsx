@@ -16,6 +16,7 @@ import { createS3UploadUrl } from "@/app/actions/postactions";
 import { toast } from "@/hooks/use-toast";
 import { updateFestival } from "@/app/actions/updateaction";
 import { formatDateForDisplay, formatDateForInput, validateFile } from "@/lib/utils";
+import DynamicQRCode from "@/app/LocalComponents/generators/Qrcode";
 
 export default function FestivalPage({ params }: { params: { id: string } }) {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -290,6 +291,8 @@ export default function FestivalPage({ params }: { params: { id: string } }) {
                 )}
               </div>
             </CardContent>
+
+           <DynamicQRCode/>
           </Card>
 
           <div className="space-y-6">

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Pen, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { updatecontact } from '@/app/actions/updateaction';
+import DynamicQRCode from './generators/Qrcode';
 
 const ContactEditSection = ({ 
   contact, 
@@ -100,6 +101,7 @@ const ContactEditSection = ({
 
   return (
     <Card>
+       <DynamicQRCode/>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className={`text-xl ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
           {activeLocale === "bod" ? "འབྲེལ་གཏུགས་ཀྱི་གནས་ཚུལ" : "Contact Information"}
