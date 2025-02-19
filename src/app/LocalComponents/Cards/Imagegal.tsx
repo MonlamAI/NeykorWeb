@@ -6,10 +6,10 @@ const ImageGallery = () => {
   const t = useTranslations('index');
   
   const images = [
-    { src: '/Festivals.jpeg', alt: "image1",links:"/Festival"  },
-    { src: '/statues.jpg', alt: "image2",links:"/Statue"  },
-    { src: '/monastery.jpeg', alt: "image3",links:"/Monastary"},
-    {src:"/pilgrimage.jpg", alt:"image4",links:"/Sacred"}
+    { src: '/Festivals.webp', alt: "image1",links:"/Festival"  },
+    { src: '/statues.webp', alt: "image2",links:"/Statue"  },
+    { src: '/monastery.webp', alt: "image3",links:"/Monastary"},
+    {src:"/pilgrimage.webp", alt:"image4",links:"/Sacred"}
   ];
 
   

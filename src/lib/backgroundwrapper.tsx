@@ -1,7 +1,7 @@
  'use client'
 import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
-import bgimage from "../../public/Gradient.png";
+import bgimage from "../../public/Gradient.webp";
 
 interface BackgroundWrapperProps {
   children: React.ReactNode;

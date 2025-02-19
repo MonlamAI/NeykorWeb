@@ -7,7 +7,7 @@ import Link from "next/link";
 import { ModeToggle } from "../ModeToggle";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
-import iconimage from "../../../../public/icon.png";
+import iconimage from "../../../../public/icon.webp";
 import { usePathname } from "next/navigation";
 import MobileNav from "./Mobnav";
 const Navbar = () => {
