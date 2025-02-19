@@ -43,10 +43,8 @@ const SideClient = ({ pilgrimData }: any) => {
         };
 
       const searchLower = searchQuery.toLowerCase();
-      return (
-        translation.name.toLowerCase().includes(searchLower) ||
-        translation.description.toLowerCase().includes(searchLower)
-      );
+      return translation.name.toLowerCase().includes(searchLower)
+       
     });
   }, [place, searchQuery, activelocale]);
 
