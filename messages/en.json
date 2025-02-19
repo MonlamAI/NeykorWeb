@@ -28,5 +28,14 @@
     "m8":"SHALU",
     "m9":"BODONG",
     "m10":"OTHER"
+  },
+  "contact":{
+    "detail":"Contact Detail",
+    "form":"Contact Form",
+    "name":"your name",
+    "mail":"your email",
+    "message":"your message",
+    "submit":"submit"
   }
+
 }

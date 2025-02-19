@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { sendEmail } from "@/app/actions/resendaction";
 import { useToast } from "@/hooks/use-toast";
 import CtaMap from "./CtaMap";
+import { useLocale, useTranslations } from "next-intl";
 
 interface FormData {
   name: string;
@@ -17,6 +18,7 @@ interface FormData {
 }
 
 const ContactPage = () => {
+  const activelocale = useLocale();
   const { toast } = useToast();
   const {
     register,
@@ -56,6 +58,8 @@ const ContactPage = () => {
     const error = errors[fieldName];
     return error ? (error.message as string) : undefined;
   };
+  const t = useTranslations("contact");
+  const inputClass = `w-full ${activelocale === "bod" ? "font-monlamuchen" : ""}`;
 
   return (
     <div className="container py-8">
@@ -73,7 +77,7 @@ const ContactPage = () => {
           </Card>
           <Card>
             <CardContent className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Contact Details</h2>
+              <h2 className={`text-xl font-semibold mb-4 ${activelocale === "bod" && "font-monlamuchen"}`}>{t("detail")}</h2>
               <div className="space-y-2">
                 <p>Central Tibetan Administration</p>
                 <p>Gangchen Kyishong, Dharamshala</p>
@@ -88,14 +92,14 @@ const ContactPage = () => {
 
         <Card className="mb-8">
           <CardContent className="p-6">
-            <h2 className="text-xl font-semibold mb-6">Contact Form</h2>
+            <h2 className={`text-xl font-semibold mb-6 ${activelocale === "bod" && "font-monlamuchen"}`}>{t("form")}</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
                 <Input
                   {...register("name", { required: "Name is required" })}
                   type="text"
-                  placeholder="Your Name"
-                  className="w-full"
+                  placeholder={t("name")}
+                  className={inputClass}
                 />
                 {getErrorMessage("name") && (
                   <p className="text-red-500 text-sm mt-1">
@@ -113,8 +117,8 @@ const ContactPage = () => {
                     },
                   })}
                   type="email"
-                  placeholder="Your Email"
-                  className="w-full"
+                  placeholder={t("mail")}
+                  className={inputClass}
                 />
                 {getErrorMessage("email") && (
                   <p className="text-red-500 text-sm mt-1">
@@ -125,8 +129,8 @@ const ContactPage = () => {
               <div>
                 <Textarea
                   {...register("message", { required: "Message is required" })}
-                  placeholder="Your Message"
-                  className="w-full min-h-[150px]"
+                  placeholder={t("message")}
+                  className={`min-h-[150px] ${inputClass}`}
                 />
                 {getErrorMessage("message") && (
                   <p className="text-red-500 text-sm mt-1">
@@ -135,7 +139,7 @@ const ContactPage = () => {
                 )}
               </div>
               <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Sending..." : "Send Message"}
+                {isSubmitting ? "Sending..." : t("submit")}
               </Button>
             </form>
           </CardContent>
