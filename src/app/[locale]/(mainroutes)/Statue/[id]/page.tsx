@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Volume2, Pause, Pen, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { getStatuesdetail } from "@/app/actions/getactions";
+import { getStatuesDetail } from "@/app/actions/getactions";
 import LoadingSkeleton from "../_Components/DetailSkeleton";
 import { useLocale } from "next-intl";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -32,7 +32,7 @@ export default function StatuePage({ params }: { params: { id: string } }) {
   const { role } = useRole();
   const queryClient = useQueryClient();
   
-  const isAdmin = useMemo(() => role === "ADMIN", [role]);
+const isAdmin = role === "ADMIN";
   
   const languageCode = useMemo(() => 
     ({ en: "en", bod: "bo" }[activeLocale] || "en"), 
@@ -41,7 +41,7 @@ export default function StatuePage({ params }: { params: { id: string } }) {
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["statue", params.id],
-    queryFn: () => getStatuesdetail(params.id),
+    queryFn: () => getStatuesDetail(params.id),
   });
 
   const currentTranslation = useMemo(() => {

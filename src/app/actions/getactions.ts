@@ -1,234 +1,57 @@
 "use server";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
-export async function getStatues() {
+const API_BASE_URL = "https://gompa-tour-api.onrender.com";
+const axiosInstance = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    accept: "application/json",
+    "Content-Type": "application/json",
+  },
+});
+
+const handleApiError = (error: unknown, endpoint: string) => {
+  if (error instanceof AxiosError) {
+    console.error(`API Error (${endpoint}):`, error.response?.data || error.message);
+    throw new Error(`Failed to fetch ${endpoint}: ${error.message}`);
+  }
+  throw error;
+};
+
+async function fetchData<T>(endpoint: string) {
   try {
-    const response = await axios.get(
-      `https://gompa-tour-api.onrender.com/statue`,
-      {
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axiosInstance.get<T>(endpoint);
     return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error("API Error:", error.response?.data || error.message);
-      throw new Error(`Failed to fetch statues: ${error.message}`);
-    }
-    throw error;
+    handleApiError(error, endpoint);
   }
 }
 
-export async function getStatuesdetail(id: string) {
-  try {
-    const response = await axios.get(
-      `https://gompa-tour-api.onrender.com/statue/${id}`,
-      {
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error("API Error:", error.response?.data || error.message);
-      throw new Error(`Failed to fetch statues: ${error.message}`);
-    }
-    throw error;
-  }
-}
+export const getStatues = () => fetchData("/statue");
 
-export async function getfestival() {
-  try {
-    const response = await axios.get(
-      `https://gompa-tour-api.onrender.com/festival`,
-      {
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error("API Error:", error.response?.data || error.message);
-      throw new Error(`Failed to fetch statues: ${error.message}`);
-    }
-    throw error;
-  }
-}
+export const getStatuesDetail = (id: string) => fetchData(`/statue/${id}`);
 
-export async function getfestivaldetail(id: string) {
-  try {
-    const response = await axios.get(
-      `https://gompa-tour-api.onrender.com/festival/${id}`,
-      {
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error("API Error:", error.response?.data || error.message);
-      throw new Error(`Failed to fetch statues: ${error.message}`);
-    }
-    throw error;
-  }
-}
+export const getFestival = () => fetchData("/festival");
 
-export async function getgonpa() {
-  try {
-    const response = await axios.get(
-      `https://gompa-tour-api.onrender.com/gonpa`,
-      {
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error("API Error:", error.response?.data || error.message);
-      throw new Error(`Failed to fetch statues: ${error.message}`);
-    }
-    throw error;
-  }
-}
-export async function getgonpadetail(id: string) {
-  try {
-    const response = await axios.get(
-      `https://gompa-tour-api.onrender.com/gonpa/${id}`,
-      {
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error("API Error:", error.response?.data || error.message);
-      throw new Error(`Failed to fetch statues: ${error.message}`);
-    }
-    throw error;
-  }
-}
+export const getFestivalDetail = (id: string) => fetchData(`/festival/${id}`);
 
-export async function getsite() {
+export const getGonpa = () => fetchData("/gonpa");
+
+export const getGonpaDetail = (id: string) => fetchData(`/gonpa/${id}`);
+
+export const getSite = () => fetchData("/pilgrim");
+
+export const getSiteDetail = (id: string) => fetchData(`/pilgrim/${id}`);
+
+export const getUser = () => fetchData("/user");
+
+export const getGonpaTypes = () => fetchData("/gonpa/types");
+
+export async function getRole(email: string) {
   try {
-    const response = await axios.get(
-      `https://gompa-tour-api.onrender.com/pilgrim`,
-      {
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error("API Error:", error.response?.data || error.message);
-      throw new Error(`Failed to fetch statues: ${error.message}`);
-    }
-    throw error;
-  }
-}
-
-export async function getsitedetail(id: string) {
-  try {
-    const response = await axios.get(
-      `https://gompa-tour-api.onrender.com/pilgrim/${id}`,
-      {
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error("API Error:", error.response?.data || error.message);
-      throw new Error(`Failed to fetch statues: ${error.message}`);
-    }
-    throw error;
-  }
-}
-
-export async function getuser() {
-  try {
-    const response = await axios.get(
-      `https://gompa-tour-api.onrender.com/user`,
-      {
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error("API Error:", error.response?.data || error.message);
-      throw new Error(`Failed to check user status: ${error.message}`);
-    }
-    throw error;
-  }
-}
-
-export async function getrole(email: string) {
-  try {
-    const response = await axios.get(
-      `https://gompa-tour-api.onrender.com/user/${email}`,
-      {
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
+    const response = await axiosInstance.get(`/user/${email}`);
     return response.data.role;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error("API Error:", error.response?.data || error.message);
-      throw new Error(`Failed to check user status: ${error.message}`);
-    }
-    throw error;
-  }
-}
-
-export async function getgonpatype(){
-  try {
-    const response = await axios.get(
-      `https://gompa-tour-api.onrender.com/gonpa/types`,
-      {
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error("API Error:", error.response?.data || error.message);
-      throw new Error(`Failed to fetch statues: ${error.message}`);
-    }
-    throw error;
+    handleApiError(error, `user role for ${email}`);
   }
 }

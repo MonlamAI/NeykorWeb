@@ -1,7 +1,7 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { getrole } from "../actions/getactions";
+import { getRole } from "../actions/getactions";
 
 const RoleContext = createContext({
   role: ""
@@ -16,7 +16,7 @@ export const RoleProvider = ({ children }: { children: ReactNode }) => {
       if (user) {
         try {
           if (user.email) {
-            const userRole = await getrole(user.email);
+            const userRole = await getRole(user.email);
             setRole(userRole);
           }
         } catch (error) {

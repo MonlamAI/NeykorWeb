@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { getuser } from "@/app/actions/getactions";
+import { getUser } from "@/app/actions/getactions";
 import AccessClient from "./AccessClient";
 import { AccessSkeleton } from "./AccessSkeleton";
 
@@ -20,6 +20,6 @@ export default function Access() {
 }
 
 async function AccessContent() {
-  const users = await getuser();
+  const users = await getUser();
   return <AccessClient users={users} />;
 }

@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import Link from "next/link";
-import { getgonpa } from "@/app/actions/getactions";
+import { getGonpa } from "@/app/actions/getactions";
 import { Card } from "@/components/ui/card";
 import LoadingSkeleton from "./Skeleton";
 import { getTranslations } from 'next-intl/server';
@@ -43,7 +43,7 @@ const sectTranslationKeys: Record<string, string> = {
 
 async function MonasteryDashboardContent({ locale }: { locale: string }) {
   const t = await getTranslations('monastery');
-  const gonpadata = await getgonpa();
+  const gonpadata: any[] = await getGonpa();
   
   const groupedMonasteries = {
     NYINGMA: gonpadata.filter((m: any) => m.sect === "NYINGMA"),

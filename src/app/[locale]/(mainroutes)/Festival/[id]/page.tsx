@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Volume2, Pause, Pen, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { getfestivaldetail } from "@/app/actions/getactions";
+import { getFestivalDetail } from "@/app/actions/getactions";
 import { useLocale } from "next-intl";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import LoadingSkeleton from "../../Statue/_Components/DetailSkeleton";
@@ -34,7 +34,7 @@ export default function FestivalPage({ params }: { params: { id: string } }) {
   const { role } = useRole();
   const queryClient = useQueryClient();
   
-  const isAdmin = useMemo(() => role === "ADMIN", [role]);
+const isAdmin = role === "ADMIN";
   
   const languageCode = useMemo(() => 
     ({ en: "en", bod: "bo" }[activeLocale] || "en"), 
@@ -43,7 +43,7 @@ export default function FestivalPage({ params }: { params: { id: string } }) {
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["festival", params.id],
-    queryFn: () => getfestivaldetail(params.id),
+    queryFn: () => getFestivalDetail(params.id),
   });
 
   const currentTranslation = useMemo(() => {

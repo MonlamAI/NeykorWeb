@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { getfestival } from "@/app/actions/getactions";
+import { getFestival } from "@/app/actions/getactions";
 import { StatueSkeleton } from "../Statue/_Components/StatuesSkeleton";
 import FestivalClient from "./FestivalClient";
 
@@ -22,6 +22,6 @@ export default function Festival() {
 }
 
 async function FestivalContent() {
-  const fesdata = await getfestival();
+  const fesdata = await getFestival();
   return <FestivalClient fesdata={fesdata} />;
 }

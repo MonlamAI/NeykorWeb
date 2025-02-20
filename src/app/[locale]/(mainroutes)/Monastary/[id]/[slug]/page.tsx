@@ -1,6 +1,5 @@
 'use client'
 import dynamic from 'next/dynamic'
-
 const MonasteryMap = dynamic(() => import('@/app/LocalComponents/MonasteryMap'), {
   ssr: false
 })
@@ -14,7 +13,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import { getgonpadetail, getgonpatype } from "@/app/actions/getactions";
+import { getGonpaDetail, getGonpaTypes } from "@/app/actions/getactions";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import Loading from "./Loading";
 import Breadcrumb from "@/app/LocalComponents/Breadcrumb";
@@ -61,7 +60,7 @@ const [editedType, setEditedType] = useState("");
   
   const queryClient = useQueryClient();
   const { role } = useRole();
-  const isAdmin = useMemo(() => role === "ADMIN", [role]);
+const isAdmin = role === "ADMIN";
   const activeLocale = params.locale;
 
   const {
@@ -71,7 +70,7 @@ const [editedType, setEditedType] = useState("");
     refetch
   } = useQuery({
     queryKey: ["gonpa", params.slug],
-    queryFn: () => getgonpadetail(params.slug),
+    queryFn: () => getGonpaDetail(params.slug),
   });
 
   const handleContactUpdate = (updatedContact:any) => {
@@ -88,20 +87,28 @@ const [editedType, setEditedType] = useState("");
   }, [monastery?.translations, languageCode]);
 
   useEffect(() => {
-    if (audioRef.current && currentTranslation?.description_audio) {
-      audioRef.current.src = currentTranslation.description_audio;
-      
-      const handleLoadedMetadata = () => {
-        audioRef.current?.pause();
-        setIsPlaying(false);
-      };
-      
-      audioRef.current.addEventListener('loadedmetadata', handleLoadedMetadata);
-      return () => {
-        audioRef.current?.removeEventListener('loadedmetadata', handleLoadedMetadata);
-      };
+    const audio = audioRef.current;
+  
+    if (audio && currentTranslation?.description_audio) {
+      audio.src = currentTranslation.description_audio;
     }
+  
+    const handleLoadedMetadata = () => {
+      audio?.pause();
+      setIsPlaying(false);
+    };
+  
+    const handleEnded = () => setIsPlaying(false);
+  
+    audio?.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audio?.addEventListener('ended', handleEnded);
+  
+    return () => {
+      audio?.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audio?.removeEventListener('ended', handleEnded);
+    };
   }, [currentTranslation?.description_audio]);
+  
 
   const breadcrumbLabels= {
     en: {
@@ -118,7 +125,7 @@ const [editedType, setEditedType] = useState("");
   useEffect(() => {
     const fetchTypes = async () => {
       try {
-        const typesData = await getgonpatype();
+        const typesData = await getGonpaTypes();
         setTypes(typesData);
       } catch (error) {
         toast({

@@ -22,7 +22,7 @@ const SideClient = ({ pilgrimData }: any) => {
   const activelocale = useLocale();
   const [currentPage, setCurrentPage] = useState(1);
    const {role}=useRole()
-  const isadmin = useMemo(() => role === "ADMIN", [role]);
+const isadmin = role === "ADMIN";
   const [searchQuery, setSearchQuery] = useState("");
  const [place,setplace]=useState(pilgrimData)
  const handleDeleteStatue = (deletedId: string) => {

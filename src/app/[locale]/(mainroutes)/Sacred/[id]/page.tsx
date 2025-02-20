@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Volume2, Pause, Pen, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { getsitedetail } from "@/app/actions/getactions";
+import { getSiteDetail } from "@/app/actions/getactions";
 import { updatesite } from "@/app/actions/updateaction";
 import { createS3UploadUrl } from "@/app/actions/postactions";
 import MonasteryMap from "@/app/LocalComponents/MonasteryMap";
@@ -48,7 +48,7 @@ function PilgrimSiteContent({
   const queryClient = useQueryClient();
   const { role } = useRole();
 
-  const isAdmin = useMemo(() => role === "ADMIN", [role]);
+const isAdmin = role === "ADMIN";
 
   const {
     data: siteData,
@@ -57,7 +57,7 @@ function PilgrimSiteContent({
     refetch
   } = useQuery({
     queryKey: ["pilgrimsite", params.id],
-    queryFn: () => getsitedetail(params.id),
+    queryFn: () => getSiteDetail(params.id),
   });
   const handleContactUpdate = (updatedContact:any) => {
     queryClient.setQueryData(["pilgrimsite", params.id], {

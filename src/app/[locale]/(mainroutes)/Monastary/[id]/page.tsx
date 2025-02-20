@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { getgonpa } from "@/app/actions/getactions";
+import { getGonpa } from "@/app/actions/getactions";
 import MonasterySectClient from "./MonasterySectClient";
 import { StatueSkeleton } from "../../Statue/_Components/StatuesSkeleton";
 
@@ -26,7 +26,7 @@ export default function MonasterySectPage({
 }
 
 async function MonasterySectContent({ sect }: { sect: string }) {
-  const gonpadata = await getgonpa();
+  const gonpadata: any[] = await getGonpa();
   const filteredData = gonpadata.filter((m: any) =>
     sect.toUpperCase() === "OTHER"
       ? !m.sect || m.sect === "OTHER"

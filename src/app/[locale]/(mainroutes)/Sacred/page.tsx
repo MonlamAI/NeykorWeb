@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { getsite } from "@/app/actions/getactions";
+import { getSite } from "@/app/actions/getactions";
 import SideClient from "./SideClient";
 import { StatueSkeleton } from "../Statue/_Components/StatuesSkeleton";
 
@@ -22,6 +22,6 @@ export default function Sacred() {
 }
 
 async function SiteContent() {
-  const sitedata = await getsite();
+  const sitedata = await getSite();
   return <SideClient pilgrimData={sitedata} />;
 }

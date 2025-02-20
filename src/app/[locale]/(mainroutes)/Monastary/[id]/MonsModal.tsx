@@ -19,7 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Plus, X, Loader2 } from "lucide-react";
 import { createcontact, creategonpa, createS3UploadUrl, postStatue } from "@/app/actions/postactions";
 import { toast } from "@/hooks/use-toast";
-import { getgonpatype } from "@/app/actions/getactions";
+import { getGonpaTypes } from "@/app/actions/getactions";
 import { validateFile } from "@/lib/utils";
 
 const MonasteryModal = ({ id, onSuccess }: any) => {
@@ -66,7 +66,7 @@ const MonasteryModal = ({ id, onSuccess }: any) => {
   useEffect(() => {
     const fetchTypes = async () => {
       try {
-        const typesData = await getgonpatype();
+        const typesData = await getGonpaTypes();
         setTypes(typesData);
       } catch (error) {
         toast({
