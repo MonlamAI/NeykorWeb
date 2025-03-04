@@ -1,5 +1,5 @@
 import createNextIntlPlugin from "next-intl/plugin";
-
+import TerserPlugin from "terser-webpack-plugin";
 const withNextIntl = createNextIntlPlugin();
 
 /** @type {import('next').NextConfig} */
@@ -25,6 +25,28 @@ const nextConfig = {
   },
   eslint: {
     ignoreDuringBuilds: true,
+  },
+  swcMinify:true,
+  experimental:{
+    optimizeCss:true
+  },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.optimization.minimizer = [
+        new TerserPlugin({
+          terserOptions: {
+            compress: {
+              drop_console: true, // Remove console logs
+              drop_debugger: true,
+            },
+            output: {
+              comments: false, // Remove comments
+            },
+          },
+        }),
+      ];
+    }
+    return config;
   },
 };
 

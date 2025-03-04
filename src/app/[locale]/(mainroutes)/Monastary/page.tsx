@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense ,cache} from "react";
 import Link from "next/link";
 import Image from "next/image"; // Import Next.js Image component
 import { getGonpa } from "@/app/actions/getactions";
@@ -82,7 +82,7 @@ const SectCard = ({
   );
 };
 
-const groupMonasteriesBySect = (monasteries: Monastery[]): SectGrouping => {
+const groupMonasteriesBySect = cache((monasteries: Monastery[]): SectGrouping => {
   const groupedData: SectGrouping = {};
   
   SECTS.forEach(sect => {
@@ -92,12 +92,11 @@ const groupMonasteriesBySect = (monasteries: Monastery[]): SectGrouping => {
   groupedData['OTHER'] = monasteries.filter(m => !m.sect || m.sect === "OTHER");
   
   return groupedData;
-};
+});
 
 async function MonasteryDashboardContent({ locale }: LocaleProps) {
   const t = await getTranslations('monastery');
   const gonpadata: Monastery[] = await getGonpa();
-  
   const groupedMonasteries = groupMonasteriesBySect(gonpadata);
 
   return (
