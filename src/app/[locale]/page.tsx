@@ -1,5 +1,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import ImageGallery from "../LocalComponents/Cards/Imagegal";
+import {  Shield } from "lucide-react";
+import Link from "next/link";
 
 export default function Home() {
   const t = useTranslations("index");
@@ -31,7 +33,9 @@ export default function Home() {
         </div>
       </div>
 
-     
+      <Link href="api/auth/login" className="absolute  cursor-pointer bottom-5 flex items-center left-10">
+      <Shield  fill="red" /> <p className=" hidden md:flex text-sm ">Admin Acess</p>
+      </Link>
       <ImageGallery />
     </div>
   );
