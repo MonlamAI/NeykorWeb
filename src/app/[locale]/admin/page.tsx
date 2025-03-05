@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { getUser } from "@/app/actions/getactions";
+import {  getUser } from "@/app/actions/getactions";
 import AccessClient from "./AccessClient";
 import { AccessSkeleton } from "./AccessSkeleton";
 

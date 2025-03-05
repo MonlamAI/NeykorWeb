@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Table,
   TableBody,
@@ -38,6 +38,7 @@ import Link from 'next/link'
 import { useToast } from '@/hooks/use-toast'
 import { deleteuser } from '@/app/actions/delaction'
 import { updateUser } from '@/app/actions/updateaction'
+import { getRole } from '@/app/actions/getactions'
 
 interface User {
   username: string;
@@ -57,6 +58,7 @@ const AccessClient = ({ users: initialUsers }: AccessClientProps) => {
   const [users, setUsers] = useState(initialUsers)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
+
   const [editForm, setEditForm] = useState({
     username: '',
     email: '',
