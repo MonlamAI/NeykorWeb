@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
   Table,
   TableBody,
@@ -38,7 +38,6 @@ import Link from 'next/link'
 import { useToast } from '@/hooks/use-toast'
 import { deleteuser } from '@/app/actions/delaction'
 import { updateUser } from '@/app/actions/updateaction'
-import { getRole } from '@/app/actions/getactions'
 
 interface User {
   username: string;
@@ -123,7 +122,7 @@ const AccessClient = ({ users: initialUsers }: AccessClientProps) => {
             <>
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
-                  User Management <span className='text-sm font-normal text-neutral-700'>Current Session: {user.name}</span>
+                  User Management <span className='text-sm font-normal text-neutral-700 dark:text-neutral-400'>Current Session: {user.name}</span>
                 </h2>
                 
                 <Link
@@ -237,14 +236,8 @@ const AccessClient = ({ users: initialUsers }: AccessClientProps) => {
             </>
           ) : (
             <div className="text-center  py-40">
-              <h3 className="text-xl font-medium text-neutral-900 dark:text-neutral-200 mb-4">
-                Access Restricted
-              </h3>
-              <p className="text-neutral-500 mb-6">
-                Sorry, you need administrator privileges to access this page.
-              </p>
               {
-                user && role != "ADMIN" ?(
+                user && role != "ADMIN" && (
                     <Link
                   href={`/api/auth/logout?returnTo=${encodeURIComponent(currentPath)}`}
                 className="inline-flex items-center px-4 py-2 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white dark:bg-neutral-900 dark:text-neutral-100 hover:bg-gray-50 dark:hover:bg-neutral-800"
@@ -252,14 +245,6 @@ const AccessClient = ({ users: initialUsers }: AccessClientProps) => {
                   <LogOut className="mr-2 h-4 w-4" />
                   Logout
                 </Link>
-                ):(
-                    <Link
-                    href={`/api/auth/login?returnTo=${encodeURIComponent(currentPath)}`}
-                 className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-black dark:text-white  border-neutral-200  "
-                  >
-                    <LogIn className="mr-2 h-4 w-4" />
-                    Login
-                  </Link>
                 )
               }
              
