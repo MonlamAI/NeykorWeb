@@ -45,10 +45,7 @@ export const BACKGROUND_IMAGES = {
   sakya: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1732251070GP205684.jpg",
   gelug: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1731488192GP205592.jpg",
   bhon: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1731914731GP205645.jpg",
-  remey: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1732603840GP205717.jpg",
   jonang: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1731559304GP205604.jpg",
-  shalu: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1732605178GP205720.jpg",
-  bodong: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1732602550GP205715.jpg",
   other: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1732603251GP205716.jpg",
 };
 
@@ -58,9 +55,8 @@ export const SECT_TRANSLATION_KEYS = {
   'SAKYA': 'm3',
   'GELUG': 'm4',
   'BHON': 'm5',
-  'REMEY': 'm6',
   'JONANG': 'm7',
-  'SHALU': 'm8',
-  'BODONG': 'm9',
   'OTHER': 'm10'
 };
+
+export const OTHER_SECTS = ['REMEY', 'SHALU', 'BODONG', 'OTHER'];

@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { getGonpa } from "@/app/actions/getactions";
 import MonasterySectClient from "./MonasterySectClient";
 import { StatueSkeleton } from "../../Statue/_Components/StatuesSkeleton";
+import { OTHER_SECTS } from "@/lib/utils";
 
 function Loading() {
   return (
@@ -26,12 +27,12 @@ export default function MonasterySectPage({
 }
 
 async function MonasterySectContent({ sect }: { sect: string }) {
-  const gonpadata: any[] = await getGonpa();
+  const gonpadata: any[] = await getGonpa() as any[];
   const filteredData = gonpadata.filter((m: any) =>
     sect.toUpperCase() === "OTHER"
-      ? !m.sect || m.sect === "OTHER"
+      ? !m.sect || OTHER_SECTS.includes(m.sect)
       : m.sect === sect.toUpperCase()
   );
-
+  
   return <MonasterySectClient monasteriesData={filteredData} sect={sect} />;
 }
