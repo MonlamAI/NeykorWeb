@@ -289,6 +289,7 @@ useEffect(() => {
 
   const breadcrumbItems = [
     { label: labels.monastery, href: "/Monastary" },
+    { label: params.id, href:`/Monastary/${params.id}`},
     { label: currentTranslation.name || labels.details },
   ];
 
