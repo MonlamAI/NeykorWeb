@@ -13,6 +13,14 @@ import { Plus, X, Loader2 } from "lucide-react";
 import { createcontact, createS3UploadUrl, createSacred } from "@/app/actions/postactions";
 import { toast } from "@/hooks/use-toast";
 import { validateFile } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { STATES } from '@/lib/utils';
 
 const SacredModal = ({onSuccess }: any) => {
   const [open, setOpen] = useState(false);
@@ -350,12 +358,21 @@ const SacredModal = ({onSuccess }: any) => {
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium">State</label>
-                      <Input
-                        required
+                      <Select 
                         value={translation.state}
-                        onChange={(e) => handleContactTranslationChange(index, "state", e.target.value)}
-                        placeholder="Enter state"
-                      />
+                        onValueChange={(value) => handleContactTranslationChange(index, "state", value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a state" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {STATES.map((state) => (
+                            <SelectItem key={state} value={state}>
+                              {state}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
 

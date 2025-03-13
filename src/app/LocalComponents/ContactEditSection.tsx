@@ -7,6 +7,14 @@ import { Pen, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { updatecontact } from '@/app/actions/updateaction';
 import DynamicQRCode from './generators/Qrcode';
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
+import { STATES } from '@/lib/utils';
 
 const ContactEditSection = ({ 
   contact, 
@@ -54,7 +62,14 @@ const ContactEditSection = ({
       const updateData = {
         email: editedContact.email,
         phone_number: editedContact.phone_number,
-        translations: editedContact.translations.map(t => ({
+        translations: editedContact.translations.map((t: {
+          languageCode: string;
+          address: string;
+          city: string;
+          state: string;
+          postal_code: string;
+          country: string;
+        }) => ({
           languageCode: t.languageCode,
           address: t.address,
           city: t.city,
@@ -91,7 +106,14 @@ const ContactEditSection = ({
   const updateTranslation = (languageCode: string, field: string, value: string) => {
     setEditedContact(prev => ({
       ...prev,
-      translations: prev.translations.map(t => 
+      translations: prev.translations.map((t: {
+        languageCode: string;
+        address: string;
+        city: string;
+        state: string;
+        postal_code: string;
+        country: string;
+      }) => 
         t.languageCode === languageCode 
           ? { ...t, [field]: value }
           : t
@@ -160,11 +182,21 @@ const ContactEditSection = ({
 
               <div className="space-y-2">
                 <label className="text-sm font-medium">State</label>
-                <Input
+                <Select 
                   value={editedContact.translations[0].state}
-                  onChange={(e) => updateTranslation("en", "state", e.target.value)}
-                  placeholder="Enter state"
-                />
+                  onValueChange={(value) => updateTranslation("en", "state", value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a state" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {STATES.map((state) => (
+                      <SelectItem key={state} value={state}>
+                        {state}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 

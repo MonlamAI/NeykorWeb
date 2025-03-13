@@ -21,12 +21,12 @@ const Navbar = () => {
     <nav className="w-full">
       <div className="mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-        <Link href={`/${activeLocale}`} className="max-w-sm">
+        <Link href={`/${activeLocale}`} >
           <div className="flex items-center gap-x-2">
             <Image src={iconimage} height={35} width={35} alt="icon" />
           
               <h1
-                className={`text-lg font-semibold hidden md:block ${!checkcolor?" text-black dark:text-white":"text-black "} ${
+                className={`text-lg max-w-sm font-semibold hidden md:block ${!checkcolor?" text-black dark:text-white":"text-black "} ${
                   activeLocale === "bod"
                     ? "font-tsumachu"
                     : "uppercase font-bold"

@@ -21,6 +21,7 @@ import { createcontact, creategonpa, createS3UploadUrl, postStatue } from "@/app
 import { toast } from "@/hooks/use-toast";
 import { getGonpaTypes } from "@/app/actions/getactions";
 import { validateFile } from "@/lib/utils";
+import { STATES } from '@/lib/utils';
 
 const MonasteryModal = ({ id, onSuccess }: any) => {
   const [open, setOpen] = useState(false);
@@ -67,7 +68,7 @@ const MonasteryModal = ({ id, onSuccess }: any) => {
     const fetchTypes = async () => {
       try {
         const typesData = await getGonpaTypes();
-        setTypes(typesData);
+        setTypes(typesData as string[]);
       } catch (error) {
         toast({
           title: "Error",
@@ -415,12 +416,21 @@ const MonasteryModal = ({ id, onSuccess }: any) => {
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium">State</label>
-                      <Input
-                        required
+                      <Select 
                         value={translation.state}
-                        onChange={(e) => handleContactTranslationChange(index, "state", e.target.value)}
-                        placeholder="Enter state"
-                      />
+                        onValueChange={(value) => handleContactTranslationChange(index, "state", value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a state" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {STATES.map((state) => (
+                            <SelectItem key={state} value={state}>
+                              {state}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
 
