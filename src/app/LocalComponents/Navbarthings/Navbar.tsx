@@ -21,9 +21,10 @@ const Navbar = () => {
     <nav className="w-full">
       <div className="mx-auto px-4">
         <div className="flex justify-between items-center h-16">
+        <Link href={`/${activeLocale}`} className="max-w-sm">
           <div className="flex items-center gap-x-2">
             <Image src={iconimage} height={35} width={35} alt="icon" />
-            <Link href={`/${activeLocale}`} className="max-w-sm">
+          
               <h1
                 className={`text-lg font-semibold hidden md:block ${!checkcolor?" text-black dark:text-white":"text-black "} ${
                   activeLocale === "bod"
@@ -33,7 +34,7 @@ const Navbar = () => {
               >
                 {t("name")}
               </h1>
-            </Link>
+           
             <div className="hidden lg:block max-w-xs border-l-2 px-2 text-start">
               <h2 className={`text-xs ${!checkcolor?" text-black dark:text-white":"text-black "}  font-medium`}>
                 Department of Religion and Culture <br /> Central Tibetan
@@ -41,7 +42,7 @@ const Navbar = () => {
               </h2>
             </div>
           </div>
-
+          </Link>
           <div className="hidden md:flex items-center space-x-4">
             <NavItems />
             <LocaleSelector tibtext={t("tibetan")} />
