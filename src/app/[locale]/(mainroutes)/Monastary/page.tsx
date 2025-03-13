@@ -45,7 +45,7 @@ const SectCard = ({
       href={`/Monastary/${sect}`}
       className="group block overflow-hidden"
     >
-      <Card className="relative aspect-[4/5] overflow-hidden">
+      <Card className="relative w-96 h-60 overflow-hidden">
         <div className="relative w-full h-full">
           <Image
             src={getBackgroundImage(sect)}
