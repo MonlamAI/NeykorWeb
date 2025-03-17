@@ -112,7 +112,6 @@ const AccessClient = ({ users: initialUsers }: AccessClientProps) => {
     })
     setIsEditDialogOpen(true)
   }
-  const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/access'
  
   return (
     <div className="w-full min-h-screen px-4 sm:px-6 lg:px-8 py-8">
@@ -124,14 +123,6 @@ const AccessClient = ({ users: initialUsers }: AccessClientProps) => {
                 <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
                   User Management <span className='text-sm font-normal text-neutral-700 dark:text-neutral-400'>Current Session: {user.name}</span>
                 </h2>
-                
-                <Link
-                  href={`/api/auth/logout?returnTo=${encodeURIComponent(currentPath)}`}
-                className="inline-flex items-center px-4 py-2 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white dark:bg-neutral-900 dark:text-neutral-100 hover:bg-gray-50 dark:hover:bg-neutral-800"
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Logout
-                </Link>
               </div>
               <div className="overflow-hidden">
                 <Table>
@@ -236,18 +227,6 @@ const AccessClient = ({ users: initialUsers }: AccessClientProps) => {
             </>
           ) : (
             <div className="text-center  py-40">
-              {
-                user && role != "ADMIN" && (
-                    <Link
-                  href={`/api/auth/logout?returnTo=${encodeURIComponent(currentPath)}`}
-                className="inline-flex items-center px-4 py-2 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white dark:bg-neutral-900 dark:text-neutral-100 hover:bg-gray-50 dark:hover:bg-neutral-800"
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Logout
-                </Link>
-                )
-              }
-             
             </div>
           )}
            {
