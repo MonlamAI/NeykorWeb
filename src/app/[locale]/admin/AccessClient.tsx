@@ -250,6 +250,16 @@ const AccessClient = ({ users: initialUsers }: AccessClientProps) => {
              
             </div>
           )}
+           {
+            user && role != "ADMIN" || !user && (
+              <div className="text-center">
+                <h1 className="text-xl text-neutral-900 dark:text-neutral-100">
+                  You are not authorized to access this page
+                </h1>
+                <Link href="/" className="text-sm text-neutral-900 dark:text-neutral-100">Go to Home</Link>
+              </div>
+            )
+           }
         </div>
       </div>
     </div>
