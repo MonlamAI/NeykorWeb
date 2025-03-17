@@ -40,7 +40,7 @@ const NavItems = () => {
                   navigationMenuTriggerStyle(),
                   localActive == "bod" ? "text-lg" : "",
                   "bg-transparent hover:bg-neutral-100/40",
-                  checkcolor ? "text-white hover:text-white" : "text-black dark:text-white"
+                  checkcolor ? "text-neutral-800 hover:text-neutral-800" : "text-black dark:text-white"
                 )}
               >
                 {t(link.key)}
