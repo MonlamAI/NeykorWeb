@@ -1,6 +1,5 @@
 import { useLocale, useTranslations } from "next-intl";
 import ImageGallery from "../LocalComponents/Cards/Imagegal";
-import Admincard from "../LocalComponents/Admin/Admincard";
 
 export default function Home() {
   const t = useTranslations("index");
@@ -32,7 +31,7 @@ export default function Home() {
         </div>
       </div>
 
-     <Admincard/>
+     
       <ImageGallery />
     </div>
   );

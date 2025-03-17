@@ -10,6 +10,8 @@ import Image from "next/image";
 import iconimage from "../../../../public/icon.webp";
 import { usePathname } from "next/navigation";
 import MobileNav from "./Mobnav";
+import Admincard from "../Admin/Admincard";
+import UserProfile from "../UserProfile";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const t = useTranslations("navbar");
@@ -64,6 +66,7 @@ const Navbar = () => {
               )}
             </button>
           </div>
+         <UserProfile/>
         </div>
 
         {isOpen && (

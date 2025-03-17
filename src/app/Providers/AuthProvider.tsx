@@ -4,7 +4,8 @@ import React from "react";
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   return <UserProvider>
-    {children}</UserProvider>;
+    {children}
+    </UserProvider>;
 };
 
 export default AuthProvider;

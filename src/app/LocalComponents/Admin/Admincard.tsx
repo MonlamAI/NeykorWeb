@@ -10,7 +10,7 @@ const Admincard = () => {
    const { user } = useUser()
   return (
     <div> 
-        <div  className="absolute space-x-2 border p-2 rounded-md dark:text-black hover:bg-neutral-200   bottom-5 flex items-center left-10">
+        <div  className=" space-x-2 bg-white p-2 rounded-md   flex items-center">
         
         <Shield  fill={role=="ADMIN"?"lightgreen":"red"} />
         <div className=' flex flex-col items-start justify-center'>
@@ -22,7 +22,10 @@ const Admincard = () => {
         </div>
       
     {
-        role!="ADMIN"? <Link href="api/auth/login"> <LogIn className=' cursor-pointer'/> </Link>: <Link  href='api/auth/logout'><LogOut className=' cursor-pointer'/></Link>
+        role!="ADMIN"? <Link href="api/auth/login"> 
+        <LogIn className=' cursor-pointer'/> </Link>: <Link  href='api/auth/logout'>
+          
+          <LogOut className=' cursor-pointer'/></Link>
     }
      
     </div>

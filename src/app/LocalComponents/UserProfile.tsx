@@ -33,7 +33,6 @@ export default function UserProfile() {
           >
             <img
               src={user.picture || ""}
-              alt={user.name || ""}
               className="w-8 h-8 rounded-full"
             />
             <span>{user.name}</span>
