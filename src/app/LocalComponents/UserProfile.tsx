@@ -1,6 +1,5 @@
 "use client";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,7 +41,7 @@ export default function UserProfile() {
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem className=" flex items-center justify-between">
-            <Link href="/api/auth/logout">Logout</Link> <LogOut />
+            <a href="/api/auth/logout">Logout</a> <LogOut />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -50,11 +49,11 @@ export default function UserProfile() {
   }
 
   return (
-    <Link
+    <a
       href="/api/auth/login"
       className="h-[40px] w-[160px] inline-flex items-center justify-center"
     >
       Login
-    </Link>
+    </a>
   );
 }

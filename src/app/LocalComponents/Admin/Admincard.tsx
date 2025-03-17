@@ -2,7 +2,6 @@
 import { useRole } from '@/app/Providers/ContextProvider'
 import { useUser } from '@auth0/nextjs-auth0/client'
 import { LogIn, LogOut, Shield } from 'lucide-react'
-import Link from 'next/link'
 import React from 'react'
 
 const Admincard = () => {
@@ -22,10 +21,10 @@ const Admincard = () => {
         </div>
       
     {
-        role!="ADMIN"? <Link href="api/auth/login"> 
-        <LogIn className=' cursor-pointer'/> </Link>: <Link  href='api/auth/logout'>
+        role!="ADMIN"? <a href="api/auth/login"> 
+        <LogIn className=' cursor-pointer'/> </a>: <a  href='api/auth/logout'>
           
-          <LogOut className=' cursor-pointer'/></Link>
+          <LogOut className=' cursor-pointer'/></a>
     }
      
     </div>
