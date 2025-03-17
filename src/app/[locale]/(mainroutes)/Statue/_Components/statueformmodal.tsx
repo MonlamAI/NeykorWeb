@@ -28,10 +28,15 @@ const StatueFormModal = ({ onSuccess }: any) => {
         description_audio: "",
         audioFile: null as File | null,
       },
+      {
+        languageCode: "bo",
+        name: "",
+        description: "",
+        description_audio: "",
+        audioFile: null as File | null,
+      }
     ],
   });
-
-
 
   const handleAddTranslation = () => {
     setFormData((prev) => ({
@@ -50,6 +55,16 @@ const StatueFormModal = ({ onSuccess }: any) => {
   };
 
   const handleRemoveTranslation = (index: number) => {
+    // Prevent removing the first two default translations (en and bo)
+    if (index < 2) {
+      toast({
+        title: "Cannot remove",
+        description: "English and Tibetan translations are required",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setFormData((prev) => ({
       ...prev,
       translations: prev.translations.filter((_, i) => i !== index),
@@ -94,6 +109,28 @@ const StatueFormModal = ({ onSuccess }: any) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const enTranslation = formData.translations.find(t => t.languageCode === "en");
+    const boTranslation = formData.translations.find(t => t.languageCode === "bo");
+    
+    if (!enTranslation?.name || !enTranslation?.description) {
+      toast({
+        title: "Missing information",
+        description: "English translation must be filled completely",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!boTranslation?.name || !boTranslation?.description) {
+      toast({
+        title: "Missing information",
+        description: "Tibetan translation must be filled completely",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setLoading(true);
     
     try {
@@ -145,8 +182,15 @@ const StatueFormModal = ({ onSuccess }: any) => {
               name: "",
               description: "",
               description_audio: "",
-              audioFile: null,
+              audioFile: null as File | null,
             },
+            {
+              languageCode: "bo",
+              name: "",
+              description: "",
+              description_audio: "",
+              audioFile: null as File | null,
+            }
           ],
         });
       }
@@ -185,7 +229,7 @@ const StatueFormModal = ({ onSuccess }: any) => {
 
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-sm font-medium">Translations</h3>
+              <h3 className="text-sm font-medium">Translations (English & Tibetan required)</h3>
               <Button
                 type="button"
                 variant="outline"
@@ -199,8 +243,12 @@ const StatueFormModal = ({ onSuccess }: any) => {
             {formData.translations.map((translation, index) => (
               <div key={index} className="p-4 border rounded-lg space-y-3">
                 <div className="flex justify-between items-center">
-                  <h4 className="font-medium">Translation {index + 1}</h4>
-                  {index > 0 && (
+                  <h4 className="font-medium">
+                    {index === 0 ? "English Translation" : 
+                     index === 1 ? "Tibetan Translation" : 
+                     `Translation ${index + 1}`}
+                  </h4>
+                  {index > 1 && (
                     <Button
                       type="button"
                       variant="ghost"
@@ -228,6 +276,7 @@ const StatueFormModal = ({ onSuccess }: any) => {
                         )
                       }
                       placeholder="e.g. bo"
+                      disabled={index < 2} // Disable editing for default languages
                     />
                   </div>
                   <div className="space-y-2">
