@@ -17,15 +17,31 @@ import { useRole } from "@/app/Providers/ContextProvider";
 import FestModal from "./FestModal";
 const ITEMS_PER_PAGE = 9;
 
-const FestivalClient = ({ fesdata }: any) => {
+interface Festival {
+  id: string;
+  image: string;
+  translations: Array<{
+    languageCode: string;
+    name: string;
+    description: string;
+    description_audio: string;
+  }>;
+}
+
+const FestivalClient = ({ fesdata }: { fesdata: Festival[] }) => {
   const activelocale = useLocale();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const [festival,setfestival] = useState(fesdata);
+  const [festival, setfestival] = useState<Festival[]>(fesdata);
   const { role } = useRole();
-const isadmin = role === "ADMIN";
+  const isadmin = role === "ADMIN";
+  
+  useEffect(() => {
+    setfestival(fesdata);
+  }, [fesdata]);
+
   const handledeletefestival = (deletedId: string) => {
-    setfestival(prev => prev.filter((fes: any) => fes.id !== deletedId));
+    setfestival((prev: Festival[]) => prev.filter((fes) => fes.id !== deletedId));
   };
   const filteredfestival = useMemo(() => {
     if (!searchQuery.trim()) return festival;
@@ -97,11 +113,11 @@ const isadmin = role === "ADMIN";
         />
           {isadmin && (
             <FestModal
-            onSuccess={(newfes: any) => {
-              setfestival(prev => [newfes, ...prev]);
-              setSearchQuery("");
-              }} />
-            )}
+              onSuccess={(newfes: any) => {
+                setSearchQuery("");
+              }}
+            />
+          )}
         </div>
       </div>
 

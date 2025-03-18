@@ -21,13 +21,18 @@ const ITEMS_PER_PAGE = 9;
 const SideClient = ({ pilgrimData }: any) => {
   const activelocale = useLocale();
   const [currentPage, setCurrentPage] = useState(1);
-   const {role}=useRole()
-const isadmin = role === "ADMIN";
+  const {role} = useRole();
+  const isadmin = role === "ADMIN";
   const [searchQuery, setSearchQuery] = useState("");
- const [place,setplace]=useState(pilgrimData)
- const handleDeleteStatue = (deletedId: string) => {
-  setplace(prev => prev.filter((places: any) => places.id !== deletedId));
-};
+  const [place, setplace] = useState<any[]>(pilgrimData);
+
+  const handleDeleteStatue = (deletedId: string) => {
+    setplace((prev: any[]) => prev.filter((places) => places.id !== deletedId));
+  };
+
+  useEffect(() => {
+    setplace(pilgrimData);
+  }, [pilgrimData]);
 
   const filteredPilgrimSites = useMemo(() => {
     if (!searchQuery.trim()) return place;
@@ -92,23 +97,21 @@ const isadmin = role === "ADMIN";
   return (
     <div className="relative min-h-screen w-full">
       <div className="sticky top-0 bg-white dark:bg-neutral-950 z-10 py-4 shadow-sm">
-        <div className=" flex items-center justify-between  px-2">
-        <SearchComponent
-          onSearch={handleSearch}
-          placeholder="Search pilgrim sites..."
-          initialQuery={searchQuery}
-        />
-        {isadmin && (
+        <div className="flex items-center justify-between px-2">
+          <SearchComponent
+            onSearch={handleSearch}
+            placeholder="Search pilgrim sites..."
+            initialQuery={searchQuery}
+          />
+          {isadmin && (
             <SacredModal
-            onSuccess={(newplace: any) => {
-              setplace(prev => [newplace, ...prev]);
-              setSearchQuery("");
+              onSuccess={(newplace: any) => {
+                setplace((prev: any[]) => [newplace, ...prev]);
+                setSearchQuery("");
               }}
             />
           )}
         </div>
-        
-
       </div>
 
       <div className="pt-4">

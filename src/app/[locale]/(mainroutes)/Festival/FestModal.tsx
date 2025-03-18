@@ -177,7 +177,6 @@ const FestModal = ({ onSuccess }: any) => {
         });
   
         setOpen(false);
-        onSuccess(result.data);
         setFormData({
           start_date: "",
           end_date: "",

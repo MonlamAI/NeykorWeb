@@ -13,6 +13,8 @@ function LoadingStatues() {
   );
 }
 
+export const revalidate = 0; // Enable on-demand revalidation
+
 export default function Sacred() {
   return (
     <Suspense fallback={<LoadingStatues />}>

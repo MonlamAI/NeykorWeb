@@ -1,5 +1,6 @@
 'use server'
 import axios from "axios";
+import { revalidatePath } from 'next/cache';
 
 
 export async function createS3UploadUrl(formData: FormData) {
@@ -60,6 +61,9 @@ export async function postfestival(data: any) {
         },
       }
     );
+    // Revalidate the festival pages
+    revalidatePath('/[locale]/Festival');
+    revalidatePath('/[locale]/(mainroutes)/Festival');
     return { success: true, data: response.data };
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -81,6 +85,9 @@ export async function postStatue(data: any) {
         },
       }
     );
+    // Revalidate the statues page
+    revalidatePath('/[locale]/Statue');
+    revalidatePath('/[locale]/(mainroutes)/Statue');
     return { success: true, data: response.data };
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -126,7 +133,7 @@ export async function creategonpa(data: any) {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error("API Error:", error.response?.data || error.message);
-      throw new Error(`Failed to fetch statues: ${error.message}`);
+      throw new Error(`Failed to create monastery: ${error.message}`);
     }
     throw error;
   }
@@ -164,6 +171,9 @@ export async function createSacred(data:any){
         },
       }
     );
+    // Revalidate the sacred sites pages
+    revalidatePath('/[locale]/Sacred');
+    revalidatePath('/[locale]/(mainroutes)/Sacred');
     return { success: true, data: response.data };
   } catch (error) {
     if (axios.isAxiosError(error)) {

@@ -49,6 +49,7 @@ const Navbar = () => {
             <NavItems />
             <LocaleSelector tibtext={t("tibetan")} />
             <ModeToggle />
+            <UserProfile/>
           </div>
 
           <div className="md:hidden flex items-center space-x-4">
@@ -66,7 +67,7 @@ const Navbar = () => {
               )}
             </button>
           </div>
-         <UserProfile/>
+         
         </div>
 
         {isOpen && (

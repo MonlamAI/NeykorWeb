@@ -51,7 +51,7 @@ export default function UserProfile() {
   return (
     <a
       href="/api/auth/login"
-      className="h-[40px] w-[160px] inline-flex items-center justify-center"
+      className="h-[40px] border w-[120px] rounded inline-flex items-center justify-center"
     >
       Login
     </a>

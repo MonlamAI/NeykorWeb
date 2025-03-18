@@ -15,19 +15,42 @@ import { localeAlias } from "@/lib/utils";
 import StatueCard from "@/app/LocalComponents/Cards/StatueCard";
 import StatueFormModal from "./_Components/statueformmodal";
 import { useRole } from "@/app/Providers/ContextProvider";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getStatues } from "@/app/actions/getactions";
+
+interface Statue {
+  id: string;
+  image: string;
+  translations: Array<{
+    languageCode: string;
+    name: string;
+    description: string;
+    description_audio: string;
+  }>;
+}
 
 const ITEMS_PER_PAGE = 9;
-const StatuesClient = ({ statuesData }: any) => {
+const StatuesClient = ({ statuesData }: { statuesData: Statue[] }) => {
   const activelocale = useLocale();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statues, setStatues] = useState(statuesData); 
- const {role}=useRole()
-const isadmin = role === "ADMIN";
+  const queryClient = useQueryClient();
+
+  // Initialize with server-side data and then keep in sync with client-side
+  const { data: statues = statuesData } = useQuery<Statue[], Error>({
+    queryKey: ['statues'],
+    queryFn: getStatues,
+    initialData: statuesData,
+  });
+
+  const { role } = useRole();
+  const isadmin = role === "ADMIN";
+
   const handleDeleteStatue = (deletedId: string) => {
-    setStatues(prev => prev.filter((statue: any) => statue.id !== deletedId));
+    queryClient.setQueryData<Statue[]>(['statues'], (oldData) => 
+      oldData?.filter(statue => statue.id !== deletedId) || []
+    );
   };
-  
 
   const filteredStatues = useMemo(() => {
     if (!searchQuery.trim()) return statues;
@@ -44,7 +67,6 @@ const isadmin = role === "ADMIN";
 
       const searchLower = searchQuery.toLowerCase();
       return translation.name.toLowerCase().includes(searchLower)
-
     });
   }, [statues, searchQuery, activelocale]);
 
@@ -64,6 +86,11 @@ const isadmin = role === "ADMIN";
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
+  };
+
+  const handleSuccess = (newStatue: Statue) => {
+    queryClient.setQueryData(['statues'], (oldData: Statue[] | undefined) => [newStatue, ...(oldData || [])]);
+    setSearchQuery("");
   };
 
   const visiblePages = useMemo(() => {
@@ -92,19 +119,14 @@ const isadmin = role === "ADMIN";
   return (
     <div className="relative min-h-screen w-full">
       <div className="sticky p-2 top-0 bg-white dark:bg-neutral-950 z-30 py-4 shadow-sm">
-        <div className="flex  items-center ">
+        <div className="flex items-center">
           <SearchComponent
             onSearch={handleSearch}
             placeholder="Search statues..."
             initialQuery={searchQuery}
           />
           {isadmin && (
-            <StatueFormModal
-            onSuccess={(newStatue: any) => {
-              setStatues(prev => [newStatue, ...prev]);
-              setSearchQuery("");
-              }}
-            />
+            <StatueFormModal onSuccess={handleSuccess} />
           )}
         </div>
       </div>
@@ -129,14 +151,14 @@ const isadmin = role === "ADMIN";
 
                 return (
                   <StatueCard
-  key={statue.id}
-  id={statue.id}
-  image={statue.image}
-  translation={translation}
-  locale={activelocale}
-  isAdmin={isadmin}
-  onDelete={handleDeleteStatue}
-/>
+                    key={statue.id}
+                    id={statue.id}
+                    image={statue.image}
+                    translation={translation}
+                    locale={activelocale}
+                    isAdmin={isadmin}
+                    onDelete={handleDeleteStatue}
+                  />
                 );
               })}
             </div>

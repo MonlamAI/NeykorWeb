@@ -1,6 +1,17 @@
 "use server";
 import axios, { AxiosError } from "axios";
 
+interface Statue {
+  id: string;
+  image: string;
+  translations: Array<{
+    languageCode: string;
+    name: string;
+    description: string;
+    description_audio: string;
+  }>;
+}
+
 const API_BASE_URL = "https://gompa-tour-api.onrender.com";
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -18,16 +29,17 @@ const handleApiError = (error: unknown, endpoint: string) => {
   throw error;
 };
 
-async function fetchData<T>(endpoint: string) {
+async function fetchData<T>(endpoint: string): Promise<T> {
   try {
     const response = await axiosInstance.get<T>(endpoint);
     return response.data;
   } catch (error) {
     handleApiError(error, endpoint);
+    throw error;
   }
 }
 
-export const getStatues = () => fetchData("/statue");
+export const getStatues = () => fetchData<Statue[]>("/statue");
 
 export const getStatuesDetail = (id: string) => fetchData(`/statue/${id}`);
 
