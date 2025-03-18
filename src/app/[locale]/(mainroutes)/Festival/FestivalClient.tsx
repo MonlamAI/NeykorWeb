@@ -1,15 +1,7 @@
 "use client";
 import { useLocale } from "next-intl";
 import React, { useState, useMemo, useEffect } from "react";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import CustomPagination from "@/app/LocalComponents/CustomPagination";
 import { SearchComponent } from "@/app/LocalComponents/Searchbar";
 import { localeAlias } from "@/lib/utils";
 import FestivalCard from "@/app/LocalComponents/Cards/Festivalcard";
@@ -153,42 +145,12 @@ const FestivalClient = ({ fesdata }: { fesdata: Festival[] }) => {
               })}
             </div>
 
-            {totalPages > 1 && (
-              <Pagination className="my-6">
-                <PaginationContent>
-                  {currentPage > 1 && (
-                    <PaginationItem>
-                      <PaginationPrevious
-                        onClick={() => handlePageChange(currentPage - 1)}
-                      />
-                    </PaginationItem>
-                  )}
-                  {visiblePages.map((page, index) =>
-                    typeof page === "string" ? (
-                      <PaginationItem key={`ellipsis-${index}`}>
-                        <PaginationEllipsis />
-                      </PaginationItem>
-                    ) : (
-                      <PaginationItem key={page}>
-                        <PaginationLink
-                          onClick={() => handlePageChange(page)}
-                          isActive={currentPage === page}
-                        >
-                          {page}
-                        </PaginationLink>
-                      </PaginationItem>
-                    )
-                  )}
-                  {currentPage < totalPages && (
-                    <PaginationItem>
-                      <PaginationNext
-                        onClick={() => handlePageChange(currentPage + 1)}
-                      />
-                    </PaginationItem>
-                  )}
-                </PaginationContent>
-              </Pagination>
-            )}
+            <CustomPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              className="my-6"
+            />
           </>
         )}
       </div>
