@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { getGonpaDetail, getGonpaTypes } from "@/app/actions/getactions";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState, useCallback } from "react";
 import Loading from "./Loading";
 import Breadcrumb from "@/app/LocalComponents/Breadcrumb";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -44,11 +44,13 @@ export default function MonasteryPage({ params }: { params: any}) {
 function MonasteryContent({ params }: { params: any }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedName, setEditedName] = useState("");
-  const [editedSect, setEditedSect] = useState("");
-const [editedType, setEditedType] = useState("");
-  const [editedDescription, setEditedDescription] = useState("");
-  const [editedGeoLocation, setEditedGeoLocation] = useState("");
+  const [editedData, setEditedData] = useState({
+    name: "",
+    sect: "",
+    type: "",
+    description: "",
+    geoLocation: ""
+  });
   const [isUpdating, setIsUpdating] = useState(false);
   const [newImage, setNewImage] = useState<File | null>(null);
   const [newAudio, setNewAudio] = useState<File | null>(null);
@@ -56,12 +58,17 @@ const [editedType, setEditedType] = useState("");
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
   
   const queryClient = useQueryClient();
   const { role } = useRole();
-const isAdmin = role === "ADMIN";
+  const isAdmin = useMemo(() => role === "ADMIN", [role]);
   const activeLocale = params.locale;
+  const languageCode = useMemo(() => params.locale === "bod" ? "bo" : "en", [params.locale]);
+
+  // Log params only once on mount
+  useEffect(() => {
+    console.log('Current params:', params);
+  }, [params]);
 
   const {
     data: monastery,
@@ -73,42 +80,63 @@ const isAdmin = role === "ADMIN";
     queryFn: () => getGonpaDetail(params.slug),
   });
 
-  const handleContactUpdate = (updatedContact:any) => {
-    queryClient.setQueryData(["gonpa", params.slug], {
-      ...monastery,
+  const handleContactUpdate = useCallback((updatedContact:any) => {
+    queryClient.setQueryData(["gonpa", params.slug], (oldData: any) => ({
+      ...oldData,
       contact: updatedContact
-    });
-  };
-  const languageCode = params.locale === "bod" ? "bo" : "en";
+    }));
+  }, [queryClient, params.slug]);
 
   const currentTranslation = useMemo(() => {
     if (!monastery?.translations) return null;
     return monastery.translations.find(t => t.languageCode === languageCode);
   }, [monastery?.translations, languageCode]);
 
+  // Combine audio-related effects
   useEffect(() => {
     const audio = audioRef.current;
-  
-    if (audio && currentTranslation?.description_audio) {
-      audio.src = currentTranslation.description_audio;
-    }
-  
+    if (!audio) return;
+
     const handleLoadedMetadata = () => {
-      audio?.pause();
+      audio.pause();
       setIsPlaying(false);
     };
   
     const handleEnded = () => setIsPlaying(false);
   
-    audio?.addEventListener('loadedmetadata', handleLoadedMetadata);
-    audio?.addEventListener('ended', handleEnded);
+    if (currentTranslation?.description_audio) {
+      audio.src = currentTranslation.description_audio;
+    }
+
+    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audio.addEventListener('ended', handleEnded);
   
     return () => {
-      audio?.removeEventListener('loadedmetadata', handleLoadedMetadata);
-      audio?.removeEventListener('ended', handleEnded);
+      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.removeEventListener('ended', handleEnded);
     };
   }, [currentTranslation?.description_audio]);
-  
+
+  // Combine form data effects
+  useEffect(() => {
+    if (currentTranslation && monastery) {
+      setEditedData({
+        name: currentTranslation.name || "",
+        description: currentTranslation.description || "",
+        geoLocation: monastery.geo_location || "",
+        sect: monastery.sect || "",
+        type: monastery.type || ""
+      });
+    }
+  }, [currentTranslation, monastery]);
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea && isEditing) {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  }, [isEditing, editedData.description]);
 
   const breadcrumbLabels= {
     en: {
@@ -122,6 +150,7 @@ const isAdmin = role === "ADMIN";
       details: "ཞིབ་ཕྲ།",
     },
   };
+  // Fetch types only once on mount
   useEffect(() => {
     const fetchTypes = async () => {
       try {
@@ -137,35 +166,8 @@ const isAdmin = role === "ADMIN";
     };
     fetchTypes();
   }, []);
-  useEffect(() => {
-    if (currentTranslation && monastery) {
-      setEditedName(currentTranslation.name || "");
-      setEditedDescription(currentTranslation.description || "");
-      setEditedGeoLocation(monastery.geo_location || "");
-      setEditedSect(monastery.sect || "");
-      setEditedType(monastery.type || "");
 
-    }
-  }, [currentTranslation, monastery]);
-
-  useEffect(() => {
-    const textarea = textareaRef.current;
-    if (textarea && isEditing) {
-      textarea.style.height = 'auto';
-      textarea.style.height = `${textarea.scrollHeight}px`;
-    }
-  }, [isEditing, editedDescription]);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    const handleEnded = () => setIsPlaying(false);
-    audio?.addEventListener("ended", handleEnded);
-    return () => audio?.removeEventListener("ended", handleEnded);
-  }, []);
-
- 
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'audio') => {
+  const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'audio') => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -184,20 +186,24 @@ const isAdmin = role === "ADMIN";
       });
       e.target.value = '';
     }
-  };
+  }, []);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     setIsEditing(false);
     setNewImage(null);
     setNewAudio(null);
     if (currentTranslation && monastery) {
-      setEditedName(currentTranslation.name || "");
-      setEditedDescription(currentTranslation.description || "");
-      setEditedGeoLocation(monastery.geo_location || "");
+      setEditedData({
+        name: currentTranslation.name || "",
+        description: currentTranslation.description || "",
+        geoLocation: monastery.geo_location || "",
+        sect: monastery.sect || "",
+        type: monastery.type || ""
+      });
     }
-  };
+  }, [currentTranslation, monastery]);
 
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     if (!monastery || !currentTranslation) return;
 
     try {
@@ -219,14 +225,14 @@ const isAdmin = role === "ADMIN";
 
       const updatedData = {
         image: imageUrl,
-        geo_location: editedGeoLocation,
-        sect: editedSect,
-        type: editedType,
+        geo_location: editedData.geoLocation,
+        sect: editedData.sect,
+        type: editedData.type,
         contactId: monastery.contact.id,
         translations: monastery.translations.map((t: any) => ({
           languageCode: t.languageCode,
-          name: t.languageCode === languageCode ? editedName : t.name,
-          description: t.languageCode === languageCode ? editedDescription : t.description,
+          name: t.languageCode === languageCode ? editedData.name : t.name,
+          description: t.languageCode === languageCode ? editedData.description : t.description,
           description_audio: t.languageCode === languageCode ? audioUrl : t.description_audio
         }))
       };
@@ -236,9 +242,9 @@ const isAdmin = role === "ADMIN";
       queryClient.setQueryData(["gonpa", params.slug], {
         ...monastery,
         image: imageUrl,
-        geo_location: editedGeoLocation,
-        sect: editedSect,
-        type: editedType,
+        geo_location: editedData.geoLocation,
+        sect: editedData.sect,
+        type: editedData.type,
         translations: updatedData.translations
       });
 
@@ -261,9 +267,9 @@ const isAdmin = role === "ADMIN";
     } finally {
       setIsUpdating(false);
     }
-  };
+  }, [monastery, currentTranslation, newImage, newAudio, editedData, languageCode, params.slug, queryClient, refetch]);
 
-  const toggleAudio = () => {
+  const toggleAudio = useCallback(() => {
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
@@ -272,13 +278,7 @@ const isAdmin = role === "ADMIN";
       }
       setIsPlaying(!isPlaying);
     }
-  };
-useEffect(() => {
-    const audio = audioRef.current;
-    const handleEnded = () => setIsPlaying(false);
-    audio?.addEventListener("ended", handleEnded);
-    return () => audio?.removeEventListener("ended", handleEnded);
-  }, []);
+  }, [isPlaying]);
 
   if (isLoading) return <LoadingSkeleton />;
   if (error) return <div className="text-red-500 p-8">Failed to load monastery details</div>;
@@ -341,8 +341,8 @@ useEffect(() => {
                 <div className="flex items-center justify-between">
                   {isEditing ? (
                     <Input
-                      value={editedName}
-                      onChange={(e) => setEditedName(e.target.value)}
+                      value={editedData.name}
+                      onChange={(e) => setEditedData({ ...editedData, name: e.target.value })}
                       className={activeLocale === "bod" ? "font-monlamuchen" : ""}
                     />
                   ) : (
@@ -395,8 +395,8 @@ useEffect(() => {
     <div className="space-y-2">
       <label className="text-sm font-medium">Type</label>
       <Select 
-        value={editedType}
-        onValueChange={(value) => setEditedType(value)}
+        value={editedData.type}
+        onValueChange={(value) => setEditedData({ ...editedData, type: value })}
       >
         <SelectTrigger>
           <SelectValue placeholder="Select type" />
@@ -413,8 +413,8 @@ useEffect(() => {
     <div className="space-y-2">
       <label className="text-sm font-medium">Sect</label>
       <Select 
-        value={editedSect}
-        onValueChange={(value) => setEditedSect(value)}
+        value={editedData.sect}
+        onValueChange={(value) => setEditedData({ ...editedData, sect: value })}
       >
         <SelectTrigger>
           <SelectValue placeholder="Select sect" />
@@ -433,8 +433,8 @@ useEffect(() => {
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Geo Location</label>
                     <Input
-                      value={editedGeoLocation}
-                      onChange={(e) => setEditedGeoLocation(e.target.value)}
+                      value={editedData.geoLocation}
+                      onChange={(e) => setEditedData({ ...editedData, geoLocation: e.target.value })}
                       placeholder="Enter geo location"
                       className="mb-4"
                     />
@@ -442,9 +442,9 @@ useEffect(() => {
                   
                   <Textarea
                     ref={textareaRef}
-                    value={editedDescription}
+                    value={editedData.description}
                     onChange={(e) => {
-                      setEditedDescription(e.target.value);
+                      setEditedData({ ...editedData, description: e.target.value });
                       e.target.style.height = 'auto';
                       e.target.style.height = `${e.target.scrollHeight}px`;
                     }}
