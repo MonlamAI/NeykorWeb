@@ -65,11 +65,6 @@ function MonasteryContent({ params }: { params: any }) {
   const activeLocale = params.locale;
   const languageCode = useMemo(() => params.locale === "bod" ? "bo" : "en", [params.locale]);
 
-  // Log params only once on mount
-  useEffect(() => {
-    console.log('Current params:', params);
-  }, [params]);
-
   const {
     data: monastery,
     isLoading,
