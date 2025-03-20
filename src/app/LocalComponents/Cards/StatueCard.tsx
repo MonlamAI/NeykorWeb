@@ -10,10 +10,10 @@ const StatueCard = ({
   id,
   image,
   translation,
-  locale ,
+  locale,
   className = "",
   onDelete,
-  isAdmin ,
+  isAdmin,
 }: any) => {
   const { toast } = useToast();
 
@@ -51,7 +51,7 @@ const StatueCard = ({
    };
  
   return (
-    <Link href={`/Statue/${id}`}>
+    <Link href={`/${locale}/Statue/${id}`}>
       <Card
         className={`relative overflow-hidden hover:shadow-lg dark:bg-neutral-900 h-full transition-shadow ${className}`}
       >
