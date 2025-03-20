@@ -133,7 +133,7 @@ function MonasteryContent({ params }: { params: any }) {
     }
   }, [isEditing, editedData.description]);
 
-  const breadcrumbLabels= {
+  const breadcrumbLabels = {
     en: {
       home: "Home",
       monastery: "Monastery",
@@ -145,6 +145,18 @@ function MonasteryContent({ params }: { params: any }) {
       details: "ཞིབ་ཕྲ།",
     },
   };
+
+  const sectTranslations = {
+    KAGYU: { en: "Kagyu", bod: "བཀའ་བརྒྱུད།" },
+    NYINGMA: { en: "Nyingma", bod: "རྙིང་མ།" },
+    SAKYA: { en: "Sakya", bod: "ས་སྐྱ།" },
+    GELUG: { en: "Gelug", bod: "དགེ་ལུགས།" },
+    BHON: { en: "Bhon", bod: "བོན།" },
+    JONANG: { en: "Jonang", bod: "ཇོ་ནང།" },
+
+    OTHER: { en: "Other", bod: "གཞན།" },
+  };
+
   // Fetch types only once on mount
   useEffect(() => {
     const fetchTypes = async () => {
@@ -284,7 +296,7 @@ function MonasteryContent({ params }: { params: any }) {
 
   const breadcrumbItems = [
     { label: labels.monastery, href: "/Monastary" },
-    { label: params.id, href:`/Monastary/${params.id}`},
+    { label: sectTranslations[monastery.sect]?.[activeLocale] || monastery.sect, href: `/Monastary/${params.id}` },
     { label: currentTranslation.name || labels.details },
   ];
 

@@ -93,10 +93,30 @@ const isadmin = role === "ADMIN";
 
     return pages;
   }, [currentPage, totalPages]);
+
+  const sectTranslations: { [key: string]: { en: string; bod: string } } = {
+    kagyu: { en: "Kagyu", bod: "བཀའ་བརྒྱུད།" },
+    nyingma: { en: "Nyingma", bod: "རྙིང་མ།" },
+    sakya: { en: "Sakya", bod: "ས་སྐྱ།" },
+    gelug: { en: "Gelug", bod: "དགེ་ལུགས།" },
+    bhon: { en: "Bhon", bod: "བོན།" },
+    jonang: { en: "Jonang", bod: "ཇོ་ནང།" },
+    other: { en: "Other", bod: "གཞན།" },
+  };
+
   const breadcrumbLabels = {
-    en: { home: "Home", monasteries: "Monasteries", sect },
-    bod: { home: "གཙོ་ངོས།", monasteries: "དགོན་པ།", sect },
+    en: { 
+      home: "Home", 
+      monasteries: "Monasteries", 
+      sect: sectTranslations[sect.toLowerCase()]?.en || sect 
+    },
+    bod: { 
+      home: "གཙོ་ངོས།", 
+      monasteries: "དགོན་པ།", 
+      sect: sectTranslations[sect.toLowerCase()]?.bod || sect 
+    },
   }[activelocale] || { home: "Home", monasteries: "Monasteries", sect };
+
   const breadcrumbItems = [
     { label: breadcrumbLabels.monasteries, href: "/Monastary" },
     { label: breadcrumbLabels.sect },
