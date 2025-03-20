@@ -100,3 +100,43 @@ export const STATES = [
   "Puducherry",
   "Other"
 ];
+
+export const downloadSvgAsPng = (svgElement, fileName = 'qrcode.png', bgColor = '#ffffff') => {
+  if (!svgElement) return;
+  
+  // Create a canvas element
+  const canvas = document.createElement('canvas');
+  const { width, height } = svgElement.getBoundingClientRect();
+  
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  
+  // Create a Blob from the SVG
+  const svgData = new XMLSerializer().serializeToString(svgElement);
+  const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+  
+  const URL = window.URL || window.webkitURL || window;
+  const blobURL = URL.createObjectURL(svgBlob);
+  
+  // Draw the image on the canvas and download
+  const image = new Image();
+  image.onload = () => {
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, width, height);
+    ctx.drawImage(image, 0, 0, width, height);
+    
+    const imgURI = canvas.toDataURL('image/png');
+    
+    const link = document.createElement('a');
+    link.download = fileName;
+    link.href = imgURI;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    URL.revokeObjectURL(blobURL);
+  };
+  
+  image.src = blobURL;
+};
