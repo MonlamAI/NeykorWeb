@@ -420,6 +420,7 @@ function MonasteryContent({ params }: { params: any }) {
           <SelectItem value="SAKYA">Sakya</SelectItem>
           <SelectItem value="GELUG">Gelug</SelectItem>
           <SelectItem value="BON">Bon</SelectItem>
+          <SelectItem value="OTHER">Other</SelectItem>
         </SelectContent>
       </Select>
     </div>
