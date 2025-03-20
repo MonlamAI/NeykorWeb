@@ -33,6 +33,17 @@ import ContactEditSection from '@/app/LocalComponents/ContactEditSection';
 const SUPPORTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 const SUPPORTED_AUDIO_TYPES = ['audio/mpeg', 'audio/mp3'];
 
+const AudioPreview = ({ src, className = "" }: { src: string; className?: string }) => {
+  return (
+    <div className={`w-full ${className}`}>
+      <audio controls className="w-full">
+        <source src={src} type="audio/mpeg" />
+        Your browser does not support the audio element.
+      </audio>
+    </div>
+  );
+};
+
 export default function MonasteryPage({ params }: { params: any}) {
   return (
     <Suspense fallback={<Loading />}>
@@ -469,10 +480,16 @@ function MonasteryContent({ params }: { params: any }) {
                         accept={SUPPORTED_AUDIO_TYPES.join(',')}
                         onChange={(e) => handleFileChange(e, 'audio')}
                       />
-                      {newAudio && (
-                        <p className="text-sm text-gray-500">
-                          Selected: {newAudio.name}
-                        </p>
+                      {(newAudio || currentTranslation.description_audio) && (
+                        <div className="mt-2">
+                          <p className="text-sm text-gray-500 mb-2">
+                            {newAudio ? `Selected: ${newAudio.name}` : 'Current Audio:'}
+                          </p>
+                          <AudioPreview 
+                            src={newAudio ? URL.createObjectURL(newAudio) : currentTranslation.description_audio} 
+                            className="rounded-md p-2"
+                          />
+                        </div>
                       )}
                     </div>
                     

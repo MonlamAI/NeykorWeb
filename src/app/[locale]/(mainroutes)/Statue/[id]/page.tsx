@@ -18,6 +18,17 @@ import { toast } from "@/hooks/use-toast";
 import { validateFile } from "@/lib/utils";
 import DynamicQRCode from "@/app/LocalComponents/generators/Qrcode";
 
+const AudioPreview = ({ src, className = "" }: { src: string; className?: string }) => {
+  return (
+    <div className={`w-full ${className}`}>
+      <audio controls className="w-full">
+        <source src={src} type="audio/mpeg" />
+        Your browser does not support the audio element.
+      </audio>
+    </div>
+  );
+};
+
 export default function StatuePage({ params }: { params: { id: string } }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -298,10 +309,16 @@ const isAdmin = role === "ADMIN";
                           accept="audio/mpeg,audio/mp3"
                           onChange={(e) => handleFileChange(e, 'audio')}
                         />
-                        {newAudio && (
-                          <p className="text-sm text-gray-500">
-                            Selected: {newAudio.name}
-                          </p>
+                        {(newAudio || currentTranslation.description_audio) && (
+                          <div className="mt-2">
+                            <p className="text-sm text-gray-500 mb-2">
+                              {newAudio ? `Selected: ${newAudio.name}` : 'Current Audio:'}
+                            </p>
+                            <AudioPreview 
+                              src={newAudio ? URL.createObjectURL(newAudio) : currentTranslation.description_audio} 
+                              className=" rounded-md p-2"
+                            />
+                          </div>
                         )}
                       </div>
                       <div className="flex justify-end gap-2">

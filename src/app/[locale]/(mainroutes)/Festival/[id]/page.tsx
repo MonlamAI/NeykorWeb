@@ -18,7 +18,18 @@ import { updateFestival } from "@/app/actions/updateaction";
 import { formatDateForDisplay, formatDateForInput, validateFile } from "@/lib/utils";
 import DynamicQRCode from "@/app/LocalComponents/generators/Qrcode";
 
-export default function FestivalPage({ params }: { params: { id: string } }) {
+const AudioPreview = ({ src, className = "" }: { src: string; className?: string }) => {
+  return (
+    <div className={`w-full ${className}`}>
+      <audio controls className="w-full">
+        <source src={src} type="audio/mpeg" />
+        Your browser does not support the audio element.
+      </audio>
+    </div>
+  );
+};
+
+export default function FestivalPage({ params }: { params: { id: string  } }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState("");
@@ -353,10 +364,16 @@ const isAdmin = role === "ADMIN";
                           accept="audio/mpeg,audio/mp3"
                           onChange={(e) => handleFileChange(e, 'audio')}
                         />
-                        {newAudio && (
-                          <p className="text-sm text-gray-500">
-                            Selected: {newAudio.name}
-                          </p>
+                        {(newAudio || currentTranslation.description_audio) && (
+                          <div className="mt-2">
+                            <p className="text-sm text-gray-500 mb-2">
+                              {newAudio ? `Selected: ${newAudio.name}` : 'Current Audio:'}
+                            </p>
+                            <AudioPreview 
+                              src={newAudio ? URL.createObjectURL(newAudio) : currentTranslation.description_audio} 
+                              className="rounded-md p-2"
+                            />
+                          </div>
                         )}
                       </div>
                       <div className="flex justify-end gap-2">
