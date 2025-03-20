@@ -42,7 +42,7 @@ const Breadcrumb = ({
               <ChevronRight className="w-4 h-4" />
               {item.href ? (
                 <Link
-                  href={item.href}
+                  href={`/${locale}${item.href}`}
                   className="hover:text-gray-900 dark:hover:text-gray-400 flex items-center"
                 >
                   <span className={isLocaleBody ? "font-monlamuchen" : ""}>
