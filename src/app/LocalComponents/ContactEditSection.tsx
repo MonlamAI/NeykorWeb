@@ -14,7 +14,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { STATES } from '@/lib/utils';
+import { STATES, COUNTRIES } from '@/lib/utils';
 
 const ContactEditSection = ({ 
   contact, 
@@ -126,7 +126,7 @@ const ContactEditSection = ({
        <DynamicQRCode/>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className={`text-xl ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
-          {activeLocale === "bod" ? "འབྲེལ་གཏུགས་ཀྱི་གནས་ཚུལ" : "Contact Information"}
+          {activeLocale === "bod" ? "འབྲེལ་གཏུག་གནས་ཚུལ།" : "Contact Information"}
         </CardTitle>
         {isAdmin && !isEditing && (
           <Button
@@ -144,7 +144,9 @@ const ContactEditSection = ({
         {isEditing ? (
           <div className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Email</label>
+              <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+                {activeLocale === "bod" ? "ཡིག་འཕྲིན།" : "Email"}
+              </label>
               <Input
                 value={editedContact.email}
                 onChange={(e) => setEditedContact(prev => ({ ...prev, email: e.target.value }))}
@@ -153,7 +155,9 @@ const ContactEditSection = ({
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">Phone Number</label>
+              <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+                {activeLocale === "bod" ? "ཁ་པར།" : "Phone Number"}
+              </label>
               <Input
                 value={editedContact.phone_number}
                 onChange={(e) => setEditedContact(prev => ({ ...prev, phone_number: e.target.value }))}
@@ -162,7 +166,9 @@ const ContactEditSection = ({
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">Address</label>
+              <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+                {activeLocale === "bod" ? "ཁ་བྱང་།" : "Address"}
+              </label>
               <Input
                 value={editedContact.translations[0].address}
                 onChange={(e) => updateTranslation("en", "address", e.target.value)}
@@ -172,7 +178,9 @@ const ContactEditSection = ({
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">City</label>
+                <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+                  {activeLocale === "bod" ? "གྲོང་ཁྱེར།" : "City"}
+                </label>
                 <Input
                   value={editedContact.translations[0].city}
                   onChange={(e) => updateTranslation("en", "city", e.target.value)}
@@ -181,7 +189,9 @@ const ContactEditSection = ({
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">State</label>
+                <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+                  {activeLocale === "bod" ? "མངའ་སྡེ།" : "State"}
+                </label>
                 <Select 
                   value={editedContact.translations[0].state}
                   onValueChange={(value) => updateTranslation("en", "state", value)}
@@ -202,7 +212,9 @@ const ContactEditSection = ({
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Postal Code</label>
+                <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+                  {activeLocale === "bod" ? "འཕྲིན་ཡིག་ཨང་།" : "Postal Code"}
+                </label>
                 <Input
                   value={editedContact.translations[0].postal_code}
                   onChange={(e) => updateTranslation("en", "postal_code", e.target.value)}
@@ -211,12 +223,24 @@ const ContactEditSection = ({
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Country</label>
-                <Input
+                <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+                  {activeLocale === "bod" ? "རྒྱལ་ཁབ།" : "Country"}
+                </label>
+                <Select 
                   value={editedContact.translations[0].country}
-                  onChange={(e) => updateTranslation("en", "country", e.target.value)}
-                  placeholder="Enter country"
-                />
+                  onValueChange={(value) => updateTranslation("en", "country", value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a country" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {COUNTRIES.map((country) => (
+                      <SelectItem key={country} value={country}>
+                        {country}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
