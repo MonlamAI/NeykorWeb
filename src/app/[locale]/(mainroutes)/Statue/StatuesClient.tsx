@@ -27,7 +27,6 @@ const StatuesClient = ({ statuesData }: { statuesData: Statue[] }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const queryClient = useQueryClient();
-
   // Initialize with server-side data and then keep in sync with client-side
   const { data: statues = statuesData } = useQuery<Statue[], Error>({
     queryKey: ['statues'],

@@ -10,7 +10,7 @@ const StatueCard = ({
   id,
   image,
   translation,
-  locale = "en",
+  locale ,
   className = "",
   onDelete,
   isAdmin ,

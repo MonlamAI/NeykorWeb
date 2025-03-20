@@ -1,9 +1,8 @@
 "use client";
 
 import { useLocale } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "@/i18n/routing";
 import { useTransition } from "react";
-import { usePathname } from "next/navigation";
 
 import {
   Select,
@@ -17,17 +16,15 @@ export function LocaleSelector({ tibtext }: { tibtext: string }) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const localActive = useLocale();
-  const path = usePathname();
+  const pathname = usePathname();
+  
   const handleSelect = (nextLocale: string) => {
     startTransition(() => {
-      const segments = path.split("/");
-      const remainingPath = segments.slice(2).join("/") || "/";
-      router.replace(`/${nextLocale}/${remainingPath}`);
+      router.replace(pathname, { locale: nextLocale });
     });
-  };  
-  const pathname = usePathname();
-  const checkcolor = pathname === '/en' || pathname === '/bod';
+  };
 
+  const checkcolor = pathname === '/' || pathname === '/bod';
 
   return (
     <Select
