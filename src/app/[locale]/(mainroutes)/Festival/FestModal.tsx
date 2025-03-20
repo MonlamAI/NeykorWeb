@@ -255,7 +255,7 @@ const FestModal = ({ onSuccess }: any) => {
 
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-sm font-medium">Translations (English & Tibetan required)</h3>
+              <h3 className="text-sm font-medium">Festival Description (English & Tibetan required)</h3>
               <Button
                 type="button"
                 variant="outline"
