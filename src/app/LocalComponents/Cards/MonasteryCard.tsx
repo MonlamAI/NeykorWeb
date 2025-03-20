@@ -54,7 +54,7 @@ const MonasteryCard = ({
      };
   
   return (
-    <Link href={`/Monastary/${sect}/${id}`}>
+    <Link href={`/${locale}/Monastary/${sect}/${id}`}>
       <Card
         className={`overflow-hidden hover:shadow-lg dark:bg-neutral-900 h-full transition-shadow ${className} `}
       >

@@ -42,7 +42,7 @@ const FestivalCard = ({ id, image, translation, locale, isadmin, onDelete }: any
 
   return (
     <Link
-      href={`/Festival/${id}`}
+      href={`/${locale}/Festival/${id}`}
       className="bg-white dark:bg-neutral-900 rounded-lg h-full shadow-md overflow-hidden hover:shadow-lg transition-shadow"
     >
       <div className="relative w-full h-48">

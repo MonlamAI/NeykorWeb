@@ -48,7 +48,7 @@ const PilgrimSiteCard = ({
     };
   return (
     <Link
-      href={`/Sacred/${id}`}
+      href={`/${locale}/Sacred/${id}`}
       className="bg-white dark:bg-neutral-900 rounded-lg h-full shadow-md overflow-hidden hover:shadow-lg transition-shadow relative"
     >
       {isadmin && (
