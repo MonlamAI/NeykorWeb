@@ -14,7 +14,8 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { STATES, COUNTRIES } from '@/lib/utils';
+import { STATES, COUNTRIES, localeAlias } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 const ContactEditSection = ({ 
   contact, 
@@ -24,20 +25,45 @@ const ContactEditSection = ({
 }: any) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
-  const [editedContact, setEditedContact] = useState({
-    email: contact.email || "",
-    phone_number: contact.phone_number || "",
-    translations: contact.translations.map((t: any) => ({
+  const [editedContact, setEditedContact] = useState(() => {
+    const existingTranslations = contact.translations.map((t: any) => ({
       languageCode: t.languageCode,
       address: t.address || "",
       city: t.city || "",
       state: t.state || "",
       postal_code: t.postal_code || "",
       country: t.country || ""
-    }))
+    }));
+    
+    const hasCurrentLocaleTranslation = existingTranslations.some((t: any) => 
+      t.languageCode === activeLocale || t.languageCode === localeAlias[activeLocale]
+    );
+    
+    const translations = hasCurrentLocaleTranslation ? existingTranslations : [
+      ...existingTranslations,
+      {
+        languageCode: localeAlias[activeLocale] || activeLocale,
+        address: "",
+        city: "",
+        state: "",
+        postal_code: "",
+        country: ""
+      }
+    ];
+    
+    return {
+      email: contact.email || "",
+      phone_number: contact.phone_number || "",
+      translations
+    };
   });
+  
+  const stateT = useTranslations("state");
+  const countryT = useTranslations("country");
 
-  const contactEn = contact.translations.find((t: any) => t.languageCode === "en");
+  const activeTranslation = contact.translations.find((t: any) => 
+    t.languageCode === (localeAlias[activeLocale] || activeLocale)
+  );
 
   const handleCancel = () => {
     setIsEditing(false);
@@ -104,26 +130,85 @@ const ContactEditSection = ({
   };
 
   const updateTranslation = (languageCode: string, field: string, value: string) => {
-    setEditedContact(prev => ({
-      ...prev,
-      translations: prev.translations.map((t: {
-        languageCode: string;
-        address: string;
-        city: string;
-        state: string;
-        postal_code: string;
-        country: string;
-      }) => 
-        t.languageCode === languageCode 
-          ? { ...t, [field]: value }
-          : t
-      )
-    }));
+    setEditedContact(prev => {
+      const translationExists = prev.translations.some((t: any) => 
+        t.languageCode === (localeAlias[languageCode] || languageCode)
+      );
+      
+      if (!translationExists) {
+        return {
+          ...prev,
+          translations: [
+            ...prev.translations,
+            {
+              languageCode: localeAlias[languageCode] || languageCode,
+              address: field === 'address' ? value : "",
+              city: field === 'city' ? value : "",
+              state: field === 'state' ? value : "",
+              postal_code: field === 'postal_code' ? value : "",
+              country: field === 'country' ? value : ""
+            }
+          ]
+        };
+      }
+      
+      const updatedTranslations = prev.translations.map((t: any) => {
+        if (t.languageCode === (localeAlias[languageCode] || languageCode)) {
+          return {
+            ...t,
+            [field]: value
+          };
+        }
+        return t;
+      });
+
+      if (field === 'state' || field === 'country') {
+        return {
+          ...prev,
+          translations: prev.translations.map((t: any) => {
+            if (t.languageCode === (localeAlias[languageCode] || languageCode)) {
+              return {
+                ...t,
+                [field]: value
+              };
+            }
+            return t;
+          })
+        };
+      }
+
+      return {
+        ...prev,
+        translations: updatedTranslations
+      };
+    });
   };
+
+  const getTranslationForEditing = (languageCode: string) => {
+    const normalizedLanguageCode = localeAlias[languageCode] || languageCode;
+    const translation = editedContact.translations.find((t: any) => 
+      t.languageCode === normalizedLanguageCode
+    );
+    
+    if (translation) {
+      return translation;
+    }
+    
+    return {
+      languageCode: normalizedLanguageCode,
+      address: "",
+      city: "",
+      state: "",
+      postal_code: "",
+      country: ""
+    };
+  };
+
+  const activeEditTranslation = getTranslationForEditing(activeLocale);
 
   return (
     <Card>
-       <DynamicQRCode/>
+      <DynamicQRCode/>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className={`text-xl ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
           {activeLocale === "bod" ? "འབྲེལ་གཏུག་གནས་ཚུལ།" : "Contact Information"}
@@ -170,8 +255,8 @@ const ContactEditSection = ({
                 {activeLocale === "bod" ? "ཁ་བྱང་།" : "Address"}
               </label>
               <Input
-                value={editedContact.translations[0].address}
-                onChange={(e) => updateTranslation("en", "address", e.target.value)}
+                value={activeEditTranslation.address}
+                onChange={(e) => updateTranslation(activeLocale, "address", e.target.value)}
                 placeholder="Enter address"
               />
             </div>
@@ -182,8 +267,8 @@ const ContactEditSection = ({
                   {activeLocale === "bod" ? "གྲོང་ཁྱེར།" : "City"}
                 </label>
                 <Input
-                  value={editedContact.translations[0].city}
-                  onChange={(e) => updateTranslation("en", "city", e.target.value)}
+                  value={activeEditTranslation.city}
+                  onChange={(e) => updateTranslation(activeLocale, "city", e.target.value)}
                   placeholder="Enter city"
                 />
               </div>
@@ -193,16 +278,16 @@ const ContactEditSection = ({
                   {activeLocale === "bod" ? "མངའ་སྡེ།" : "State"}
                 </label>
                 <Select 
-                  value={editedContact.translations[0].state}
-                  onValueChange={(value) => updateTranslation("en", "state", value)}
+                  value={activeEditTranslation.state}
+                  onValueChange={(value) => updateTranslation(activeLocale, "state", value)}
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a state" />
+                  <SelectTrigger className={` ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+                    <SelectValue placeholder={activeLocale === "bod" ? "མངའ་སྡེ་འདེམས།" : "Select a state"} />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent  className={` ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
                     {STATES.map((state) => (
                       <SelectItem key={state} value={state}>
-                        {state}
+                        {activeLocale === "bod" ? stateT(state) : state}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -216,8 +301,8 @@ const ContactEditSection = ({
                   {activeLocale === "bod" ? "འཕྲིན་ཡིག་ཨང་།" : "Postal Code"}
                 </label>
                 <Input
-                  value={editedContact.translations[0].postal_code}
-                  onChange={(e) => updateTranslation("en", "postal_code", e.target.value)}
+                  value={activeEditTranslation.postal_code}
+                  onChange={(e) => updateTranslation(activeLocale, "postal_code", e.target.value)}
                   placeholder="Enter postal code"
                 />
               </div>
@@ -227,16 +312,16 @@ const ContactEditSection = ({
                   {activeLocale === "bod" ? "རྒྱལ་ཁབ།" : "Country"}
                 </label>
                 <Select 
-                  value={editedContact.translations[0].country}
-                  onValueChange={(value) => updateTranslation("en", "country", value)}
+                  value={activeEditTranslation.country}
+                  onValueChange={(value) => updateTranslation(activeLocale, "country", value)}
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a country" />
+                  <SelectTrigger className={` ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+                    <SelectValue placeholder={activeLocale === "bod" ? "རྒྱལ་ཁབ་འདེམས།" : "Select a country"} />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className={` ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
                     {COUNTRIES.map((country) => (
                       <SelectItem key={country} value={country}>
-                        {country}
+                        {activeLocale === "bod" ? countryT(country) : country}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -245,36 +330,40 @@ const ContactEditSection = ({
             </div>
 
             <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={handleCancel}>
-                Cancel
+              <Button variant="outline" className={` ${activeLocale === "bod" ? "font-monlamuchen" : ""}`} onClick={handleCancel}>
+                {activeLocale === "bod" ? "ཕྱིར་འཐོན།" : "Cancel"}
               </Button>
-              <Button onClick={handleSave} disabled={isUpdating}>
+              <Button onClick={handleSave} className={` ${activeLocale === "bod" ? "font-monlamuchen" : ""}`} disabled={isUpdating}>
                 {isUpdating ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Saving...
+                    {activeLocale === "bod" ? "ཉར་བཞིན་པ།" : "Saving..."}
                   </>
                 ) : (
-                  "Save"
+                  activeLocale === "bod" ? "ཉར།" : "Save"
                 )}
               </Button>
             </div>
           </div>
         ) : (
           <>
-            {contactEn?.address && (
-              <div>
-                <p className={`font-medium ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+            {activeTranslation?.address && (
+              <div className= {`${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+                <p className={`font-medium `}>
                   {activeLocale === "bod" ? "ཁ་བྱང་།" : "Address"}
                 </p>
                 <p className="text-gray-600 dark:text-gray-400">
-                  {contactEn.address}
+                  {activeTranslation.address}
                   <br />
-                  {contactEn.city}
-                  {contactEn.state && <>, {contactEn.state}</>}
-                  {contactEn.postal_code && <> {contactEn.postal_code}</>}
+                  {activeTranslation.city}
+                  {activeTranslation.state && (
+                    <>
+                      , {activeLocale === "bod" ? stateT(activeTranslation.state) : activeTranslation.state}
+                    </>
+                  )}
+                  {activeTranslation.postal_code && <> {activeTranslation.postal_code}</>}
                   <br />
-                  {contactEn.country}
+                  {activeTranslation.country && (activeLocale === "bod" ? countryT(activeTranslation.country) : activeTranslation.country)}
                 </p>
               </div>
             )}

@@ -422,13 +422,7 @@ const isAdmin = role === "ADMIN";
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <h3
-                    className={`text-xl font-semibold ${
-                      params.locale === "bod" && "font-monlamuchen"
-                    }`}
-                  >
-                    {params.locale === "bod" ? "བརྗོད་གཞི" : "Description"}
-                  </h3>
+                  
                   <p
                     className={`text-gray-700 dark:text-gray-400 text-justify leading-relaxed ${
                       params.locale === "bod" && "font-monlamuchen"

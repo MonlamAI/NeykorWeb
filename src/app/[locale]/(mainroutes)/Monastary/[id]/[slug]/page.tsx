@@ -303,7 +303,6 @@ function MonasteryContent({ params }: { params: any }) {
   if (!monastery || !currentTranslation) return <div className="p-8">No data found</div>;
 
   const labels = breadcrumbLabels[activeLocale] || breadcrumbLabels.en;
-  const contactEn = monastery.contact.translations.find(t => t.languageCode === "en");
 
   const breadcrumbItems = [
     { label: labels.monastery, href: "/Monastary" },
@@ -512,9 +511,7 @@ function MonasteryContent({ params }: { params: any }) {
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <h3 className={`text-xl font-semibold ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
-                    {activeLocale === "bod" ? "བརྗོད་གཞི" : "Description"}
-                  </h3>
+                 
                   <p className={`text-gray-700 dark:text-gray-400 text-justify leading-relaxed ${
                     activeLocale === "bod" ? "font-monlamuchen" : ""
                   }`}>

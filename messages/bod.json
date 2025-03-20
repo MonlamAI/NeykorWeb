@@ -36,8 +36,36 @@
       "mail":"ཁྱེད་ཀྱི་གློག་འཕྲིན།",
       "message":"ཁྱེད་ཀྱི་འཕྲིན་ཡིག",
       "submit":"འཕྲིན་ཡིག་གཏོང་།"
+    },
+    "state":{
+      "Arunachal Pradesh":"ཨ་རུ་ཎཱ་ཅལ།",
+      "Bihar":"བི་ཧཱར།",
+      "Chhattisgarh":"ཆ་ཏྟཱིས་གར།",
+      "Delhi":"ལྡི་ལི།",
+      "Himachal Pradesh":"ཧི་མཱ་ཅལ།",
+      "Karnataka":"ཀརནཱ་ཊཀ།",
+      "Ladakh":"ལ་དྭགས།",
+      "Meghalaya":"མེ་གྷཱ་ལ་ཡ།",
+      "Maharashtra":"མཧཱ་རཥཊྲ།",
+      "Odisha":"ཨོ་ཌི་ཤཱ།",
+      "Sikkim":"སིག་ཀྱིམ།",
+      "Uttar Pradesh":"ཨུ་ཏར་པར་དྷི་ཤི།",
+      "Uttarakhand":"ཨུ་ཏར་ཁན།",
+      "West Bengal":"ཝི་ས་གྷན་གོལ།",
+      "Kathmandu":"ཀ་ཐ་མན་གྲུ།",
+      "Lumbini":"ལུམ་བི་ཎི།",
+      "Pokhara":"སྤོག་ར།",
+      "Solokhumbu":"སོ་ལོ་ཁམ་བུ།",
+      "Thimphu":"ཐིམ་བུ།",
+      "Paro":"སྤ་རོ།",
+      "Bumthang":"བུམ་ཐང་།",
+      "Other":"གཞན"
+    },
+    "country":{
+      "India":"རྒྱ་གར་",
+      "Nepal":"བལ་ཡུལ་",
+      "Bhutan":"འབྲུག་ཡུལ་"
     }
-  
 }
 
 

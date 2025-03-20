@@ -36,6 +36,35 @@
     "mail":"your email",
     "message":"your message",
     "submit":"submit"
+  },
+  "state":{
+    "Arunachal Pradesh":"Arunachal Pradesh",
+    "Bihar":"Bihar",
+    "Chhattisgarh":"Chhattisgarh",
+    "Delhi":"Delhi",
+    "Himachal Pradesh":"Himachal Pradesh",
+    "Karnataka":"Karnataka",
+    "Ladakh":"Ladakh",
+    "Meghalaya":"Meghalaya",
+    "Maharashtra":"Maharashtra",
+    "Odisha":"Odisha",
+    "Sikkim":"Sikkim",
+    "Uttar Pradesh":"Uttar Pradesh",
+    "Uttarakhand":"Uttarakhand",
+    "West Bengal":"West Bengal",
+    "Kathmandu":"Kathmandu",
+    "Lumbini":"Lumbini",
+    "Pokhara":"Pokhara",
+    "Solokhumbu":"Solokhumbu",
+    "Thimphu":"Thimphu",
+    "Paro":"Paro",
+    "Bumthang":"Bumthang",
+    "Other":"Other"
+  },
+  "country":{
+    "India":"India",
+    "Nepal":"Nepal",
+    "Bhutan":"Bhutan"
   }
-
 }
+
