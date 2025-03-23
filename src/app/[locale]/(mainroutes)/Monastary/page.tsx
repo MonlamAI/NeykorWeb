@@ -101,8 +101,8 @@ async function MonasteryDashboardContent({ locale }: LocaleProps) {
   const groupedMonasteries = groupMonasteriesBySect(gonpadata);
   
   return (
-    <div className="container mx-auto pt-8 px-4">
-      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className=" mx-auto ">
+      <div className="mt-6 gap-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 [&>*:last-child]:lg:col-start-2">
         {Object.entries(groupedMonasteries).map(([sect, monasteries]) => (
           <SectCard
             key={sect}
