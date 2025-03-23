@@ -21,7 +21,7 @@ import { createcontact, creategonpa, createS3UploadUrl, postStatue } from "@/app
 import { toast } from "@/hooks/use-toast";
 import { getGonpaTypes } from "@/app/actions/getactions";
 import { validateFile } from "@/lib/utils";
-import { STATES } from '@/lib/utils';
+import { STATES, COUNTRIES } from '@/lib/utils';
 
 const MonasteryModal = ({ id, onSuccess }: any) => {
   const [open, setOpen] = useState(false);
@@ -39,6 +39,14 @@ const MonasteryModal = ({ id, onSuccess }: any) => {
         postal_code: "",
         country: "",
       },
+      {
+        languageCode: "bo",
+        address: "",
+        city: "",
+        state: "",
+        postal_code: "",
+        country: "",
+      }
     ],
   });
   const [formData, setFormData] = useState({
@@ -103,6 +111,14 @@ const MonasteryModal = ({ id, onSuccess }: any) => {
     }));
   };
   const handleRemoveContactTranslation = (index: number) => {
+    if (index < 2) {
+      toast({
+        title: "Cannot remove",
+        description: "English and Tibetan translations are required",
+        variant: "destructive",
+      });
+      return;
+    }
     setContactData(prev => ({
       ...prev,
       translations: prev.translations.filter((_, i) => i !== index),
@@ -111,9 +127,20 @@ const MonasteryModal = ({ id, onSuccess }: any) => {
   const handleContactTranslationChange = (index: number, field: string, value: string) => {
     setContactData(prev => ({
       ...prev,
-      translations: prev.translations.map((trans, i) =>
-        i === index ? { ...trans, [field]: value } : trans
-      ),
+      translations: prev.translations.map((trans, i) => {
+        if (i === index) {
+          // For non-English translations, state and country should mirror English translation
+          if (index !== 0 && (field === 'state' || field === 'country')) {
+            return trans;
+          }
+          return { ...trans, [field]: value };
+        }
+        // Update state and country for all non-English translations when English is updated
+        if (index === 0 && (field === 'state' || field === 'country')) {
+          return i === 0 ? { ...trans, [field]: value } : { ...trans, [field]: value };
+        }
+        return trans;
+      }),
     }));
   };
 
@@ -299,6 +326,14 @@ const MonasteryModal = ({ id, onSuccess }: any) => {
                 postal_code: "",
                 country: "",
               },
+              {
+                languageCode: "bo",
+                address: "",
+                city: "",
+                state: "",
+                postal_code: "",
+                country: "",
+              }
             ],
           })
       }
@@ -415,7 +450,7 @@ const MonasteryModal = ({ id, onSuccess }: any) => {
               {contactData.translations.map((translation, index) => (
                 <div key={index} className="p-4 border rounded-lg space-y-3">
                   <div className="flex justify-between items-center">
-                    <h4 className="font-medium">Translation {index + 1}</h4>
+                    <h4 className="font-medium">Contact Translation {index + 1}</h4>
                     {index > 0 && (
                       <Button
                         type="button"
@@ -464,6 +499,7 @@ const MonasteryModal = ({ id, onSuccess }: any) => {
                       <Select 
                         value={translation.state}
                         onValueChange={(value) => handleContactTranslationChange(index, "state", value)}
+                        disabled={index !== 0}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select a state" />
@@ -491,12 +527,22 @@ const MonasteryModal = ({ id, onSuccess }: any) => {
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Country</label>
-                      <Input
-                        required
+                      <Select
                         value={translation.country}
-                        onChange={(e) => handleContactTranslationChange(index, "country", e.target.value)}
-                        placeholder="Enter country"
-                      />
+                        onValueChange={(value) => handleContactTranslationChange(index, "country", value)}
+                        disabled={index !== 0}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a country" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {COUNTRIES.map((country) => (
+                            <SelectItem key={country} value={country}>
+                              {country}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </div>
