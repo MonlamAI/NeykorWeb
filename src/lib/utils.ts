@@ -62,6 +62,7 @@ export const SECT_TRANSLATION_KEYS = {
 export const OTHER_SECTS = ['REMEY', 'SHALU', 'BODONG', 'OTHER'];
 
 export const STATES = [
+  "Andhra Pradesh",
   "Arunachal Pradesh",
   "Bihar",
   "Chhattisgarh",
