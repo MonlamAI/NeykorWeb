@@ -70,6 +70,7 @@ export const STATES = [
   "Karnataka",
   "Ladakh",
   "Meghalaya",
+  "Madhya Pradesh",
   "Maharashtra",
   "Odisha",
   "Sikkim",
