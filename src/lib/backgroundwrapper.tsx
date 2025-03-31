@@ -1,6 +1,6 @@
- 'use client'
+'use client'
 import { usePathname } from "next/navigation";
-import bgimage from "../../public/Gradient.webp";
+import bgimage from "../../public/header.jpg";
 
 interface BackgroundWrapperProps {
   children: React.ReactNode;
@@ -9,25 +9,24 @@ interface BackgroundWrapperProps {
 
 const BackgroundWrapper = ({ children }: BackgroundWrapperProps) => {
   const pathname = usePathname();
-  
   const shouldShowBackground = pathname === '/en' || pathname === '/bod';
 
   return (
-    <div className={`relative min-h-screen  ${shouldShowBackground && "bg-white"}  w-full`}>
+    <div className={`relative min-h-screen w-full overflow-x-hidden ${shouldShowBackground ? "bg-white" : ""}`}>
       {shouldShowBackground && (
         <div
           className="fixed top-0 left-0 right-0 w-full pointer-events-none"
           style={{
-            height: '45vh',
+            height: '35vh',
             backgroundImage: `url(${bgimage.src})`,
-            backgroundSize: '100% 100%',
-            backgroundPosition: 'top center',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center top',
             backgroundRepeat: 'no-repeat',
             zIndex: 0
           }}
         />
       )}
-      <div className={`relative z-10 min-h-screen `}>
+      <div className="relative z-10 min-h-screen flex flex-col w-full">
         {children}
       </div>
     </div>

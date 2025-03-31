@@ -67,6 +67,12 @@
     "India":"India",
     "Nepal":"Nepal",
     "Bhutan":"Bhutan"
+  },
+  "homescreen":{
+    "one":"Festivals",
+    "two":"Statues",
+    "three":"Monasteries",
+    "four":"Pilgrimage Site"
   }
 }
 
