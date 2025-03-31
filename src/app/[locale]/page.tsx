@@ -48,23 +48,23 @@ export default function Home() {
         <div className="inset-0 flex items-start justify-center pointer-events-none">
           <Image src={pata} alt="wheel" width={800} height={200} className="opacity-50"/>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-6 gap-3 w-full max-w-4xl px-4">
-          <Link href="/Monastary/NYINGMA" className="cursor-pointer border py-2 px-4 bg-white hover:bg-gray-50 transition-colors text-center">
+        <div className="grid grid-cols-2 sm:grid-cols-6 gap-3 w-full max-w-4xl px-4 text-black">
+          <Link href="/Monastary/NYINGMA" className=" rounded-lg  py-2 px-4 bg-white hover:bg-gray-50 transition-colors text-center">
             {tmon("m1")}
           </Link>
-          <Link href="/Monastary/KAGYU" className="border py-2 px-4 rounded-lg bg-white hover:bg-gray-50 transition-colors text-center">
+          <Link href="/Monastary/KAGYU" className=" py-2 px-4 rounded-lg bg-white hover:bg-gray-50 transition-colors text-center">
             {tmon("m2")}
           </Link>
-          <Link href="/Monastary/SAKYA" className="border py-2 px-4 rounded-lg bg-white hover:bg-gray-50 transition-colors text-center">
+          <Link href="/Monastary/SAKYA" className=" py-2 px-4 rounded-lg bg-white hover:bg-gray-50 transition-colors text-center">
             {tmon("m3")}
           </Link>
-          <Link href="/Monastary/GELUG" className="border py-2 px-4 rounded-lg bg-white hover:bg-gray-50 transition-colors text-center">
+          <Link href="/Monastary/GELUG" className=" py-2 px-4 rounded-lg bg-white hover:bg-gray-50 transition-colors text-center">
             {tmon("m4")}
           </Link>
-          <Link href="/Monastary/BHON" className="border py-2 px-4 rounded-lg bg-white hover:bg-gray-50 transition-colors text-center">
+          <Link href="/Monastary/BHON" className=" py-2 px-4 rounded-lg bg-white hover:bg-gray-50 transition-colors text-center">
             {tmon("m5")}
           </Link>
-          <Link href="/Monastary/JONANG" className="border py-2 px-4 rounded-lg bg-white hover:bg-gray-50 transition-colors text-center">
+          <Link href="/Monastary/JONANG" className=" py-2 px-4 rounded-lg bg-white hover:bg-gray-50 transition-colors text-center">
             {tmon("m7")}
           </Link>
         </div>
