@@ -441,7 +441,7 @@ function MonasteryContent({ params }: { params: any }) {
           <SelectItem value="KAGYU">Kagyu</SelectItem>
           <SelectItem value="SAKYA">Sakya</SelectItem>
           <SelectItem value="GELUG">Gelug</SelectItem>
-          <SelectItem value="BON">Bon</SelectItem>
+          <SelectItem value="BHON">Bhon</SelectItem>
           <SelectItem value="JONANG">Jonang</SelectItem>
           <SelectItem value="OTHER">Other</SelectItem>
         </SelectContent>
