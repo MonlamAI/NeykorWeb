@@ -72,9 +72,9 @@ export default async function RootLayout({
               <AuthProvider>
               <RoleProvider>
              
-<div className="relative min-h-screen ">
+<div className="relative">
   <BackgroundWrapper>
-    <div className="relative items-center px-2 max-screen mx-auto flex flex-col justify-between min-h-screen">
+    <div className=" items-center px-2  mx-auto flex flex-col justify-between h-screen ">
       <Navbar />
       {children}
       <Footer />

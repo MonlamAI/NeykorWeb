@@ -17,7 +17,7 @@ const BackgroundWrapper = ({ children }: BackgroundWrapperProps) => {
         <div
           className="fixed top-0 left-0 right-0 w-full pointer-events-none"
           style={{
-            height: '35vh',
+            height: '30vh',
             backgroundImage: `url(${bgimage.src})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center top',

@@ -11,27 +11,18 @@ export default function Home() {
   const activelocale = useLocale();
   const stanzaClasses = `max-w-xl mb-4 text-black ${
     activelocale == "bod" 
-      ? "font-monlam22 md:text-base text-sm font-bold text-black"
-      : ""
+      ? "font-monlam22 md:text-lg text-base font-bold text-black"
+      : "md:text-4xl text-base"
   }`;
 
   return (
-    <main className="flex-1 w-full flex flex-col">
-      <div className="relative flex-1 flex items-center justify-between px-4 md:px-8 py-8 max-w-8xl mx-auto w-full">
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+    <main className="flex-1  w-[calc(100vw-20px)] flex flex-col">
+      <div className="relative flex-1 flex items-center justify-around mt-48 px-4 md:px-8 py-8 mx-auto w-full">
+        <div className="absolute hidden md:flex inset-0  items-center justify-center pointer-events-none">
           <Image src={wheetimage} alt="wheel" width={300} height={300} className="opacity-50"/>
         </div>
         
-        <div className="flex-1 max-w-2xl mt-24">
-          <h1
-            className={`text-xl md:text-3xl md:text-neutral-800 ${
-              activelocale == "bod"
-                ? "font-tsumachu"
-                : "font-black mt-2 max-w-xl uppercase"
-            }`}
-          >
-            {t("title")}
-          </h1>
+        <div className="flex-1 max-w-4xl ">
           <p className={stanzaClasses}>{t("stanza1")}</p>
           <p className={stanzaClasses}>{t("stanza2")}</p>
           <p className={stanzaClasses}>{t("stanza3")}</p>
@@ -40,15 +31,14 @@ export default function Home() {
             {t("des")}
           </p>
         </div>
-
         <ImageGallery />
       </div>
 
-      <div className={`${activelocale != "en" ? "font-monlamuchen" : ""} bg-[#EDE9E8] flex-col py-4 px-2 flex items-center justify-center w-full`}>
+      <div className={`${activelocale != "en" ? "font-monlamuchen" : ""} bg-[#EDE9E8] h-36 flex-col py-4 px-2 flex items-center justify-center w-full`}>
         <div className="inset-0 flex items-start justify-center pointer-events-none">
           <Image src={pata} alt="wheel" width={800} height={200} className="opacity-50"/>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-6 gap-3 w-full max-w-4xl px-4 text-black">
+        <div className="grid grid-cols-2 sm:grid-cols-6 gap-3 w-full mt-8 max-w-4xl px-4 text-black">
         <Link href="https://chorig.org/religious-schools/nyingma" className=" rounded-lg py-2 px-4 bg-white hover:bg-gray-50 transition-colors text-center" target="_blank" rel="noopener noreferrer">
   {tmon("m1")}
 </Link>

@@ -20,7 +20,7 @@ const ImageGallery = () => {
           {images.map((image, index) => (
             <div
               key={index}
-              className="relative w-64 h-40 overflow-hidden rounded-sm group"
+              className="relative w-44 h-40 overflow-hidden rounded-sm group"
             >
               <Link href={image.links} className="block w-full h-full">
                 <Image
