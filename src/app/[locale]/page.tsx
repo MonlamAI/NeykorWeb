@@ -49,24 +49,24 @@ export default function Home() {
           <Image src={pata} alt="wheel" width={800} height={200} className="opacity-50"/>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-6 gap-3 w-full max-w-4xl px-4 text-black">
-          <Link href="/Monastary/NYINGMA" className=" rounded-lg  py-2 px-4 bg-white hover:bg-gray-50 transition-colors text-center">
-            {tmon("m1")}
-          </Link>
-          <Link href="/Monastary/KAGYU" className=" py-2 px-4 rounded-lg bg-white hover:bg-gray-50 transition-colors text-center">
-            {tmon("m2")}
-          </Link>
-          <Link href="/Monastary/SAKYA" className=" py-2 px-4 rounded-lg bg-white hover:bg-gray-50 transition-colors text-center">
-            {tmon("m3")}
-          </Link>
-          <Link href="/Monastary/GELUG" className=" py-2 px-4 rounded-lg bg-white hover:bg-gray-50 transition-colors text-center">
-            {tmon("m4")}
-          </Link>
-          <Link href="/Monastary/BHON" className=" py-2 px-4 rounded-lg bg-white hover:bg-gray-50 transition-colors text-center">
-            {tmon("m5")}
-          </Link>
-          <Link href="/Monastary/JONANG" className=" py-2 px-4 rounded-lg bg-white hover:bg-gray-50 transition-colors text-center">
-            {tmon("m7")}
-          </Link>
+        <Link href="https://chorig.org/religious-schools/nyingma" className=" rounded-lg py-2 px-4 bg-white hover:bg-gray-50 transition-colors text-center" target="_blank" rel="noopener noreferrer">
+  {tmon("m1")}
+</Link>
+<Link href="https://chorig.org/religious-schools/kagyu" className=" py-2 px-4 rounded-lg bg-white hover:bg-gray-50 transition-colors text-center" target="_blank" rel="noopener noreferrer">
+  {tmon("m2")}
+</Link>
+<Link href="https://chorig.org/religious-schools/sakya" className=" py-2 px-4 rounded-lg bg-white hover:bg-gray-50 transition-colors text-center" target="_blank" rel="noopener noreferrer">
+  {tmon("m3")}
+</Link>
+<Link href="https://chorig.org/religious-schools/gelug" className=" py-2 px-4 rounded-lg bg-white hover:bg-gray-50 transition-colors text-center" target="_blank" rel="noopener noreferrer">
+  {tmon("m4")}
+</Link>
+<Link href="https://chorig.org/bon" className=" py-2 px-4 rounded-lg bg-white hover:bg-gray-50 transition-colors text-center" target="_blank" rel="noopener noreferrer">
+  {tmon("m5")}
+</Link>
+<Link href="https://chorig.org/religious-schools/jonang" className=" py-2 px-4 rounded-lg bg-white hover:bg-gray-50 transition-colors text-center" target="_blank" rel="noopener noreferrer">
+  {tmon("m7")}
+</Link>
         </div>
       </div>
     </main>
