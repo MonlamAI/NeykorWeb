@@ -34,14 +34,7 @@ const Navbar = () => {
                 }`}
               >
                 {t("name")}
-              </h1>
-           
-            <div className="hidden lg:block max-w-xs border-l-2 px-2 text-start">
-              <h2 className={`text-xs ${!checkcolor?" text-black dark:text-white":"text-black "}  font-medium`}>
-                Department of Religion and Culture <br /> Central Tibetan
-                Administration
-              </h2>
-            </div>
+              </h1> 
           </div>
           </Link>
           <div className="hidden md:flex items-center space-x-4">

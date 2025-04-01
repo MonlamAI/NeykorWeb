@@ -8,8 +8,8 @@ const Footer = () => {
   const checkcolor = pathname === '/en' || pathname === '/bod';
   
   return (
-    <div className={`text-sm ${!checkcolor ? "text-black dark:text-white" : "text-black bg-[#EDE9E8]"} w-full flex items-center justify-center`}>
-      © 2025 Department of Religion & Culture, CTA.
+    <div className={`text-sm ${!checkcolor ? "text-black dark:text-white" : "text-black bg-[#EDE9E8]"} w-full flex items-center text-center justify-center`}>
+      Department of Religion and Culture, Central Tibetan Administration
     </div>
   );
 };

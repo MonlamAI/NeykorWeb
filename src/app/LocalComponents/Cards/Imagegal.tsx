@@ -15,8 +15,8 @@ const ImageGallery = () => {
   ];
 
   return (
-    <div className="my-8 max-w-6xl mx-auto px-4 hidden md:block">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className=" max-w-6xl mx-auto px-4 hidden md:block">
+      <div className="grid grid-cols-1 md:grid-cols-2 mt-8 gap-4">
         {images.map((image, index) => (
           <div key={index} className="flex flex-col items-center">
             <Link href={image.links} className="block w-full">
