@@ -238,7 +238,7 @@ const isAdmin = role === "ADMIN";
   const breadcrumbLabels = {
     en: {
       home: "Home",
-      pilgrimage: "Pilgrimage Sites",
+      pilgrimage: "Sacred Sites",
       details: "Details",
     },
     bod: {
@@ -248,7 +248,7 @@ const isAdmin = role === "ADMIN";
     },
   }[params.locale] || {
     home: "Home",
-    pilgrimage: "Pilgrimage Sites",
+    pilgrimage: "Sacred Sites",
     details: "Details",
   };
 
