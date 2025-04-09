@@ -17,7 +17,7 @@ export default function Home() {
   }`;
   
   return (
-    <main className="flex-1 w-[calc(100vw-20px)] flex flex-col">
+    <main className="flex-1 w-[calc(100vw-20px)] overflow-hidden flex flex-col">
       <div className="relative flex-1 flex items-center justify-around mt-48 px-4 md:px-8 py-8 mx-auto w-full">
         <div className="absolute hidden md:flex inset-0 items-center justify-center pointer-events-none">
           <Image src={wheetimage} alt="wheel" width={300} height={300} className="opacity-50"/>
@@ -33,11 +33,11 @@ export default function Home() {
         </div>
         <ImageGallery />
       </div>
-      <div className={`${activelocale !== "en" ? "font-monlamuchen" : ""} bg-[#EDE9E8] h-36 flex-col py-4 px-2 flex items-center justify-center w-full`}>
+      <div className={`${activelocale !== "en" ? "font-monlamuchen" : ""} bg-[#EDE9E8] h-32 flex-col py-4 px-2 flex items-center justify-center w-full`}>
         <div className="inset-0 flex items-start justify-center pointer-events-none">
           <Image src={pata} alt="wheel" width={800} height={200} className="opacity-50"/>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-6 gap-3 w-full mt-8 mb-11 md:mb-2 max-w-4xl px-4 text-black">
+        <div className="grid grid-cols-2 sm:grid-cols-6 gap-3 w-full mt-4 md:mb-2 max-w-4xl px-4 text-black">
           <Link href="https://chorig.org/religious-schools/nyingma" className="rounded-lg py-2 px-4 bg-white hover:bg-gray-50 transition-colors text-center" target="_blank" rel="noopener noreferrer">
             {tmon("m1")}
           </Link>
@@ -57,6 +57,8 @@ export default function Home() {
             {tmon("m7")}
           </Link>
         </div>
+       <p className={`${activelocale !== "en" ? "font-monlamuchen" : ""} text-sm text-black  w-full flex items-center text-center justify-center`}>Department of Religion and Culture, Central Tibetan Administration</p>
+
       </div>
     </main>
   );

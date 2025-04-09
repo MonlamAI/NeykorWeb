@@ -30,7 +30,7 @@ const ImageGallery = () => {
                   sizes="(max-width: 768px) 50vw, 25vw"
                 />
               </div>
-              <p className={`text-center text-sm ${activelocale === "bod" ? "font-monlamuchen" : ""}`}>
+              <p className={`text-center text-black mt-2 text-sm ${activelocale === "bod" ? "font-monlamuchen" : ""}`}>
                 {image.name}
               </p>
             </Link>

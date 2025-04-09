@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
 export default function LoadingSkeleton() {
   return (
-    <div className=" w-full h-full mx-auto p-4 space-y-6">
+    <div className=" w-screen h-full mx-auto p-4 space-y-6">
       <div className="flex items-center space-x-2">
         <Skeleton className="h-4 w-16" />
         <Skeleton className="h-4 w-4" />

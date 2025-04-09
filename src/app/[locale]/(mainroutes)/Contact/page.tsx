@@ -62,7 +62,7 @@ const ContactPage = () => {
   const inputClass = `w-full ${activelocale === "bod" ? "font-monlamuchen" : ""}`;
 
   return (
-    <div className="container py-8">
+    <div className="container  w-screen py-8">
       <main className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <Card>

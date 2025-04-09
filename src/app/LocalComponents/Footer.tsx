@@ -8,9 +8,11 @@ const Footer = () => {
   const checkcolor = pathname === '/en' || pathname === '/bod';
   
   return (
-    <div className={`text-sm ${!checkcolor ? "text-black dark:text-white" : "text-black bg-[#EDE9E8]"} w-full flex items-center text-center justify-center`}>
-      Department of Religion and Culture, Central Tibetan Administration
-    </div>
+    checkcolor ? null : (
+      <div className="text-sm text-black dark:text-white w-full flex items-center text-center justify-center">
+        Department of Religion and Culture, Central Tibetan Administration
+      </div>
+    )
   );
 };
 

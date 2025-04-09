@@ -122,7 +122,7 @@ const isadmin = role === "ADMIN";
     { label: breadcrumbLabels.sect },
   ];
   return (
-    <div className="container min-h-screen mx-auto py-8">
+    <div className="container mx-auto py-8">
       <div className="sticky  top-0 bg-white dark:bg-neutral-950 z-30 py-4 ">
         <div className=" flex items-center justify-between ">
           <Breadcrumb
@@ -130,7 +130,6 @@ const isadmin = role === "ADMIN";
             locale={activelocale}
             labels={{ home: breadcrumbLabels.home }}
           />
-
           <SearchComponent
             onSearch={handleSearch}
             placeholder="Search monasteries..."

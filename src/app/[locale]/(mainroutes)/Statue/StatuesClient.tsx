@@ -108,7 +108,7 @@ const StatuesClient = ({ statuesData }: { statuesData: Statue[] }) => {
   }, [currentPage, totalPages]);
 
   return (
-    <div className="relative min-h-screen w-full">
+    <div className="relative w-full">
       <div className="sticky p-2 top-0 bg-white dark:bg-neutral-950 z-30 py-4 shadow-sm">
         <div className="flex items-center">
           <SearchComponent

@@ -87,7 +87,7 @@ const SideClient = ({ pilgrimData }: any) => {
   }, [currentPage, totalPages]);
 
   return (
-    <div className="relative min-h-screen w-full">
+    <div className="relative w-full">
       <div className="sticky top-0 bg-white dark:bg-neutral-950 z-10 py-4 shadow-sm">
         <div className="flex items-center justify-between px-2">
           <SearchComponent

@@ -95,7 +95,7 @@ const FestivalClient = ({ fesdata }: { fesdata: Festival[] }) => {
   }, [currentPage, totalPages]);
 
   return (
-    <div className="relative min-h-screen w-full">
+    <div className="relative w-full">
       <div className="sticky top-0 bg-white dark:bg-neutral-950 z-30 py-4 shadow-sm">
         <div className=" flex justify-between items-center px-6">
         <SearchComponent
