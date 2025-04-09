@@ -112,7 +112,7 @@ const isadmin = role === "ADMIN";
     },
     bod: { 
       home: "གཙོ་ངོས།", 
-      monasteries: "དགོན་པ།", 
+      monasteries: "ཆོས་སྡེ།", 
       sect: sectTranslations[sect.toLowerCase()]?.bod || sect 
     },
   }[activelocale] || { home: "Home", monasteries: "Monasteries", sect };

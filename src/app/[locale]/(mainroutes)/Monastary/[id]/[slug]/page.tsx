@@ -152,7 +152,7 @@ function MonasteryContent({ params }: { params: any }) {
     },
     bod: {
       home: "གཙོ་ངོས།",
-      monastery: "དགོན་པ།",
+      monastery: "ཆོས་སྡེ།",
       details: "ཞིབ་ཕྲ།",
     },
   };
