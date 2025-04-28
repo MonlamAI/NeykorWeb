@@ -12,7 +12,7 @@ interface Statue {
   }>;
 }
 
-const API_BASE_URL = "https://gompa-tour-api.onrender.com";
+const API_BASE_URL = process.env.API_URL;
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
   headers: {

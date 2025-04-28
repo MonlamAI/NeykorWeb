@@ -1,9 +1,11 @@
 import axios from "axios"
 
+const url=process.env.API_URL;
+
 export async function updateUser(email: string, userData:any) {
     try {
       const response = await axios.put(
-        `https://gompa-tour-api.onrender.com/user/${email}`,
+        url+`/user/${email}`,
         userData,
         {
           headers: {
@@ -24,7 +26,7 @@ export async function updateUser(email: string, userData:any) {
   export async function updatestatue(statueid: string, data:any) {
     try {
       const response = await axios.put(
-        `https://gompa-tour-api.onrender.com/statue/${statueid}`,
+        url+`/statue/${statueid}`,
         data,
         {
           headers: {
@@ -45,7 +47,7 @@ export async function updateUser(email: string, userData:any) {
   export async function updateFestival(fesid: string, data:any) {
     try {
       const response = await axios.put(
-        `https://gompa-tour-api.onrender.com/festival/${fesid}`,
+        url+`/festival/${fesid}`,
         data,
         {
           headers: {
@@ -66,7 +68,7 @@ export async function updateUser(email: string, userData:any) {
   export async function updategonpa(monsid: string, data:any) {
     try {
       const response = await axios.put(
-        `https://gompa-tour-api.onrender.com/gonpa/${monsid}`,
+       url+ `/gonpa/${monsid}`,
         data,
         {
           headers: {
@@ -87,7 +89,7 @@ export async function updateUser(email: string, userData:any) {
   export async function updatesite(siteid: string, data:any) {
     try {
       const response = await axios.put(
-        `https://gompa-tour-api.onrender.com/pilgrim/${siteid}`,
+        url+`/pilgrim/${siteid}`,
         data,
         {
           headers: {
@@ -108,7 +110,7 @@ export async function updateUser(email: string, userData:any) {
   export async function updatecontact(contactid: string, data:any) {
     try {
       const response = await axios.put(
-        `https://gompa-tour-api.onrender.com/contact/${contactid}`,
+        url+`/contact/${contactid}`,
         data,
         {
           headers: {

@@ -3,6 +3,9 @@ import axios from "axios";
 import { revalidatePath } from 'next/cache';
 
 
+const url=process.env.API_URL;
+
+
 export async function createS3UploadUrl(formData: FormData) {
   try {
     const file = formData.get('file');
@@ -53,7 +56,7 @@ export async function createS3UploadUrl(formData: FormData) {
 export async function postfestival(data: any) {
   try {
     const response = await axios.post(
-      `https://gompa-tour-api.onrender.com/festival`,
+      url+`/festival`,
       data,
       {
         headers: {
@@ -77,7 +80,7 @@ export async function postfestival(data: any) {
 export async function postStatue(data: any) {
   try {
     const response = await axios.post(
-      "https://gompa-tour-api.onrender.com/statue",
+      url+"/statue",
       data,
       {
         headers: {
@@ -99,7 +102,7 @@ export async function postStatue(data: any) {
 }
 export async function createUser(userData: any) {
   try {
-   const response= await axios.post("https://gompa-tour-api.onrender.com/user", userData, {
+   const response= await axios.post(url+"/user", userData, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -121,7 +124,7 @@ export async function createUser(userData: any) {
 export async function creategonpa(data: any) {
   try {
     const response = await axios.post(
-      "https://gompa-tour-api.onrender.com/gonpa",
+      url+"/gonpa",
       data,
       {
         headers: {
@@ -142,7 +145,7 @@ export async function creategonpa(data: any) {
 export async function createcontact(data: any) {
   try {
     const response = await axios.post(
-      "https://gompa-tour-api.onrender.com/contact",
+      url+"/contact",
       data,
       {
         headers: {
@@ -163,7 +166,7 @@ export async function createcontact(data: any) {
 export async function createSacred(data:any){
   try {
     const response = await axios.post(
-      "https://gompa-tour-api.onrender.com/pilgrim",
+      url+"/pilgrim",
       data,
       {
         headers: {

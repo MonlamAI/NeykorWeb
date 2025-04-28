@@ -1,10 +1,13 @@
 'use server'
 import axios from "axios";
 
+
+const url=process.env.API_URL;
+
 export async function deleteSacred(statueId: string) {
     try {
       const response = await axios.delete(
-        `https://gompa-tour-api.onrender.com/statue/${statueId}`,
+        url+`/statue/${statueId}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -24,7 +27,7 @@ export async function deleteSacred(statueId: string) {
   export async function deletepilgrim(statueId: string) {
     try {
       const response = await axios.delete(
-        `https://gompa-tour-api.onrender.com/pilgrim/${statueId}`,
+        url+`/pilgrim/${statueId}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -44,7 +47,7 @@ export async function deleteSacred(statueId: string) {
   export async function deleteuser(email: string) {
     try {
       const response = await axios.delete(
-        `https://gompa-tour-api.onrender.com/user/${email}`,
+        url+`/user/${email}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -65,7 +68,7 @@ export async function deleteSacred(statueId: string) {
   {
     try {
       const response = await axios.delete(
-        `https://gompa-tour-api.onrender.com/gonpa/${gonpaid}`,
+        url+`/gonpa/${gonpaid}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -86,7 +89,7 @@ export async function deleteSacred(statueId: string) {
   {
     try {
       const response = await axios.delete(
-        `https://gompa-tour-api.onrender.com/festival/${festid}`,
+        url+`/festival/${festid}`,
         {
           headers: {
             "Content-Type": "application/json",
