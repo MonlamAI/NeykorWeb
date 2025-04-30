@@ -162,7 +162,6 @@ const isAdmin = role === "ADMIN";
             : t
         ),
       };
-
       await updatestatue(params.id, updatedData);
       setIsEditing(false);
       setNewImage(null);
@@ -223,11 +222,10 @@ const isAdmin = role === "ADMIN";
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="overflow-hidden">
             <div className="relative aspect-square">
-              <Image
+              <img
                 src={data.image}
                 alt={currentTranslation.name || "Statue"}
-                fill
-                className="object-cover"
+                className="w-full h-full object-cover"
               />
               {isEditing && (
                 <div className="absolute inset-0 bg-black/50 text-white flex items-center justify-center">
