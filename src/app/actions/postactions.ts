@@ -14,7 +14,7 @@ export async function createS3UploadUrl(formData: FormData) {
     apiFormData.append('file', file);
 
     const response = await axios.post(
-      "https://api.monlam.ai/api/v1/upload",
+      `${url}/api/upload`,
       apiFormData,
       {
         headers: {
