@@ -9,7 +9,7 @@ export const localeAlias: { [key: string]: string } = {
   bod: "bo",
 };
 
-
+export const IMAGE_BASE_URL = process.env.IMAGE_BASE_URL;
 export const validateFile = (file: File, type: 'image' | 'audio') => {
   const maxSize = 10 * 1024 * 1024;
   
@@ -40,13 +40,13 @@ export const formatDateForDisplay = (dateString: string) => {
 };
 
 export const BACKGROUND_IMAGES = {
-  nyingma: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1732078167GP205668.jpg",
-  kagyu: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1731493541GP205597.jpg",
-  sakya: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1732251070GP205684.jpg",
-  gelug: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1731488192GP205592.jpg",
-  bhon: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1731914731GP205645.jpg",
-  jonang: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1731559304GP205604.jpg",
-  other: "https://gompa-tour.s3.ap-south-1.amazonaws.com/media/images/1732603251GP205716.jpg",
+  nyingma: `${IMAGE_BASE_URL}/media/images/1732078167GP205668.jpg`,
+  kagyu: `${IMAGE_BASE_URL}/media/images/1731493541GP205597.jpg`,
+  sakya: `${IMAGE_BASE_URL}/media/images/1732251070GP205684.jpg`,
+  gelug: `${IMAGE_BASE_URL}/media/images/1731488192GP205592.jpg`,
+  bhon: `${IMAGE_BASE_URL}/media/images/1731914731GP205645.jpg`,
+  jonang: `${IMAGE_BASE_URL}/media/images/1731559304GP205604.jpg`,
+  other: `${IMAGE_BASE_URL}/media/images/1732603251GP205716.jpg`,
 };
 
 export const SECT_TRANSLATION_KEYS = {
