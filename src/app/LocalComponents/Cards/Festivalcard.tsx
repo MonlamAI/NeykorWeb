@@ -58,8 +58,8 @@ const FestivalCard = ({ id, image, translation, locale, isadmin, onDelete }: any
           </Button>
         )}
         {image &&
-        (image.startsWith("https://s3.ap-south-1.amazonaws.com") ||
-          image.startsWith("https://monlam-ai-web-testing.s3.ap-south-1.amazonaws.com")) ? (
+        (image.startsWith("https://s3.ap-south-1.amazonaws.com") || image.startsWith("https://monlam-ai-web-testing.s3.ap-south-1.amazonaws.com") || image.startsWith("https://gompa.tour.s3.ap-south-1.amazonaws.com"))
+           ? (
           <Image
             src={image}
             alt={translation.name}
