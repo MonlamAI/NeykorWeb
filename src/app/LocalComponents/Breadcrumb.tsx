@@ -37,8 +37,9 @@ const Breadcrumb = ({
             </span>
           </Link>
 
-          {items.map((item, index) => (
-            <React.Fragment key={index}>
+          {items.map((item, index) => {
+            const isLast = index === items.length - 1;
+            return <React.Fragment key={index}>
               <ChevronRight className="w-4 h-4" />
               {item.href ? (
                 <Link
@@ -51,15 +52,16 @@ const Breadcrumb = ({
                 </Link>
               ) : (
                 <span
-                  className={`text-gray-900 dark:text-gray-400 ${
-                    isLocaleBody ? "font-monlamuchen" : ""
-                  }`}
+                  className={`text-gray-900 dark:text-gray-400 ${isLocaleBody ? "font-monlamuchen" : ""
+                    } ${isLast ? "truncate max-w-[200px] overflow-hidden whitespace-nowrap text-ellipsis inline-block align-middle" : ""}`}
+                  title={item.label}
                 >
                   {item.label}
                 </span>
               )}
             </React.Fragment>
-          ))}
+          }
+          )}
         </nav>
       </div>
     </div>
