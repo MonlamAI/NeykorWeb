@@ -355,7 +355,7 @@ function MonasteryContent({ params }: { params: any }) {
 
             <CardHeader>
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
+                <div className="flex-col items-center justify-between md:flex">
                   {isEditing ? (
                     <Input
                       value={editedData.name}
