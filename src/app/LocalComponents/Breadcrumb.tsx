@@ -53,9 +53,7 @@ const Breadcrumb = ({
               ) : (
                 <span
                   className={`text-gray-900 dark:text-gray-400 ${isLocaleBody ? "font-monlamuchen" : ""
-                    } ${isLast ? "truncate w-[80px] overflow-hidden whitespace-nowrap text-ellipsis inline-block align-middle 
-       md:overflow-visible md:whitespace-normal md:text-clip md:w-auto md:truncate-none"
-: ""}`}
+                    } ${isLast ? "truncate w-[80px] overflow-hidden whitespace-nowrap text-ellipsis inline-block align-middle md:overflow-visible md:whitespace-normal md:text-clip md:w-auto md:truncate-none" : ""}`}
                   title={item.label}
                 >
                   {item.label}
