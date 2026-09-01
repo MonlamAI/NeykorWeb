@@ -1,6 +1,6 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { useUser } from "@auth0/nextjs-auth0/client";
+import { useSession } from "next-auth/react";
 import { getRole } from "../actions/getactions";
 
 const RoleContext = createContext({
@@ -8,20 +8,21 @@ const RoleContext = createContext({
 });
 
 export const RoleProvider = ({ children }: { children: ReactNode }) => {
-  const { user } = useUser();
+  const { data: session } = useSession();
+  const user = session?.user;
   const [role, setRole] = useState("");
 
   useEffect(() => {
     async function fetchRole() {
-      if (user) {
+      if (user?.email) {
         try {
-          if (user.email) {
-            const userRole = await getRole(user.email);
-            setRole(userRole);
-          }
+          const userRole = await getRole(user.email);
+          setRole(userRole);
         } catch (error) {
           console.error("Error fetching user role:", error);
         }
+      } else {
+        setRole("");
       }
     }
     fetchRole();

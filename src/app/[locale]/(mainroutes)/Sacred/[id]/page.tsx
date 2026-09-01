@@ -319,12 +319,12 @@ const isAdmin = role === "ADMIN";
                     <Input
                       value={editedName}
                       onChange={(e) => setEditedName(e.target.value)}
-                      className={params.locale === "bod" ? "font-monlamuchen" : ""}
+                      className={params.locale === "bod" ? "font-monlam" : ""}
                     />
                   ) : (
                     <CardTitle
                       className={`text-2xl font-bold ${
-                        params.locale === "bod" && "font-monlamuchen"
+                        params.locale === "bod" && "font-monlam"
                       }`}
                     >
                       {currentTranslation?.name}
@@ -379,7 +379,7 @@ const isAdmin = role === "ADMIN";
                       e.target.style.height = `${e.target.scrollHeight}px`;
                     }}
                     className={`min-h-[150px] overflow-hidden ${
-                      params.locale === "bod" && "font-monlamuchen"
+                      params.locale === "bod" && "font-monlam"
                     }`}
                   />
                   <div className="space-y-4">
@@ -424,8 +424,8 @@ const isAdmin = role === "ADMIN";
                 <div className="space-y-2">
                   
                   <p
-                    className={`text-gray-700 dark:text-gray-400 text-justify leading-relaxed ${
-                      params.locale === "bod" && "font-monlamuchen"
+                    className={`text-gray-700 dark:text-gray-400 text-justify leading-relaxed whitespace-pre-wrap ${
+                      params.locale === "bod" && "font-monlam"
                     }`}
                   >
                     {currentTranslation?.description}

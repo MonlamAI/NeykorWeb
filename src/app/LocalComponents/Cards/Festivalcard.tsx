@@ -75,14 +75,14 @@ const FestivalCard = ({ id, image, translation, locale, isadmin, onDelete }: any
       <div className="p-4">
         <h3
           className={`text-xl font-semibold mb-2 ${
-            locale === "bod" && "font-monlamuchen"
+            locale === "bod" && "font-monlam"
           }`}
         >
           {translation.name}
         </h3>
         <p
           className={`${
-            locale === "bod" && "font-monlamuchen"
+            locale === "bod" && "font-monlam"
           } text-gray-600 dark:text-gray-300 line-clamp-3`}
         >
           {translation.description}

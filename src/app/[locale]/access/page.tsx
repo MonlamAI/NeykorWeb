@@ -1,12 +1,9 @@
-import UserProfile from '@/app/LocalComponents/UserProfile'
-import React from 'react'
+import { redirect } from "@/i18n/routing";
 
-const Page = () => {
-  return (
-    <div>
-        <UserProfile/>
-    </div>
-  )
+export default function AccessPage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
+  redirect({ href: "/admin", locale });
 }
-
-export default Page

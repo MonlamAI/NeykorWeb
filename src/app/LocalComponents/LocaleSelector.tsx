@@ -20,7 +20,7 @@ export function LocaleSelector({ tibtext }: { tibtext: string }) {
   const localActive = useLocale();
   const routingPathname = useRoutingPathname();
   const pathname = usePathname();
-  
+
   const handleSelect = (nextLocale: string) => {
     startTransition(() => {
       router.replace(routingPathname, { locale: nextLocale });
@@ -36,19 +36,20 @@ export function LocaleSelector({ tibtext }: { tibtext: string }) {
       disabled={isPending}
     >
       <SelectTrigger
-        className={`${localActive === "bod" && "font-monlamuchen"} border-none  ${!checkcolor?" text-black bg-neutral-100/40 dark:bg-neutral-900 dark:hover:bg-neutral-950  dark:text-white":"text-white bg-neutral-100/40 "} w-[120px] focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none`}
+        className={`${localActive === "bod" && "font-monlam"} border-none  ${!checkcolor ? " text-black bg-neutral-100/40 dark:bg-neutral-900 dark:hover:bg-neutral-950  dark:text-white" : "text-white bg-neutral-100/40 "} w-[120px] focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none`}
       >
         <SelectValue placeholder="Select language" />
       </SelectTrigger>
-      <SelectContent className={` border-none ${!checkcolor?" text-black bg-neutral-100/40 dark:bg-neutral-900 dark:hover:bg-neutral-950  dark:text-white":"text-white  bg-neutral-100/40 "}`}>
+      <SelectContent className={` border-none ${!checkcolor ? " text-black bg-neutral-100/40 dark:bg-neutral-900 dark:hover:bg-neutral-950  dark:text-white" : "text-white  bg-neutral-100/40 "}`}>
         <SelectItem value="en">English</SelectItem>
         <SelectItem
           value="bod"
-          className={`${localActive === "bod" && "font-monlamuchen"}`}
+          className={` font-monlam ${localActive === "bod" && "font-monlam"}`}
         >
-          {tibtext}
+          {/* {tibtext} */}
+          བོད་ཡིག
         </SelectItem>
-        <SelectItem value="hi">हिंदी (Hindi)</SelectItem>
+        <SelectItem value="hi">हिंदी</SelectItem>
       </SelectContent>
     </Select>
   );

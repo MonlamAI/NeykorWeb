@@ -50,7 +50,7 @@ const MobileNav = ({ setIsOpen }:any) => {
                   href={`/${activeLocale}${link.href}`}
                   onClick={handleLinkClick}
                   className={`px-4 py-2 text-lg rounded-md transition-colors
-                    ${activeLocale === 'bod' ? 'font-monlamuchen' : ''}
+                    ${activeLocale === 'bod' ? 'font-monlam' : ''}
                     ${
                         checkcolor 
                           ? 'hover:bg-white/20 dark:hover:bg-gray-800/30' 

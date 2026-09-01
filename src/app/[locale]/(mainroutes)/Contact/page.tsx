@@ -59,7 +59,7 @@ const ContactPage = () => {
     return error ? (error.message as string) : undefined;
   };
   const t = useTranslations("contact");
-  const inputClass = `w-full ${activelocale === "bod" ? "font-monlamuchen" : ""}`;
+  const inputClass = `w-full ${activelocale === "bod" ? "font-monlam" : ""}`;
 
   return (
     <div className="container  w-screen py-8">
@@ -77,7 +77,7 @@ const ContactPage = () => {
           </Card>
           <Card>
             <CardContent className="p-6">
-              <h2 className={`text-xl font-semibold mb-4 ${activelocale === "bod" && "font-monlamuchen"}`}>{t("detail")}</h2>
+              <h2 className={`text-xl font-semibold mb-4 ${activelocale === "bod" && "font-monlam"}`}>{t("detail")}</h2>
               <div className="space-y-2">
                 <p>Central Tibetan Administration</p>
                 <p>Gangchen Kyishong, Dharamshala</p>
@@ -92,7 +92,7 @@ const ContactPage = () => {
 
         <Card className="mb-8">
           <CardContent className="p-6">
-            <h2 className={`text-xl font-semibold mb-6 ${activelocale === "bod" && "font-monlamuchen"}`}>{t("form")}</h2>
+            <h2 className={`text-xl font-semibold mb-6 ${activelocale === "bod" && "font-monlam"}`}>{t("form")}</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
                 <Input

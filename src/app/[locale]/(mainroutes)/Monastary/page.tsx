@@ -61,7 +61,7 @@ const SectCard = ({
         <div className="absolute inset-0 p-6 flex flex-col justify-end z-20">
           <div className="space-y-2">
             <h3 className={`text-2xl font-semibold text-white ${
-              locale === 'bod' ? 'font-monlamuchen' : 'font-bold'
+              locale === 'bod' ? 'font-monlam' : 'font-bold'
             }`}>
               {t(SECT_TRANSLATION_KEYS[sect as keyof typeof SECT_TRANSLATION_KEYS])}
             </h3>

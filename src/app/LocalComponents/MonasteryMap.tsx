@@ -44,7 +44,7 @@ const MonasteryMap: React.FC<MonasteryMapProps> = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className={`${locale === "bod" && "font-monlamuchen"}`}>
+        <CardTitle className={`${locale === "bod" && "font-monlam"}`}>
           {locale === "bod" ? "ས་བབ་གནས་ས།" : "Location"}
         </CardTitle>
       </CardHeader>

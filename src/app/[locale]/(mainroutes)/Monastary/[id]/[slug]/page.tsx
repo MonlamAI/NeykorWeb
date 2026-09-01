@@ -362,10 +362,10 @@ function MonasteryContent({ params }: { params: any }) {
                     <Input
                       value={editedData.name}
                       onChange={(e) => setEditedData({ ...editedData, name: e.target.value })}
-                      className={activeLocale === "bod" ? "font-monlamuchen" : ""}
+                      className={activeLocale === "bod" ? "font-monlam" : ""}
                     />
                   ) : (
-                    <CardTitle className={`text-2xl font-bold ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+                    <CardTitle className={`text-2xl font-bold ${activeLocale === "bod" ? "font-monlam" : ""}`}>
                       {currentTranslation.name}
                     </CardTitle>
                   )}
@@ -469,7 +469,7 @@ function MonasteryContent({ params }: { params: any }) {
                       e.target.style.height = 'auto';
                       e.target.style.height = `${e.target.scrollHeight}px`;
                     }}
-                    className={`min-h-[150px] overflow-hidden ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}
+                    className={`min-h-[150px] overflow-hidden ${activeLocale === "bod" ? "font-monlam" : ""}`}
                   />
                   
                   <div className="space-y-4">
@@ -515,8 +515,8 @@ function MonasteryContent({ params }: { params: any }) {
               ) : (
                 <div className="space-y-2">
                  
-                  <p className={`text-gray-700 dark:text-gray-400 text-justify leading-relaxed ${
-                    activeLocale === "bod" ? "font-monlamuchen" : ""
+                  <p className={`text-gray-700 dark:text-gray-400 text-justify leading-relaxed whitespace-pre-wrap ${
+                    activeLocale === "bod" ? "font-monlam" : ""
                   }`}>
                     {currentTranslation.description}
                   </p>

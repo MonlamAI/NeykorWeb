@@ -94,7 +94,7 @@ const MonasteryCard = ({
           <div className="flex justify-between items-start mb-2">
             <h3
               className={`text-lg font-semibold dark:text-neutral-300 text-neutral-800 ${
-                locale === "bod" ? "font-monlamuchen" : ""
+                locale === "bod" ? "font-monlam" : ""
               }`}
             >
               {translation.name}
@@ -103,7 +103,7 @@ const MonasteryCard = ({
           </div>
           <p
             className={`text-gray-600 dark:text-neutral-400 line-clamp-3 ${
-              locale === "bod" ? "font-monlamuchen" : ""
+              locale === "bod" ? "font-monlam" : ""
             }`}
           >
             {translation.description}

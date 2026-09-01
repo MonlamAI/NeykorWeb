@@ -31,9 +31,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { MoreHorizontal, Pencil, Trash, LogOut, LogIn } from "lucide-react"
-import { useUser } from '@auth0/nextjs-auth0/client'
-import { useRole } from '@/app/Providers/ContextProvider'
+import { MoreHorizontal, Pencil, Trash } from "lucide-react"
+import { signIn, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useToast } from '@/hooks/use-toast'
 import { deleteuser } from '@/app/actions/delaction'
@@ -48,11 +47,12 @@ interface User {
 
 interface AccessClientProps {
   users: User[];
+  isAdmin: boolean;
 }
 
-const AccessClient = ({ users: initialUsers }: AccessClientProps) => {
-  const { user } = useUser()
-  const { role } = useRole()
+const AccessClient = ({ users: initialUsers, isAdmin }: AccessClientProps) => {
+  const { data: session, status } = useSession()
+  const user = session?.user
   const { toast } = useToast()
   const [users, setUsers] = useState(initialUsers)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
@@ -117,7 +117,7 @@ const AccessClient = ({ users: initialUsers }: AccessClientProps) => {
     <div className="w-full min-h-screen px-4 sm:px-6 lg:px-8 py-8">
       <div className="">
         <div className="p-6">
-          {user && role === "ADMIN" ? (
+          {user && isAdmin ? (
             <>
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
@@ -225,19 +225,25 @@ const AccessClient = ({ users: initialUsers }: AccessClientProps) => {
               </Dialog>
             </>
           ) : (
-            <div className="text-center  py-40">
-            </div>
-          )}
-          {
-            user && role != "ADMIN" || !user && (
-              <div className="text-center">
+            status !== "loading" && (
+              <div className="text-center py-40">
                 <h1 className="text-xl text-neutral-900 dark:text-neutral-100">
                   You are not authorized to access this page
                 </h1>
-                <Link href="/" className="text-sm text-neutral-900 dark:text-neutral-100">Go to Home</Link>
+                {!user ? (
+                  <button
+                    type="button"
+                    onClick={() => signIn("google")}
+                    className="text-sm text-neutral-900 dark:text-neutral-100 underline mt-2"
+                  >
+                    Sign in with Google
+                  </button>
+                ) : (
+                  <Link href="/" className="text-sm text-neutral-900 dark:text-neutral-100">Go to Home</Link>
+                )}
               </div>
             )
-          }
+          )}
         </div>
       </div>
     </div>

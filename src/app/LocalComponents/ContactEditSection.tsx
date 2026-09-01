@@ -210,7 +210,7 @@ const ContactEditSection = ({
     <Card>
       <DynamicQRCode/>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className={`text-xl ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+        <CardTitle className={`text-xl ${activeLocale === "bod" ? "font-monlam" : ""}`}>
           {activeLocale === "bod" ? "འབྲེལ་གཏུག་གནས་ཚུལ།" : "Contact Information"}
         </CardTitle>
         {isAdmin && !isEditing && (
@@ -229,7 +229,7 @@ const ContactEditSection = ({
         {isEditing ? (
           <div className="space-y-4">
             <div className="space-y-2">
-              <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+              <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlam" : ""}`}>
                 {activeLocale === "bod" ? "ཡིག་འཕྲིན།" : "Email"}
               </label>
               <Input
@@ -240,7 +240,7 @@ const ContactEditSection = ({
             </div>
 
             <div className="space-y-2">
-              <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+              <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlam" : ""}`}>
                 {activeLocale === "bod" ? "ཁ་པར།" : "Phone Number"}
               </label>
               <Input
@@ -251,7 +251,7 @@ const ContactEditSection = ({
             </div>
 
             <div className="space-y-2">
-              <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+              <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlam" : ""}`}>
                 {activeLocale === "bod" ? "ཁ་བྱང་།" : "Address"}
               </label>
               <Input
@@ -263,7 +263,7 @@ const ContactEditSection = ({
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+                <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlam" : ""}`}>
                   {activeLocale === "bod" ? "གྲོང་ཁྱེར།" : "City"}
                 </label>
                 <Input
@@ -274,17 +274,17 @@ const ContactEditSection = ({
               </div>
 
               <div className="space-y-2">
-                <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+                <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlam" : ""}`}>
                   {activeLocale === "bod" ? "མངའ་སྡེ།" : "State"}
                 </label>
                 <Select 
                   value={activeEditTranslation.state}
                   onValueChange={(value) => updateTranslation(activeLocale, "state", value)}
                 >
-                  <SelectTrigger className={` ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+                  <SelectTrigger className={` ${activeLocale === "bod" ? "font-monlam" : ""}`}>
                     <SelectValue placeholder={activeLocale === "bod" ? "མངའ་སྡེ་འདེམས།" : "Select a state"} />
                   </SelectTrigger>
-                  <SelectContent  className={` ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+                  <SelectContent  className={` ${activeLocale === "bod" ? "font-monlam" : ""}`}>
                     {STATES.map((state) => (
                       <SelectItem key={state} value={state}>
                         {activeLocale === "bod" ? stateT(state) : state}
@@ -297,7 +297,7 @@ const ContactEditSection = ({
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+                <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlam" : ""}`}>
                   {activeLocale === "bod" ? "འཕྲིན་ཡིག་ཨང་།" : "Postal Code"}
                 </label>
                 <Input
@@ -308,17 +308,17 @@ const ContactEditSection = ({
               </div>
 
               <div className="space-y-2">
-                <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+                <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlam" : ""}`}>
                   {activeLocale === "bod" ? "རྒྱལ་ཁབ།" : "Country"}
                 </label>
                 <Select 
                   value={activeEditTranslation.country}
                   onValueChange={(value) => updateTranslation(activeLocale, "country", value)}
                 >
-                  <SelectTrigger className={` ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+                  <SelectTrigger className={` ${activeLocale === "bod" ? "font-monlam" : ""}`}>
                     <SelectValue placeholder={activeLocale === "bod" ? "རྒྱལ་ཁབ་འདེམས།" : "Select a country"} />
                   </SelectTrigger>
-                  <SelectContent className={` ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+                  <SelectContent className={` ${activeLocale === "bod" ? "font-monlam" : ""}`}>
                     {COUNTRIES.map((country) => (
                       <SelectItem key={country} value={country}>
                         {activeLocale === "bod" ? countryT(country) : country}
@@ -330,10 +330,10 @@ const ContactEditSection = ({
             </div>
 
             <div className="flex justify-end gap-2">
-              <Button variant="outline" className={` ${activeLocale === "bod" ? "font-monlamuchen" : ""}`} onClick={handleCancel}>
+              <Button variant="outline" className={` ${activeLocale === "bod" ? "font-monlam" : ""}`} onClick={handleCancel}>
                 {activeLocale === "bod" ? "ཕྱིར་འཐོན།" : "Cancel"}
               </Button>
-              <Button onClick={handleSave} className={` ${activeLocale === "bod" ? "font-monlamuchen" : ""}`} disabled={isUpdating}>
+              <Button onClick={handleSave} className={` ${activeLocale === "bod" ? "font-monlam" : ""}`} disabled={isUpdating}>
                 {isUpdating ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -348,7 +348,7 @@ const ContactEditSection = ({
         ) : (
           <>
             {activeTranslation?.address && (
-              <div className= {`${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+              <div className= {`${activeLocale === "bod" ? "font-monlam" : ""}`}>
                 <p className={`font-medium `}>
                   {activeLocale === "bod" ? "ཁ་བྱང་།" : "Address"}
                 </p>
@@ -370,7 +370,7 @@ const ContactEditSection = ({
 
             {contact.phone_number && (
               <div>
-                <p className={`font-medium ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+                <p className={`font-medium ${activeLocale === "bod" ? "font-monlam" : ""}`}>
                   {activeLocale === "bod" ? "ཁ་པར་།" : "Phone"}
                 </p>
                 <p className="text-gray-600 dark:text-gray-400">
@@ -381,7 +381,7 @@ const ContactEditSection = ({
 
             {contact.email && (
               <div>
-                <p className={`font-medium ${activeLocale === "bod" ? "font-monlamuchen" : ""}`}>
+                <p className={`font-medium ${activeLocale === "bod" ? "font-monlam" : ""}`}>
                   {activeLocale === "bod" ? "ཡིག་འཕྲིན།" : "Email"}
                 </p>
                 <p className="text-gray-600 dark:text-gray-400">

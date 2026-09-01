@@ -79,14 +79,14 @@ const StatueCard = ({
         <CardContent className="p-4">
           <h3
             className={`text-xl font-semibold mb-2 ${
-              locale === "bod" ? "font-monlamuchen" : ""
+              locale === "bod" ? "font-monlam" : ""
             }`}
           >
             {translation.name}
           </h3>
           <p
             className={`text-gray-600 dark:text-gray-300 line-clamp-3 ${
-              locale === "bod" ? "font-monlamuchen" : ""
+              locale === "bod" ? "font-monlam" : ""
             }`}
           >
             {translation.description}

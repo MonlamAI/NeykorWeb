@@ -205,7 +205,7 @@ const isAdmin = role === "ADMIN";
     bod: { home: "གཙོ་ངོས།", statues: "རྟེན་བཤད།", details: "ཞིབ་ཕྲ།" },
   }[activeLocale] || { home: "Home", statues: "Statues", details: "Details" };
 
-  const fontClass = activeLocale === "bod" ? "font-monlamuchen" : "";
+  const fontClass = activeLocale === "bod" ? "font-monlam" : "";
 
   return (
     <div className="relative w-full">
@@ -339,7 +339,7 @@ const isAdmin = role === "ADMIN";
                     </div>
                   </div>
                 ) : (
-                  <p className={`text-gray-700 dark:text-neutral-400 text-justify leading-relaxed ${fontClass}`}>
+                  <p className={`text-gray-700 dark:text-neutral-400 text-justify leading-relaxed whitespace-pre-wrap ${fontClass}`}>
                     {currentTranslation.description}
                   </p>
                 )}

@@ -32,7 +32,7 @@ const Breadcrumb = ({
             className="flex items-center hover:text-gray-900 dark:hover:text-gray-400"
           >
             <Home className="w-4 h-4 mr-2" />
-            <span className={isLocaleBody ? "font-monlamuchen" : ""}>
+            <span className={isLocaleBody ? "font-monlam" : ""}>
               {labels.home}
             </span>
           </Link>
@@ -46,13 +46,13 @@ const Breadcrumb = ({
                   href={`/${locale}${item.href}`}
                   className="hover:text-gray-900 dark:hover:text-gray-400 flex items-center"
                 >
-                  <span className={isLocaleBody ? "font-monlamuchen" : ""}>
+                  <span className={isLocaleBody ? "font-monlam" : ""}>
                     {item.label}
                   </span>
                 </Link>
               ) : (
                 <span
-                  className={`text-gray-900 dark:text-gray-400 ${isLocaleBody ? "font-monlamuchen" : ""
+                  className={`text-gray-900 dark:text-gray-400 ${isLocaleBody ? "font-monlam" : ""
                     } ${isLast ? "truncate w-[80px] overflow-hidden whitespace-nowrap text-ellipsis inline-block align-middle md:overflow-visible md:whitespace-normal md:text-clip md:w-auto md:truncate-none" : ""}`}
                   title={item.label}
                 >

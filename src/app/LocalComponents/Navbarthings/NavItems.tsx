@@ -31,7 +31,7 @@ const NavItems = () => {
   return (
     <NavigationMenu>
       <NavigationMenuList
-        className={`${localActive == "bod" && "font-monlamuchen"}`}
+        className={`${localActive == "bod" && "font-monlam"}`}
       >
         {navlinks.map((link) => (
           <NavigationMenuItem key={link.key}>

@@ -1,25 +1,26 @@
-import { Suspense } from "react";
-import {  getUser } from "@/app/actions/getactions";
+import { auth } from "@/auth";
+import { getRole, getUser } from "@/app/actions/getactions";
 import AccessClient from "./AccessClient";
-import { AccessSkeleton } from "./AccessSkeleton";
 
-function LoadingAccess() {
-  return (
-    <div className=" w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <AccessSkeleton />
-    </div>
-  );
-}
+type AdminUser = {
+  username: string;
+  email: string;
+  role: string;
+  id: string;
+};
 
-export default function Access() {
-  return (
-    <Suspense fallback={<LoadingAccess />}>
-      <AccessContent />
-    </Suspense>
-  );
-}
+export default async function AdminPage() {
+  const session = await auth();
+  let users: AdminUser[] = [];
+  let isAdmin = false;
 
-async function AccessContent() {
-  const users = await getUser();
-  return <AccessClient users={users} />;
+  if (session?.user?.email) {
+    const role = await getRole(session.user.email);
+    isAdmin = role === "ADMIN";
+    if (isAdmin) {
+      users = (await getUser()) as AdminUser[];
+    }
+  }
+
+  return <AccessClient users={users} isAdmin={isAdmin} />;
 }
