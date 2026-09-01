@@ -43,8 +43,9 @@ const FestivalClient = ({ fesdata }: { fesdata: Festival[] }) => {
       const translation = fes.translations.find(
         (t: any) => t.languageCode === backendLocale
       ) ||
+        fes.translations.find((t: any) => t.languageCode === "en") ||
         fes.translations[0] || {
-          name: "Unnamed fes",
+          name: "Unnamed Festival",
           description: "No description available",
         };
 
@@ -126,6 +127,7 @@ const FestivalClient = ({ fesdata }: { fesdata: Festival[] }) => {
                 const translation = fes.translations.find(
                   (t: any) => t.languageCode === backendLocale
                 ) ||
+                  fes.translations.find((t: any) => t.languageCode === "en") ||
                   fes.translations[0] || {
                     name: "Unnamed Festival",
                     description: "No description available",

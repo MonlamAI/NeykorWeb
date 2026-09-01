@@ -41,7 +41,7 @@ async function fetchData<T>(endpoint: string): Promise<T> {
 
 export const getStatues = () => fetchData<Statue[]>("/statue");
 
-export const getStatuesDetail = (id: string) => fetchData(`/statue/${id}`);
+export const getStatuesDetail = (id: string) => fetchData<Statue>(`/statue/${id}`);
 
 export const getFestival = () => fetchData("/festival");
 

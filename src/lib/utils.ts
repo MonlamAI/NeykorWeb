@@ -5,6 +5,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export const isHomePage = (pathname: string) => {
+  return ["/", "/en", "/bod", "/hi"].includes(pathname);
+};
+
 export const localeAlias: { [key: string]: string } = {
   bod: "bo",
 };

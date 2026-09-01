@@ -11,12 +11,13 @@ import iconimage from "../../../../public/icon.webp";
 import { usePathname } from "next/navigation";
 import MobileNav from "./Mobnav";
 import UserProfile from "../UserProfile";
+import { isHomePage } from "@/lib/utils";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const t = useTranslations("navbar");
   const activeLocale = useLocale();
   const pathname=usePathname()
-  const checkcolor = pathname === '/en' || pathname === '/bod';
+  const checkcolor = isHomePage(pathname);
 
   return (
     <nav className="w-full">

@@ -1,8 +1,10 @@
 "use client";
 
 import { useLocale } from "next-intl";
-import { useRouter, usePathname } from "@/i18n/routing";
+import { useRouter, usePathname as useRoutingPathname } from "@/i18n/routing";
+import { usePathname } from "next/navigation";
 import { useTransition } from "react";
+import { isHomePage } from "@/lib/utils";
 
 import {
   Select,
@@ -16,15 +18,16 @@ export function LocaleSelector({ tibtext }: { tibtext: string }) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const localActive = useLocale();
+  const routingPathname = useRoutingPathname();
   const pathname = usePathname();
   
   const handleSelect = (nextLocale: string) => {
     startTransition(() => {
-      router.replace(pathname, { locale: nextLocale });
+      router.replace(routingPathname, { locale: nextLocale });
     });
   };
 
-  const checkcolor = pathname === '/' || pathname === '/bod';
+  const checkcolor = isHomePage(pathname);
 
   return (
     <Select
@@ -45,6 +48,7 @@ export function LocaleSelector({ tibtext }: { tibtext: string }) {
         >
           {tibtext}
         </SelectItem>
+        <SelectItem value="hi">हिंदी (Hindi)</SelectItem>
       </SelectContent>
     </Select>
   );

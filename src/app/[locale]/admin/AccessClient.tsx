@@ -85,7 +85,7 @@ const AccessClient = ({ users: initialUsers }: AccessClientProps) => {
   const handleUpdate = async (email: string) => {
     try {
       const response = await updateUser(email, editForm)
-      setUsers(users.map(user => 
+      setUsers(users.map(user =>
         user.email === email ? { ...user, ...editForm } : user
       ))
       setIsEditDialogOpen(false)
@@ -112,7 +112,7 @@ const AccessClient = ({ users: initialUsers }: AccessClientProps) => {
     })
     setIsEditDialogOpen(true)
   }
- 
+
   return (
     <div className="w-full min-h-screen px-4 sm:px-6 lg:px-8 py-8">
       <div className="">
@@ -140,9 +140,8 @@ const AccessClient = ({ users: initialUsers }: AccessClientProps) => {
                         <TableCell className="font-medium">{user.username}</TableCell>
                         <TableCell>{user.email}</TableCell>
                         <TableCell>
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            user.role === "ADMIN" ? "bg-red-200 text-red-800" : "text-blue-800 bg-blue-100"
-                          }`}>
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${user.role === "ADMIN" ? "bg-red-200 text-red-800" : "text-blue-800 bg-blue-100"
+                            }`}>
                             {user.role}
                           </span>
                         </TableCell>
@@ -229,7 +228,7 @@ const AccessClient = ({ users: initialUsers }: AccessClientProps) => {
             <div className="text-center  py-40">
             </div>
           )}
-           {
+          {
             user && role != "ADMIN" || !user && (
               <div className="text-center">
                 <h1 className="text-xl text-neutral-900 dark:text-neutral-100">
@@ -238,7 +237,7 @@ const AccessClient = ({ users: initialUsers }: AccessClientProps) => {
                 <Link href="/" className="text-sm text-neutral-900 dark:text-neutral-100">Go to Home</Link>
               </div>
             )
-           }
+          }
         </div>
       </div>
     </div>

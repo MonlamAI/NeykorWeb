@@ -2,6 +2,8 @@
 import { usePathname } from "next/navigation";
 import bgimage from "../../public/header.jpg";
 
+import { isHomePage } from "./utils";
+
 interface BackgroundWrapperProps {
   children: React.ReactNode;
   showBackground?: boolean;
@@ -9,7 +11,7 @@ interface BackgroundWrapperProps {
 
 const BackgroundWrapper = ({ children }: BackgroundWrapperProps) => {
   const pathname = usePathname();
-  const shouldShowBackground = pathname === '/en' || pathname === '/bod';
+  const shouldShowBackground = isHomePage(pathname);
 
   return (
     <div className={`relative min-h-screen w-full overflow-x-hidden ${shouldShowBackground ? "bg-white" : ""}`}>

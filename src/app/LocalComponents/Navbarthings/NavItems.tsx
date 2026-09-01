@@ -12,6 +12,7 @@ import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 import { twMerge } from "tailwind-merge";
 import { usePathname } from "next/navigation";
+import { isHomePage } from "@/lib/utils";
 
 const navlinks = [
   { key: "stas", href: "/Statue" },
@@ -25,7 +26,7 @@ const NavItems = () => {
   const t = useTranslations("navbar");
   const localActive = useLocale();
   const pathname = usePathname();
-  const checkcolor = pathname === '/en' || pathname === '/bod';
+  const checkcolor = isHomePage(pathname);
 
   return (
     <NavigationMenu>

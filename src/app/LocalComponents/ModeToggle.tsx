@@ -12,11 +12,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { usePathname } from "next/navigation";
+import { isHomePage } from "@/lib/utils";
 
 export function ModeToggle() {
   const { setTheme } = useTheme();
  const pathname=usePathname()
- const checkcolor = pathname === '/en' || pathname === '/bod';
+ const checkcolor = isHomePage(pathname);
 
   return (
     <DropdownMenu >

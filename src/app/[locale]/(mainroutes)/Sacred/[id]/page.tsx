@@ -79,9 +79,9 @@ const isAdmin = role === "ADMIN";
   const languageCode = params.locale === "bod" ? "bo" : "en";
   const currentTranslation = useMemo(() => {
     if (!siteData?.translations) return null;
-    return siteData.translations.find(
-      (t: any) => t.languageCode === languageCode
-    );
+    return siteData.translations.find((t: any) => t.languageCode === languageCode) ||
+      siteData.translations.find((t: any) => t.languageCode === "en") ||
+      siteData.translations[0];
   }, [siteData?.translations, languageCode]);
 
   useEffect(() => {

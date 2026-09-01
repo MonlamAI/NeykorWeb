@@ -4,12 +4,13 @@ import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { X } from 'lucide-react';
+import { isHomePage } from '@/lib/utils';
 
 const MobileNav = ({ setIsOpen }:any) => {
   const t = useTranslations("navbar");
   const activeLocale = useLocale();
   const pathname = usePathname();
-  const checkcolor = pathname === '/en' || pathname === '/bod';
+  const checkcolor = isHomePage(pathname);
 
   const navlinks = [
     { key: "stas", href: "/Statue" },

@@ -38,6 +38,7 @@ const isadmin = role === "ADMIN";
       const translation = monastery.translations.find(
         (t: any) => t.languageCode === backendLocale
       ) ||
+        monastery.translations.find((t: any) => t.languageCode === "en") ||
         monastery.translations[0] || {
           name: "Unnamed Monastery",
           description: "No description available",
@@ -46,6 +47,9 @@ const isadmin = role === "ADMIN";
       const contactTranslation =
         monastery.contact?.translations?.find(
           (t: any) => t.languageCode === backendLocale
+        ) ||
+        monastery.contact?.translations?.find(
+          (t: any) => t.languageCode === "en"
         ) || monastery.contact?.translations?.[0];
 
       const searchLower = searchQuery.toLowerCase();
@@ -162,6 +166,7 @@ const isadmin = role === "ADMIN";
                 const translation = monastery.translations.find(
                   (t: any) => t.languageCode === backendLocale
                 ) ||
+                  monastery.translations.find((t: any) => t.languageCode === "en") ||
                   monastery.translations[0] || {
                     name: "Unnamed Monastery",
                     description: "No description available",
@@ -169,6 +174,9 @@ const isadmin = role === "ADMIN";
                 const contactTranslation =
                   monastery.contact?.translations?.find(
                     (t: any) => t.languageCode === backendLocale
+                  ) ||
+                  monastery.contact?.translations?.find(
+                    (t: any) => t.languageCode === "en"
                   ) || monastery.contact?.translations?.[0];
 
                 return (

@@ -33,7 +33,7 @@ export default function Home() {
         </div>
         <ImageGallery />
       </div>
-      <div className={`${activelocale !== "en" ? "font-monlamuchen" : ""} bg-[#EDE9E8] h-32 flex-col py-4 px-2 flex items-center justify-center w-full`}>
+      <div className={`${activelocale === "bod" ? "font-monlamuchen" : ""} bg-[#EDE9E8] h-32 flex-col py-4 px-2 flex items-center justify-center w-full`}>
         <div className="inset-0 flex items-start justify-center pointer-events-none">
           <Image src={pata} alt="wheel" width={800} height={200} className="opacity-50"/>
         </div>
@@ -57,7 +57,7 @@ export default function Home() {
             {tmon("m7")}
           </Link>
         </div>
-       <p className={`${activelocale !== "en" ? "font-monlamuchen" : ""} text-sm text-black  w-full flex items-center text-center justify-center`}>Department of Religion and Culture, Central Tibetan Administration</p>
+       <p className={`${activelocale === "bod" ? "font-monlamuchen" : ""} text-sm text-black  w-full flex items-center text-center justify-center`}>Department of Religion and Culture, Central Tibetan Administration</p>
 
       </div>
     </main>

@@ -95,7 +95,9 @@ function MonasteryContent({ params }: { params: any }) {
 
   const currentTranslation = useMemo(() => {
     if (!monastery?.translations) return null;
-    return monastery.translations.find(t => t.languageCode === languageCode);
+    return monastery.translations.find((t: any) => t.languageCode === languageCode) ||
+      monastery.translations.find((t: any) => t.languageCode === "en") ||
+      monastery.translations[0];
   }, [monastery?.translations, languageCode]);
 
   // Combine audio-related effects

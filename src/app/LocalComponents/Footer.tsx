@@ -2,10 +2,11 @@
 
 import { usePathname } from "next/navigation";
 import React from "react";
+import { isHomePage } from "@/lib/utils";
 
 const Footer = () => {
   const pathname = usePathname();
-  const checkcolor = pathname === '/en' || pathname === '/bod';
+  const checkcolor = isHomePage(pathname);
   
   return (
     checkcolor ? null : (

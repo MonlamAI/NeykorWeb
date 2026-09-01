@@ -34,6 +34,7 @@ const SideClient = ({ pilgrimData }: any) => {
       const translation = site.translations.find(
         (t: any) => t.languageCode === backendLocale
       ) ||
+        site.translations.find((t: any) => t.languageCode === "en") ||
         site.translations[0] || {
           name: "Unnamed Site",
           description: "No description available",
@@ -119,6 +120,7 @@ const SideClient = ({ pilgrimData }: any) => {
                 const translation = site.translations.find(
                   (t: any) => t.languageCode === backendLocale
                 ) ||
+                  site.translations.find((t: any) => t.languageCode === "en") ||
                   site.translations[0] || {
                     name: "Unnamed Site",
                     description: "No description available",

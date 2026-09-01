@@ -51,6 +51,7 @@ const StatuesClient = ({ statuesData }: { statuesData: Statue[] }) => {
       const translation = statue.translations.find(
         (t: any) => t.languageCode === backendLocale
       ) ||
+        statue.translations.find((t: any) => t.languageCode === "en") ||
         statue.translations[0] || {
           name: "Unnamed Statue",
           description: "No description available",
@@ -135,6 +136,7 @@ const StatuesClient = ({ statuesData }: { statuesData: Statue[] }) => {
                 const translation = statue.translations.find(
                   (t: any) => t.languageCode === backendLocale
                 ) ||
+                  statue.translations.find((t: any) => t.languageCode === "en") ||
                   statue.translations[0] || {
                     name: "Unnamed Statue",
                     description: "No description available",

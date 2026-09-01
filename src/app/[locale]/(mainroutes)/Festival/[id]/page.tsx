@@ -59,7 +59,9 @@ const isAdmin = role === "ADMIN";
 
   const currentTranslation = useMemo(() => {
     if (!data?.translations) return null;
-    return data.translations.find((t: any) => t.languageCode === languageCode);
+    return data.translations.find((t: any) => t.languageCode === languageCode) ||
+      data.translations.find((t: any) => t.languageCode === "en") ||
+      data.translations[0];
   }, [data?.translations, languageCode]);
 
   useEffect(() => {
