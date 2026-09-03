@@ -31,6 +31,40 @@ export function translationForRead<T extends { languageCode: string }>(
   );
 }
 
+function searchVariants(value: string): string[] {
+  const nfc = value.normalize("NFC").toLowerCase();
+  const latinFold = value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+  const noZw = nfc.replace(/[\u200b-\u200d\ufeff]/g, "");
+  const tibCompact = noZw.replace(/[\u0F0B-\u0F14\s]/g, "");
+  return Array.from(new Set([nfc, latinFold, noZw, tibCompact].filter(Boolean)));
+}
+
+function textMatchesQuery(haystack: string, query: string): boolean {
+  const needles = searchVariants(query.trim());
+  if (!needles.length) return true;
+  const haystacks = searchVariants(haystack);
+  return needles.some((needle) =>
+    haystacks.some((hay) => hay.includes(needle))
+  );
+}
+
+/** List search: match any locale's name or description. Display still uses translationForRead. */
+export function matchesContentSearch(
+  translations: Array<{ name?: string; description?: string }> | undefined,
+  query: string,
+  extraFields: Array<string | undefined> = []
+): boolean {
+  if (!query.trim()) return true;
+  const fields = [
+    ...(translations || []).flatMap((t) => [t.name, t.description]),
+    ...extraFields,
+  ];
+  return fields.some((field) => field && textMatchesQuery(field, query));
+}
+
 /** The row for this UI locale, or undefined — never a fallback language. */
 export function ownContentTranslation<T extends { languageCode: string }>(
   translations: T[] | undefined,
@@ -155,7 +189,7 @@ export const COUNTRIES = [
   "Bhutan",
 ];
 
-export const downloadSvgAsPng = (svgElement, fileName = 'qrcode.png', bgColor = '#ffffff') => {
+export const downloadSvgAsPng = (svgElement: SVGSVGElement, fileName = 'qrcode.png', bgColor = '#ffffff') => {
   if (!svgElement) return;
   
   // Create a canvas element
@@ -176,6 +210,7 @@ export const downloadSvgAsPng = (svgElement, fileName = 'qrcode.png', bgColor = 
   // Draw the image on the canvas and download
   const image = new Image();
   image.onload = () => {
+    if (!ctx) return;
     ctx.fillStyle = bgColor;
     ctx.fillRect(0, 0, width, height);
     ctx.drawImage(image, 0, 0, width, height);

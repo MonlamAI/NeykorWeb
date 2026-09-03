@@ -4,7 +4,7 @@ import { useLocale } from "next-intl";
 import React, { useState, useMemo, useEffect } from "react";
 import CustomPagination from "@/app/LocalComponents/CustomPagination";
 import { SearchComponent } from "@/app/LocalComponents/Searchbar";
-import { localeAlias } from "@/lib/utils";
+import { localeAlias, matchesContentSearch } from "@/lib/utils";
 import PilgrimSiteCard from "@/app/LocalComponents/Cards/Pligrimcard";
 import SacredModal from "./SacredModal";
 import { useRole } from "@/app/Providers/ContextProvider";
@@ -29,22 +29,10 @@ const SideClient = ({ pilgrimData }: any) => {
   const filteredPilgrimSites = useMemo(() => {
     if (!searchQuery.trim()) return place;
 
-    return place.filter((site: any) => {
-      const backendLocale = localeAlias[activelocale] || activelocale;
-      const translation = site.translations.find(
-        (t: any) => t.languageCode === backendLocale
-      ) ||
-        site.translations.find((t: any) => t.languageCode === "en") ||
-        site.translations[0] || {
-          name: "Unnamed Site",
-          description: "No description available",
-        };
-
-      const searchLower = searchQuery.toLowerCase();
-      return translation.name.toLowerCase().includes(searchLower)
-       
-    });
-  }, [place, searchQuery, activelocale]);
+    return place.filter((site: any) =>
+      matchesContentSearch(site.translations, searchQuery)
+    );
+  }, [place, searchQuery]);
 
   const totalPages = Math.ceil(filteredPilgrimSites.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;

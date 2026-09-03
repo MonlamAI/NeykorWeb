@@ -1,5 +1,6 @@
 "use server"
 import axios from "axios"
+import { apiWriteHeaders, assertCmsAdmin } from "@/lib/cmsAuth"
 
 const url=process.env.API_URL;
 
@@ -21,14 +22,11 @@ function throwApiError(error: unknown, fallback: string): never {
 
 export async function updateUser(email: string, userData:any) {
     try {
+      await assertCmsAdmin();
       const response = await axios.put(
         url+`/user/${email}`,
         userData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { headers: apiWriteHeaders() }
       )
       return { success: true, data: response.data }
     } catch (error) {
@@ -42,14 +40,11 @@ export async function updateUser(email: string, userData:any) {
 
   export async function updatestatue(statueid: string, data:any) {
     try {
+      await assertCmsAdmin();
       const response = await axios.put(
         url+`/statue/${statueid}`,
         data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { headers: apiWriteHeaders() }
       )
       return { success: true, data: response.data }
     } catch (error) {
@@ -63,14 +58,11 @@ export async function updateUser(email: string, userData:any) {
 
   export async function updateFestival(fesid: string, data:any) {
     try {
+      await assertCmsAdmin();
       const response = await axios.put(
         url+`/festival/${fesid}`,
         data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { headers: apiWriteHeaders() }
       )
       return { success: true, data: response.data }
     } catch (error) {
@@ -84,14 +76,11 @@ export async function updateUser(email: string, userData:any) {
 
   export async function updategonpa(monsid: string, data:any) {
     try {
+      await assertCmsAdmin();
       const response = await axios.put(
        url+ `/gonpa/${monsid}`,
         data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { headers: apiWriteHeaders() }
       )
       return { success: true, data: response.data }
     } catch (error) {
@@ -105,14 +94,11 @@ export async function updateUser(email: string, userData:any) {
 
   export async function updatesite(siteid: string, data:any) {
     try {
+      await assertCmsAdmin();
       const response = await axios.put(
         url+`/pilgrim/${siteid}`,
         data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { headers: apiWriteHeaders() }
       )
       return { success: true, data: response.data }
     } catch (error) {
@@ -126,14 +112,11 @@ export async function updateUser(email: string, userData:any) {
 
   export async function updatecontact(contactid: string, data:any) {
     try {
+      await assertCmsAdmin();
       const response = await axios.put(
         url+`/contact/${contactid}`,
         data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { headers: apiWriteHeaders() }
       )
       return { success: true, data: response.data }
     } catch (error) {

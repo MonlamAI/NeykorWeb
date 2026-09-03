@@ -1,18 +1,15 @@
 'use server'
 import axios from "axios";
-
+import { apiWriteHeaders, assertCmsAdmin } from "@/lib/cmsAuth";
 
 const url=process.env.API_URL;
 
 export async function deleteSacred(statueId: string) {
     try {
+      await assertCmsAdmin();
       const response = await axios.delete(
         url+`/statue/${statueId}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { headers: apiWriteHeaders() }
       );
       return { success: true, data: response.data };
     } catch (error) {
@@ -26,13 +23,10 @@ export async function deleteSacred(statueId: string) {
 
   export async function deletepilgrim(statueId: string) {
     try {
+      await assertCmsAdmin();
       const response = await axios.delete(
         url+`/pilgrim/${statueId}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { headers: apiWriteHeaders() }
       );
       return { success: true, data: response.data };
     } catch (error) {
@@ -46,13 +40,10 @@ export async function deleteSacred(statueId: string) {
 
   export async function deleteuser(email: string) {
     try {
+      await assertCmsAdmin();
       const response = await axios.delete(
         url+`/user/${email}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { headers: apiWriteHeaders() }
       );
       return { success: true, data: response.data };
     } catch (error) {
@@ -67,13 +58,10 @@ export async function deleteSacred(statueId: string) {
   export async function deletegonpa(gonpaid:string)
   {
     try {
+      await assertCmsAdmin();
       const response = await axios.delete(
         url+`/gonpa/${gonpaid}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { headers: apiWriteHeaders() }
       );
       return { success: true, data: response.data };
     } catch (error) {
@@ -88,13 +76,10 @@ export async function deleteSacred(statueId: string) {
   export async function deletefest(festid:string)
   {
     try {
+      await assertCmsAdmin();
       const response = await axios.delete(
         url+`/festival/${festid}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { headers: apiWriteHeaders() }
       );
       return { success: true, data: response.data };
     } catch (error) {
