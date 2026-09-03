@@ -3,7 +3,7 @@ import { useLocale } from "next-intl";
 import React, { useState, useMemo, useEffect } from "react";
 import CustomPagination from "@/app/LocalComponents/CustomPagination";
 import { SearchComponent } from "@/app/LocalComponents/Searchbar";
-import { localeAlias } from "@/lib/utils";
+import { localeAlias, matchesContentSearch } from "@/lib/utils";
 import StatueCard from "@/app/LocalComponents/Cards/StatueCard";
 import StatueFormModal from "./_Components/statueformmodal";
 import { useRole } from "@/app/Providers/ContextProvider";
@@ -46,21 +46,10 @@ const StatuesClient = ({ statuesData }: { statuesData: Statue[] }) => {
   const filteredStatues = useMemo(() => {
     if (!searchQuery.trim()) return statues;
 
-    return statues.filter((statue: any) => {
-      const backendLocale = localeAlias[activelocale] || activelocale;
-      const translation = statue.translations.find(
-        (t: any) => t.languageCode === backendLocale
-      ) ||
-        statue.translations.find((t: any) => t.languageCode === "en") ||
-        statue.translations[0] || {
-          name: "Unnamed Statue",
-          description: "No description available",
-        };
-
-      const searchLower = searchQuery.toLowerCase();
-      return translation.name.toLowerCase().includes(searchLower)
-    });
-  }, [statues, searchQuery, activelocale]);
+    return statues.filter((statue: any) =>
+      matchesContentSearch(statue.translations, searchQuery)
+    );
+  }, [statues, searchQuery]);
 
   const totalPages = Math.ceil(filteredStatues.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;

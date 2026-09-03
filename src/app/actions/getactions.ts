@@ -1,5 +1,7 @@
 "use server";
 import axios, { AxiosError } from "axios";
+import { auth } from "@/auth";
+import { apiWriteHeaders, assertCmsAdmin } from "@/lib/cmsAuth";
 
 interface Statue {
   id: string;
@@ -55,15 +57,33 @@ export const getSite = () => fetchData("/pilgrim");
 
 export const getSiteDetail = (id: string) => fetchData(`/pilgrim/${id}`);
 
-export const getUser = () => fetchData("/user");
-
 export const getGonpaTypes = () => fetchData("/gonpa/types");
 
-export async function getRole(email: string) {
+export async function getUser() {
+  await assertCmsAdmin();
   try {
-    const response = await axiosInstance.get(`/user/${email}`);
+    const response = await axios.get(`${API_BASE_URL}/user`, {
+      headers: apiWriteHeaders(),
+    });
+    return response.data;
+  } catch (error) {
+    handleApiError(error, "users");
+  }
+}
+
+export async function getRole(email: string) {
+  const session = await auth();
+  if (!session?.user?.email) {
+    return;
+  }
+  const lookupEmail = session.user.email === email ? email : session.user.email;
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/user/${encodeURIComponent(lookupEmail)}`,
+      { headers: apiWriteHeaders() }
+    );
     return response.data.role;
   } catch (error) {
-    handleApiError(error, `user role for ${email}`);
+    handleApiError(error, `user role for ${lookupEmail}`);
   }
 }

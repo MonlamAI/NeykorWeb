@@ -7,7 +7,7 @@ import CustomPagination from "@/app/LocalComponents/CustomPagination";
 import { SearchComponent } from "@/app/LocalComponents/Searchbar";
 import MonasteryCard from "@/app/LocalComponents/Cards/MonasteryCard";
 import Breadcrumb from "@/app/LocalComponents/Breadcrumb";
-import { localeAlias } from "@/lib/utils";
+import { localeAlias, matchesContentSearch } from "@/lib/utils";
 import MonsModal from "./MonsModal";
 import { useRole } from "@/app/Providers/ContextProvider";
 
@@ -33,29 +33,19 @@ const isadmin = role === "ADMIN";
   const filteredMonasteries = useMemo(() => {
     if (!searchQuery.trim()) return monastery;
 
-    return monastery.filter((monastery: any) => {
-      const backendLocale = localeAlias[activelocale] || activelocale;
-      const translation = monastery.translations.find(
-        (t: any) => t.languageCode === backendLocale
-      ) ||
-        monastery.translations.find((t: any) => t.languageCode === "en") ||
-        monastery.translations[0] || {
-          name: "Unnamed Monastery",
-          description: "No description available",
-        };
-
-      const contactTranslation =
-        monastery.contact?.translations?.find(
-          (t: any) => t.languageCode === backendLocale
-        ) ||
-        monastery.contact?.translations?.find(
-          (t: any) => t.languageCode === "en"
-        ) || monastery.contact?.translations?.[0];
-
-      const searchLower = searchQuery.toLowerCase();
-      return translation.name.toLowerCase().includes(searchLower)
-    });
-  }, [monastery, searchQuery, activelocale]);
+    return monastery.filter((item: any) =>
+      matchesContentSearch(
+        item.translations,
+        searchQuery,
+        (item.contact?.translations || []).flatMap((t: any) => [
+          t.address,
+          t.city,
+          t.state,
+          t.country,
+        ])
+      )
+    );
+  }, [monastery, searchQuery]);
 
   const totalPages = Math.ceil(filteredMonasteries.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;

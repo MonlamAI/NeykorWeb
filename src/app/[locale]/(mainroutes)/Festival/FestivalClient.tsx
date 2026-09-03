@@ -3,7 +3,7 @@ import { useLocale } from "next-intl";
 import React, { useState, useMemo, useEffect } from "react";
 import CustomPagination from "@/app/LocalComponents/CustomPagination";
 import { SearchComponent } from "@/app/LocalComponents/Searchbar";
-import { localeAlias } from "@/lib/utils";
+import { localeAlias, matchesContentSearch } from "@/lib/utils";
 import FestivalCard from "@/app/LocalComponents/Cards/Festivalcard";
 import { useRole } from "@/app/Providers/ContextProvider";
 import FestModal from "./FestModal";
@@ -38,21 +38,10 @@ const FestivalClient = ({ fesdata }: { fesdata: Festival[] }) => {
   const filteredfestival = useMemo(() => {
     if (!searchQuery.trim()) return festival;
 
-    return festival.filter((fes: any) => {
-      const backendLocale = localeAlias[activelocale] || activelocale;
-      const translation = fes.translations.find(
-        (t: any) => t.languageCode === backendLocale
-      ) ||
-        fes.translations.find((t: any) => t.languageCode === "en") ||
-        fes.translations[0] || {
-          name: "Unnamed Festival",
-          description: "No description available",
-        };
-
-      const searchLower = searchQuery.toLowerCase();
-      return translation.name.toLowerCase().includes(searchLower)
-    });
-  }, [festival, searchQuery, activelocale]);
+    return festival.filter((fes: any) =>
+      matchesContentSearch(fes.translations, searchQuery)
+    );
+  }, [festival, searchQuery]);
 
   const totalPages = Math.ceil(filteredfestival.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;

@@ -32,7 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { MoreHorizontal, Pencil, Trash } from "lucide-react"
-import { signIn, useSession } from 'next-auth/react'
+import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useToast } from '@/hooks/use-toast'
 import { deleteuser } from '@/app/actions/delaction'
@@ -123,6 +123,13 @@ const AccessClient = ({ users: initialUsers, isAdmin }: AccessClientProps) => {
                 <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
                   User Management <span className='text-sm font-normal text-neutral-700 dark:text-neutral-400'>Current Session: {user.name}</span>
                 </h2>
+                <button
+                  type="button"
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                  className="text-sm border px-3 py-1.5 rounded-md"
+                >
+                  Sign out
+                </button>
               </div>
               <div className="overflow-hidden">
                 <Table>
@@ -239,7 +246,16 @@ const AccessClient = ({ users: initialUsers, isAdmin }: AccessClientProps) => {
                     Sign in with Google
                   </button>
                 ) : (
-                  <Link href="/" className="text-sm text-neutral-900 dark:text-neutral-100">Go to Home</Link>
+                  <div className="flex flex-col items-center gap-2 mt-4">
+                    <button
+                      type="button"
+                      onClick={() => signOut({ callbackUrl: "/" })}
+                      className="text-sm underline"
+                    >
+                      Sign out
+                    </button>
+                    <Link href="/" className="text-sm text-neutral-900 dark:text-neutral-100">Go to Home</Link>
+                  </div>
                 )}
               </div>
             )

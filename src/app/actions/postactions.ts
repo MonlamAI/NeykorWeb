@@ -1,6 +1,7 @@
 'use server'
 import axios from "axios";
 import { revalidatePath } from 'next/cache';
+import { apiBearerHeaders, apiWriteHeaders, assertCmsAdmin } from "@/lib/cmsAuth";
 
 
 const url=process.env.API_URL;
@@ -10,6 +11,7 @@ export async function createS3UploadUrl(formData: FormData) {
   try {
     const file = formData.get('file');
     if (!file) throw new Error('File is required');
+    await assertCmsAdmin();
     const apiFormData = new FormData();
     apiFormData.append('file', file);
 
@@ -18,7 +20,7 @@ export async function createS3UploadUrl(formData: FormData) {
       apiFormData,
       {
         headers: {
-          'Authorization': `Bearer ${process.env.API_ACCESS_KEY}`,
+          ...apiBearerHeaders(),
           'Accept': 'application/json',
         }
       }
@@ -55,14 +57,11 @@ export async function createS3UploadUrl(formData: FormData) {
 
 export async function postfestival(data: any) {
   try {
+    await assertCmsAdmin();
     const response = await axios.post(
       url+`/festival`,
       data,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      { headers: apiWriteHeaders() }
     );
     // Revalidate the festival pages
     revalidatePath('/[locale]/Festival');
@@ -79,14 +78,11 @@ export async function postfestival(data: any) {
 
 export async function postStatue(data: any) {
   try {
+    await assertCmsAdmin();
     const response = await axios.post(
       url+"/statue",
       data,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      { headers: apiWriteHeaders() }
     );
     // Revalidate the statues page
     revalidatePath('/[locale]/Statue');
@@ -123,14 +119,11 @@ export async function createUser(userData: any) {
 
 export async function creategonpa(data: any) {
   try {
+    await assertCmsAdmin();
     const response = await axios.post(
       url+"/gonpa",
       data,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      { headers: apiWriteHeaders() }
     );
     return { success: true, data: response.data };
   } catch (error) {
@@ -144,14 +137,11 @@ export async function creategonpa(data: any) {
 
 export async function createcontact(data: any) {
   try {
+    await assertCmsAdmin();
     const response = await axios.post(
       url+"/contact",
       data,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      { headers: apiWriteHeaders() }
     );
     return { success: true, data: response.data.id };
   } catch (error) {
@@ -165,14 +155,11 @@ export async function createcontact(data: any) {
 
 export async function createSacred(data:any){
   try {
+    await assertCmsAdmin();
     const response = await axios.post(
       url+"/pilgrim",
       data,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      { headers: apiWriteHeaders() }
     );
     // Revalidate the sacred sites pages
     revalidatePath('/[locale]/Sacred');
