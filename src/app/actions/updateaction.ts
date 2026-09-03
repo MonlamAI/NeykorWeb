@@ -3,6 +3,22 @@ import axios from "axios"
 
 const url=process.env.API_URL;
 
+function throwApiError(error: unknown, fallback: string): never {
+  if (axios.isAxiosError(error)) {
+    const detail = error.response?.data?.detail;
+    const message =
+      typeof detail === "string"
+        ? detail
+        : Array.isArray(detail)
+          ? detail
+              .map((item: { msg?: string }) => item?.msg || JSON.stringify(item))
+              .join("; ")
+          : error.message;
+    throw new Error(message || fallback);
+  }
+  throw error;
+}
+
 export async function updateUser(email: string, userData:any) {
     try {
       const response = await axios.put(
@@ -18,7 +34,7 @@ export async function updateUser(email: string, userData:any) {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error("API Error:", error.response?.data || error.message)
-        throw new Error(`Failed to update user: ${error.message}`)
+        throwApiError(error, "Failed to update")
       }
       throw error
     }
@@ -39,7 +55,7 @@ export async function updateUser(email: string, userData:any) {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error("API Error:", error.response?.data || error.message)
-        throw new Error(`Failed to update user: ${error.message}`)
+        throwApiError(error, "Failed to update")
       }
       throw error
     }
@@ -60,7 +76,7 @@ export async function updateUser(email: string, userData:any) {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error("API Error:", error.response?.data || error.message)
-        throw new Error(`Failed to update user: ${error.message}`)
+        throwApiError(error, "Failed to update")
       }
       throw error
     }
@@ -81,7 +97,7 @@ export async function updateUser(email: string, userData:any) {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error("API Error:", error.response?.data || error.message)
-        throw new Error(`Failed to update user: ${error.message}`)
+        throwApiError(error, "Failed to update")
       }
       throw error
     }
@@ -102,7 +118,7 @@ export async function updateUser(email: string, userData:any) {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error("API Error:", error.response?.data || error.message)
-        throw new Error(`Failed to update user: ${error.message}`)
+        throwApiError(error, "Failed to update")
       }
       throw error
     }
@@ -123,7 +139,7 @@ export async function updateUser(email: string, userData:any) {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error("API Error:", error.response?.data || error.message)
-        throw new Error(`Failed to update user: ${error.message}`)
+        throwApiError(error, "Failed to update")
       }
       throw error
     }

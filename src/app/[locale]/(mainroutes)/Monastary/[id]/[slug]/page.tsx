@@ -27,7 +27,7 @@ import { Input } from "@/components/ui/input";
 import { Loader2, Pause, Pen, Volume2,  } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { validateFile } from '@/lib/utils';
+import { validateFile, contentLocale, translationForRead, ownContentTranslation, contentTranslationPayload } from '@/lib/utils';
 import ContactEditSection from '@/app/LocalComponents/ContactEditSection';
 
 const SUPPORTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
@@ -74,7 +74,7 @@ function MonasteryContent({ params }: { params: any }) {
   const { role } = useRole();
   const isAdmin = useMemo(() => role === "ADMIN", [role]);
   const activeLocale = params.locale;
-  const languageCode = useMemo(() => params.locale === "bod" ? "bo" : "en", [params.locale]);
+  const languageCode = useMemo(() => contentLocale(params.locale), [params.locale]);
 
   const {
     data: monastery,
@@ -93,12 +93,15 @@ function MonasteryContent({ params }: { params: any }) {
     }));
   }, [queryClient, params.slug]);
 
-  const currentTranslation = useMemo(() => {
-    if (!monastery?.translations) return null;
-    return monastery.translations.find((t: any) => t.languageCode === languageCode) ||
-      monastery.translations.find((t: any) => t.languageCode === "en") ||
-      monastery.translations[0];
-  }, [monastery?.translations, languageCode]);
+  const currentTranslation = useMemo(
+    () => translationForRead(monastery?.translations, params.locale),
+    [monastery?.translations, params.locale]
+  );
+  const ownTranslation = useMemo(
+    () => ownContentTranslation(monastery?.translations, params.locale),
+    [monastery?.translations, params.locale]
+  );
+  const isLocaleFallback = Boolean(currentTranslation && !ownTranslation);
 
   // Combine audio-related effects
   useEffect(() => {
@@ -127,16 +130,16 @@ function MonasteryContent({ params }: { params: any }) {
 
   // Combine form data effects
   useEffect(() => {
-    if (currentTranslation && monastery) {
+    if (monastery) {
       setEditedData({
-        name: currentTranslation.name || "",
-        description: currentTranslation.description || "",
+        name: ownTranslation?.name || "",
+        description: ownTranslation?.description || "",
         geoLocation: monastery.geo_location || "",
         sect: monastery.sect || "",
         type: monastery.type || ""
       });
     }
-  }, [currentTranslation, monastery]);
+  }, [ownTranslation, monastery]);
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -212,19 +215,27 @@ function MonasteryContent({ params }: { params: any }) {
     setIsEditing(false);
     setNewImage(null);
     setNewAudio(null);
-    if (currentTranslation && monastery) {
+    if (monastery) {
       setEditedData({
-        name: currentTranslation.name || "",
-        description: currentTranslation.description || "",
+        name: ownTranslation?.name || "",
+        description: ownTranslation?.description || "",
         geoLocation: monastery.geo_location || "",
         sect: monastery.sect || "",
         type: monastery.type || ""
       });
     }
-  }, [currentTranslation, monastery]);
+  }, [ownTranslation, monastery]);
 
   const handleSave = useCallback(async () => {
-    if (!monastery || !currentTranslation) return;
+    if (!monastery) return;
+    if (!editedData.name.trim()) {
+      toast({
+        title: "Error",
+        description: `Title is required for ${languageCode}`,
+        variant: "destructive",
+      });
+      return;
+    }
 
     try {
       setIsUpdating(true);
@@ -236,7 +247,7 @@ function MonasteryContent({ params }: { params: any }) {
         imageUrl = await createS3UploadUrl(imageFormData);
       }
 
-      let audioUrl = currentTranslation.description_audio;
+      let audioUrl = ownTranslation?.description_audio || "";
       if (newAudio) {
         const audioFormData = new FormData();
         audioFormData.append('file', newAudio);
@@ -248,24 +259,24 @@ function MonasteryContent({ params }: { params: any }) {
         geo_location: editedData.geoLocation,
         sect: editedData.sect,
         type: editedData.type,
-        contactId: monastery.contact.id,
-        translations: monastery.translations.map((t: any) => ({
-          languageCode: t.languageCode,
-          name: t.languageCode === languageCode ? editedData.name : t.name,
-          description: t.languageCode === languageCode ? editedData.description : t.description,
-          description_audio: t.languageCode === languageCode ? audioUrl : t.description_audio
-        }))
+        contactId: monastery.contact?.id,
+        translations: [
+          contentTranslationPayload(params.locale, {
+            name: editedData.name,
+            description: editedData.description,
+            description_audio: audioUrl,
+          }),
+        ],
       };
 
-      await updategonpa(params.slug, updatedData);
+      const result = await updategonpa(params.slug, updatedData);
       
-      queryClient.setQueryData(["gonpa", params.slug], {
+      queryClient.setQueryData(["gonpa", params.slug], result.data || {
         ...monastery,
         image: imageUrl,
         geo_location: editedData.geoLocation,
         sect: editedData.sect,
         type: editedData.type,
-        translations: updatedData.translations
       });
 
       setIsEditing(false);
@@ -275,7 +286,7 @@ function MonasteryContent({ params }: { params: any }) {
 
       toast({
         title: "Success",
-        description: "Monastery updated successfully",
+        description: `Saved ${languageCode} translation`,
       });
     } catch (error: any) {
       console.error('Update error:', error);
@@ -287,7 +298,7 @@ function MonasteryContent({ params }: { params: any }) {
     } finally {
       setIsUpdating(false);
     }
-  }, [monastery, currentTranslation, newImage, newAudio, editedData, languageCode, params.slug, queryClient, refetch]);
+  }, [monastery, ownTranslation, newImage, newAudio, editedData, languageCode, params.locale, params.slug, queryClient, refetch]);
 
   const toggleAudio = useCallback(() => {
     if (audioRef.current) {
@@ -302,14 +313,15 @@ function MonasteryContent({ params }: { params: any }) {
 
   if (isLoading) return <LoadingSkeleton />;
   if (error) return <div className="text-red-500 p-8">Failed to load monastery details</div>;
-  if (!monastery || !currentTranslation) return <div className="p-8">No data found</div>;
+  if (!monastery) return <div className="p-8">No data found</div>;
+  if (!currentTranslation && !isAdmin) return <div className="p-8">No data found</div>;
 
   const labels = breadcrumbLabels[activeLocale] || breadcrumbLabels.en;
 
   const breadcrumbItems = [
     { label: labels.monastery, href: "/Monastary" },
     { label: sectTranslations[monastery.sect]?.[activeLocale] || monastery.sect, href: `/Monastary/${params.id}` },
-    { label: currentTranslation.name || labels.details },
+    { label: currentTranslation?.name || labels.details },
   ];
 
   return (
@@ -331,7 +343,7 @@ function MonasteryContent({ params }: { params: any }) {
             <div className="relative">
               <Image
                 src={monastery.image}
-                alt={currentTranslation.name || "Monastery image"}
+                alt={currentTranslation?.name || "Monastery image"}
                 width={1200}
                 height={800}
                 className="w-full h-64 object-cover rounded-t-lg"
@@ -366,7 +378,7 @@ function MonasteryContent({ params }: { params: any }) {
                     />
                   ) : (
                     <CardTitle className={`text-2xl font-bold ${activeLocale === "bod" ? "font-monlam" : ""}`}>
-                      {currentTranslation.name}
+                      {currentTranslation?.name || (isAdmin ? `(No ${languageCode} title yet)` : "")}
                     </CardTitle>
                   )}
                   
@@ -383,7 +395,7 @@ function MonasteryContent({ params }: { params: any }) {
                     </>
                   )
                  }
-                    {currentTranslation.description_audio && !isEditing && (
+                    {currentTranslation?.description_audio && !isEditing && (
                       <button
                         onClick={toggleAudio}
                         className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900"
@@ -471,6 +483,17 @@ function MonasteryContent({ params }: { params: any }) {
                     }}
                     className={`min-h-[150px] overflow-hidden ${activeLocale === "bod" ? "font-monlam" : ""}`}
                   />
+                  {isLocaleFallback && (
+                    <p className="text-sm text-amber-700 dark:text-amber-400">
+                      No {languageCode} translation yet. The public page still shows English.
+                      Type {languageCode} here — Save only creates that language and will not change English.
+                    </p>
+                  )}
+                  {!currentTranslation && isAdmin && (
+                    <p className="text-sm text-amber-700 dark:text-amber-400">
+                      This monastery has no translations. Save will create {languageCode}.
+                    </p>
+                  )}
                   
                   <div className="space-y-4">
                     <div className="space-y-2">
@@ -482,13 +505,13 @@ function MonasteryContent({ params }: { params: any }) {
                         accept={SUPPORTED_AUDIO_TYPES.join(',')}
                         onChange={(e) => handleFileChange(e, 'audio')}
                       />
-                      {(newAudio || currentTranslation.description_audio) && (
+                      {(newAudio || ownTranslation?.description_audio) && (
                         <div className="mt-2">
                           <p className="text-sm text-gray-500 mb-2">
                             {newAudio ? `Selected: ${newAudio.name}` : 'Current Audio:'}
                           </p>
                           <AudioPreview 
-                            src={newAudio ? URL.createObjectURL(newAudio) : currentTranslation.description_audio} 
+                            src={newAudio ? URL.createObjectURL(newAudio) : ownTranslation?.description_audio || ""} 
                             className="rounded-md p-2"
                           />
                         </div>
@@ -518,7 +541,7 @@ function MonasteryContent({ params }: { params: any }) {
                   <p className={`text-gray-700 dark:text-gray-400 text-justify leading-relaxed whitespace-pre-wrap ${
                     activeLocale === "bod" ? "font-monlam" : ""
                   }`}>
-                    {currentTranslation.description}
+                    {currentTranslation?.description}
                   </p>
                 </div>
               )}
@@ -530,7 +553,7 @@ function MonasteryContent({ params }: { params: any }) {
           {monastery.geo_location && (
             <MonasteryMap
               geoLocation={monastery.geo_location}
-              monasteryName={currentTranslation.name}
+              monasteryName={currentTranslation?.name}
               locale={activeLocale}
             />
           )}
