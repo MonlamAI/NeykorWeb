@@ -15,7 +15,7 @@ import { useRole } from "@/app/Providers/ContextProvider";
 import { createS3UploadUrl } from "@/app/actions/postactions";
 import { toast } from "@/hooks/use-toast";
 import { updateFestival } from "@/app/actions/updateaction";
-import { formatDateForDisplay, formatDateForInput, validateFile } from "@/lib/utils";
+import { formatDateForDisplay, formatDateForInput, validateFile, contentLocale, translationForRead, ownContentTranslation, contentTranslationPayload } from "@/lib/utils";
 import DynamicQRCode from "@/app/LocalComponents/generators/Qrcode";
 
 const AudioPreview = ({ src, className = "" }: { src: string; className?: string }) => {
@@ -47,31 +47,31 @@ export default function FestivalPage({ params }: { params: { id: string  } }) {
   
 const isAdmin = role === "ADMIN";
   
-  const languageCode = useMemo(() => 
-    ({ en: "en", bod: "bo" }[activeLocale] || "en"), 
-    [activeLocale]
-  );
+  const writeLocale = useMemo(() => contentLocale(activeLocale), [activeLocale]);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["festival", params.id],
     queryFn: () => getFestivalDetail(params.id),
   });
 
-  const currentTranslation = useMemo(() => {
-    if (!data?.translations) return null;
-    return data.translations.find((t: any) => t.languageCode === languageCode) ||
-      data.translations.find((t: any) => t.languageCode === "en") ||
-      data.translations[0];
-  }, [data?.translations, languageCode]);
+  const currentTranslation = useMemo(
+    () => translationForRead(data?.translations, activeLocale),
+    [data?.translations, activeLocale]
+  );
+  const ownTranslation = useMemo(
+    () => ownContentTranslation(data?.translations, activeLocale),
+    [data?.translations, activeLocale]
+  );
+  const isLocaleFallback = Boolean(currentTranslation && !ownTranslation);
 
   useEffect(() => {
-    if (currentTranslation && data) {
-      setEditedName(currentTranslation.name || "");
-      setEditedDescription(currentTranslation.description || "");
+    if (data) {
+      setEditedName(ownTranslation?.name || "");
+      setEditedDescription(ownTranslation?.description || "");
       setEditedStartDate(formatDateForInput(data.start_date));
       setEditedEndDate(formatDateForInput(data.end_date));
     }
-  }, [currentTranslation, data]);
+  }, [ownTranslation, data]);
 
 
   useEffect(() => {
@@ -106,8 +106,16 @@ const isAdmin = role === "ADMIN";
   };
 
   const handleSave = async () => {
-    if (!data || !currentTranslation) return;
-    
+    if (!data) return;
+    if (!editedName.trim()) {
+      toast({
+        title: "Error",
+        description: `Title is required for ${writeLocale}`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setIsUpdating(true);
       
@@ -118,40 +126,36 @@ const isAdmin = role === "ADMIN";
         imageUrl = await createS3UploadUrl(imageFormData);
       }
 
-      let audioUrl = currentTranslation.description_audio;
+      let audioUrl = ownTranslation?.description_audio || "";
       if (newAudio) {
         const audioFormData = new FormData();
         audioFormData.append('file', newAudio);
         audioUrl = await createS3UploadUrl(audioFormData);
       }
 
-      const updatedData = {
-        ...data,
+      const payload = {
         start_date: new Date(editedStartDate).toISOString(),
         end_date: new Date(editedEndDate).toISOString(),
         image: imageUrl,
-        translations: data.translations.map((t: any) =>
-          t.languageCode === languageCode
-            ? {
-                ...t,
-                name: editedName,
-                description: editedDescription,
-                description_audio: audioUrl,
-              }
-            : t
-        ),
+        translations: [
+          contentTranslationPayload(activeLocale, {
+            name: editedName,
+            description: editedDescription,
+            description_audio: audioUrl,
+          }),
+        ],
       };
 
-      await updateFestival(params.id, updatedData);
+      const result = await updateFestival(params.id, payload);
       setIsEditing(false);
       setNewImage(null);
       setNewAudio(null);
-      queryClient.setQueryData(["festival", params.id], updatedData);
+      queryClient.setQueryData(["festival", params.id], result.data?.festival || result.data);
       refetch();
       
       toast({
         title: "Success",
-        description: "Festival updated successfully",
+        description: `Saved ${writeLocale} translation`,
       });
     } catch (error: any) {
       toast({
@@ -168,9 +172,14 @@ const isAdmin = role === "ADMIN";
     setIsEditing(false);
     setNewImage(null);
     setNewAudio(null);
-    if (currentTranslation && data) {
-      setEditedName(currentTranslation.name || "");
-      setEditedDescription(currentTranslation.description || "");
+    if (ownTranslation && data) {
+      setEditedName(ownTranslation.name || "");
+      setEditedDescription(ownTranslation.description || "");
+      setEditedStartDate(formatDateForInput(data.start_date));
+      setEditedEndDate(formatDateForInput(data.end_date));
+    } else if (data) {
+      setEditedName("");
+      setEditedDescription("");
       setEditedStartDate(formatDateForInput(data.start_date));
       setEditedEndDate(formatDateForInput(data.end_date));
     }
@@ -210,7 +219,8 @@ const isAdmin = role === "ADMIN";
 
   if (isLoading) return <LoadingSkeleton />;
   if (error) return <div className="text-red-500 p-8">Failed to load festival details</div>;
-  if (!data || !currentTranslation) return <div className="p-8">No data found</div>;
+  if (!data) return <div className="p-8">No data found</div>;
+  if (!currentTranslation && !isAdmin) return <div className="p-8">No data found</div>;
 
   const breadcrumbLabels = {
     en: { home: "Home", festivals: "Festivals", details: "Details" },
@@ -224,7 +234,7 @@ const isAdmin = role === "ADMIN";
       <Breadcrumb
         items={[
           { label: breadcrumbLabels.festivals, href: "/Festival" },
-          { label: currentTranslation.name || breadcrumbLabels.details },
+          { label: currentTranslation?.name || breadcrumbLabels.details },
         ]}
         locale={activeLocale}
         labels={{ home: breadcrumbLabels.home }}
@@ -238,7 +248,7 @@ const isAdmin = role === "ADMIN";
             <div className="relative aspect-square">
               <Image
                 src={data.image}
-                alt={currentTranslation.name || "Festival"}
+                alt={currentTranslation?.name || "Festival"}
                 fill
                 className="object-cover"
                 priority
@@ -320,7 +330,7 @@ const isAdmin = role === "ADMIN";
                     />
                   ) : (
                     <h1 className={`text-2xl font-bold ${fontClass}`}>
-                      {currentTranslation.name}
+                      {currentTranslation?.name || (isAdmin ? `(No ${writeLocale} title yet)` : "")}
                     </h1>
                   )}
                   <div className="flex gap-2">
@@ -356,6 +366,17 @@ const isAdmin = role === "ADMIN";
                       }}
                       className={`min-h-[150px] overflow-hidden ${fontClass}`}
                     />
+                    {isLocaleFallback && (
+                      <p className="text-sm text-amber-700 dark:text-amber-400">
+                        No {writeLocale} translation yet. The public page still shows English.
+                        Type {writeLocale} here — Save only creates that language and will not change English.
+                      </p>
+                    )}
+                    {!currentTranslation && isAdmin && (
+                      <p className="text-sm text-amber-700 dark:text-amber-400">
+                        This festival has no translations. Save will create {writeLocale}.
+                      </p>
+                    )}
                     <div className="space-y-4">
                       <div className="space-y-2">
                         <label className="text-sm font-medium">
@@ -366,13 +387,13 @@ const isAdmin = role === "ADMIN";
                           accept="audio/mpeg,audio/mp3"
                           onChange={(e) => handleFileChange(e, 'audio')}
                         />
-                        {(newAudio || currentTranslation.description_audio) && (
+                        {(newAudio || ownTranslation?.description_audio) && (
                           <div className="mt-2">
                             <p className="text-sm text-gray-500 mb-2">
                               {newAudio ? `Selected: ${newAudio.name}` : 'Current Audio:'}
                             </p>
                             <AudioPreview 
-                              src={newAudio ? URL.createObjectURL(newAudio) : currentTranslation.description_audio} 
+                              src={newAudio ? URL.createObjectURL(newAudio) : ownTranslation?.description_audio || ""} 
                               className="rounded-md p-2"
                             />
                           </div>
@@ -397,7 +418,7 @@ const isAdmin = role === "ADMIN";
                   </div>
                 ) : (
                   <p className={`text-gray-700 dark:text-neutral-400 text-justify leading-relaxed whitespace-pre-wrap ${fontClass}`}>
-                    {currentTranslation.description}
+                    {currentTranslation?.description}
                   </p>
                 )}
               </CardContent>

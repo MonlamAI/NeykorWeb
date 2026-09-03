@@ -13,6 +13,63 @@ export const localeAlias: { [key: string]: string } = {
   bod: "bo",
 };
 
+/** UI locale (en | bod | hi) → content languageCode (en | bo | hi). */
+export function contentLocale(uiLocale: string): string {
+  return localeAlias[uiLocale] || uiLocale;
+}
+
+export function translationForRead<T extends { languageCode: string }>(
+  translations: T[] | undefined,
+  uiLocale: string
+): T | null {
+  if (!translations?.length) return null;
+  const code = contentLocale(uiLocale);
+  return (
+    translations.find((t) => t.languageCode === code) ||
+    translations.find((t) => t.languageCode === "en") ||
+    translations[0]
+  );
+}
+
+/** The row for this UI locale, or undefined — never a fallback language. */
+export function ownContentTranslation<T extends { languageCode: string }>(
+  translations: T[] | undefined,
+  uiLocale: string
+): T | undefined {
+  if (!translations?.length) return undefined;
+  const code = contentLocale(uiLocale);
+  return translations.find((t) => t.languageCode === code);
+}
+
+/** PUT payload for one locale. Backend upserts this row and leaves the others. */
+export function contentTranslationPayload(
+  uiLocale: string,
+  patch: { name: string; description: string; description_audio?: string }
+) {
+  return {
+    languageCode: contentLocale(uiLocale),
+    name: patch.name,
+    description: patch.description,
+    description_audio: patch.description_audio || "",
+  };
+}
+
+/** Write to the URL/UI locale. Never overwrites a fallback (e.g. en) row. */
+export function upsertContentTranslation<T extends { languageCode: string }>(
+  translations: T[],
+  uiLocale: string,
+  patch: Record<string, unknown>
+): T[] {
+  const code = contentLocale(uiLocale);
+  const index = translations.findIndex((t) => t.languageCode === code);
+  if (index === -1) {
+    return [...translations, { languageCode: code, ...patch } as T];
+  }
+  return translations.map((t, i) =>
+    i === index ? ({ ...t, ...patch, languageCode: code } as T) : t
+  );
+}
+
 export const IMAGE_BASE_URL = process.env.IMAGE_BASE_URL;
 export const validateFile = (file: File, type: 'image' | 'audio') => {
   const maxSize = 10 * 1024 * 1024;

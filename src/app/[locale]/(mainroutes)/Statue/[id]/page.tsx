@@ -15,7 +15,7 @@ import { useRole } from "@/app/Providers/ContextProvider";
 import { updatestatue } from "@/app/actions/updateaction";
 import { createS3UploadUrl } from "@/app/actions/postactions";
 import { toast } from "@/hooks/use-toast";
-import { validateFile } from "@/lib/utils";
+import { validateFile, contentLocale, translationForRead, ownContentTranslation, contentTranslationPayload } from "@/lib/utils";
 import DynamicQRCode from "@/app/LocalComponents/generators/Qrcode";
 
 const AudioPreview = ({ src, className = "" }: { src: string; className?: string }) => {
@@ -45,22 +45,22 @@ export default function StatuePage({ params }: { params: { id: string } }) {
   
 const isAdmin = role === "ADMIN";
   
-  const languageCode = useMemo(() => 
-    ({ en: "en", bod: "bo" }[activeLocale] || "en"), 
-    [activeLocale]
-  );
+  const writeLocale = useMemo(() => contentLocale(activeLocale), [activeLocale]);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["statue", params.id],
     queryFn: () => getStatuesDetail(params.id),
   });
 
-  const currentTranslation = useMemo(() => {
-    if (!data?.translations) return null;
-    return data.translations.find((t: any) => t.languageCode === languageCode) ||
-      data.translations.find((t: any) => t.languageCode === "en") ||
-      data.translations[0];
-  }, [data?.translations, languageCode]);
+  const currentTranslation = useMemo(
+    () => translationForRead(data?.translations, activeLocale),
+    [data?.translations, activeLocale]
+  );
+  const ownTranslation = useMemo(
+    () => ownContentTranslation(data?.translations, activeLocale),
+    [data?.translations, activeLocale]
+  );
+  const isLocaleFallback = Boolean(currentTranslation && !ownTranslation);
 
   useEffect(() => {
     if (audioRef.current && currentTranslation?.description_audio) {
@@ -79,11 +79,9 @@ const isAdmin = role === "ADMIN";
   }, [currentTranslation?.description_audio]);
 
   useEffect(() => {
-    if (currentTranslation) {
-      setEditedName(currentTranslation.name || "");
-      setEditedDescription(currentTranslation.description || "");
-    }
-  }, [currentTranslation]);
+    setEditedName(ownTranslation?.name || "");
+    setEditedDescription(ownTranslation?.description || "");
+  }, [ownTranslation]);
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -133,8 +131,16 @@ const isAdmin = role === "ADMIN";
   };
 
   const handleSave = async () => {
-    if (!data || !currentTranslation) return;
-    
+    if (!data) return;
+    if (!editedName.trim()) {
+      toast({
+        title: "Error",
+        description: `Title is required for ${writeLocale}`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setIsUpdating(true);
       let imageUrl = data.image;
@@ -143,37 +149,33 @@ const isAdmin = role === "ADMIN";
         imageFormData.append('file', newImage);
         imageUrl = await createS3UploadUrl(imageFormData);
       }
-      let audioUrl = currentTranslation.description_audio;
+      let audioUrl = ownTranslation?.description_audio || "";
       if (newAudio) {
         const audioFormData = new FormData();
         audioFormData.append('file', newAudio);
         audioUrl = await createS3UploadUrl(audioFormData);
       }
 
-      const updatedData = {
-        ...data,
+      const payload = {
         image: imageUrl,
-        translations: data.translations.map((t: any) =>
-          t.languageCode === languageCode
-            ? {
-                ...t,
-                name: editedName,
-                description: editedDescription,
-                description_audio: audioUrl,
-              }
-            : t
-        ),
+        translations: [
+          contentTranslationPayload(activeLocale, {
+            name: editedName,
+            description: editedDescription,
+            description_audio: audioUrl,
+          }),
+        ],
       };
-      await updatestatue(params.id, updatedData);
+      const result = await updatestatue(params.id, payload);
       setIsEditing(false);
       setNewImage(null);
       setNewAudio(null);
-      queryClient.setQueryData(["statue", params.id], updatedData);
+      queryClient.setQueryData(["statue", params.id], result.data);
       refetch();
       
       toast({
         title: "Success",
-        description: "Statue updated successfully",
+        description: `Saved ${writeLocale} translation`,
       });
     } catch (error: any) {
       toast({
@@ -190,15 +192,14 @@ const isAdmin = role === "ADMIN";
     setIsEditing(false);
     setNewImage(null);
     setNewAudio(null);
-    if (currentTranslation) {
-      setEditedName(currentTranslation.name || "");
-      setEditedDescription(currentTranslation.description || "");
-    }
+    setEditedName(ownTranslation?.name || "");
+    setEditedDescription(ownTranslation?.description || "");
   };
 
   if (isLoading) return <LoadingSkeleton />;
   if (error) return <div className="text-red-500 p-8">Failed to load statue details</div>;
-  if (!data || !currentTranslation) return <div className="p-8">No data found</div>;
+  if (!data) return <div className="p-8">No data found</div>;
+  if (!currentTranslation && !isAdmin) return <div className="p-8">No data found</div>;
 
   const breadcrumbLabels = {
     en: { home: "Home", statues: "Statues", details: "Details" },
@@ -212,7 +213,7 @@ const isAdmin = role === "ADMIN";
       <Breadcrumb
         items={[
           { label: breadcrumbLabels.statues, href: "/Statue" },
-          { label: currentTranslation.name || breadcrumbLabels.details },
+          { label: currentTranslation?.name || breadcrumbLabels.details },
         ]}
         locale={activeLocale}
         labels={{ home: breadcrumbLabels.home }}
@@ -226,7 +227,7 @@ const isAdmin = role === "ADMIN";
             <div className="relative aspect-square">
               <img
                 src={data.image}
-                alt={currentTranslation.name || "Statue"}
+                alt={currentTranslation?.name || "Statue"}
                 className="w-full h-full object-cover"
               />
               {isEditing && (
@@ -263,11 +264,11 @@ const isAdmin = role === "ADMIN";
                     />
                   ) : (
                     <h1 className={`text-2xl font-bold ${fontClass}`}>
-                      {currentTranslation.name}
+                      {currentTranslation?.name || (isAdmin ? `(No ${writeLocale} title yet)` : "")}
                     </h1>
                   )}
                   <div className="flex gap-2">
-                    {currentTranslation.description_audio && !isEditing && (
+                    {currentTranslation?.description_audio && !isEditing && (
                       <button
                         onClick={toggleAudio}
                         className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900"
@@ -299,6 +300,17 @@ const isAdmin = role === "ADMIN";
                       }}
                       className={`min-h-[150px] overflow-hidden ${fontClass}`}
                     />
+                    {isLocaleFallback && (
+                      <p className="text-sm text-amber-700 dark:text-amber-400">
+                        No {writeLocale} translation yet. The public page still shows English.
+                        Type {writeLocale} here — Save only creates that language and will not change English.
+                      </p>
+                    )}
+                    {!currentTranslation && isAdmin && (
+                      <p className="text-sm text-amber-700 dark:text-amber-400">
+                        This statue has no translations. Save will create {writeLocale}.
+                      </p>
+                    )}
                     <div className="space-y-4">
                       <div className="space-y-2">
                         <label className="text-sm font-medium">
@@ -309,13 +321,13 @@ const isAdmin = role === "ADMIN";
                           accept="audio/mpeg,audio/mp3"
                           onChange={(e) => handleFileChange(e, 'audio')}
                         />
-                        {(newAudio || currentTranslation.description_audio) && (
+                        {(newAudio || ownTranslation?.description_audio) && (
                           <div className="mt-2">
                             <p className="text-sm text-gray-500 mb-2">
                               {newAudio ? `Selected: ${newAudio.name}` : 'Current Audio:'}
                             </p>
                             <AudioPreview 
-                              src={newAudio ? URL.createObjectURL(newAudio) : currentTranslation.description_audio} 
+                              src={newAudio ? URL.createObjectURL(newAudio) : ownTranslation?.description_audio || ""} 
                               className=" rounded-md p-2"
                             />
                           </div>
@@ -340,7 +352,7 @@ const isAdmin = role === "ADMIN";
                   </div>
                 ) : (
                   <p className={`text-gray-700 dark:text-neutral-400 text-justify leading-relaxed whitespace-pre-wrap ${fontClass}`}>
-                    {currentTranslation.description}
+                    {currentTranslation?.description}
                   </p>
                 )}
               </CardContent>

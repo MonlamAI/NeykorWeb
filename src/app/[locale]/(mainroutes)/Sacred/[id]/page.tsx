@@ -15,7 +15,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Breadcrumb from "@/app/LocalComponents/Breadcrumb";
 import { useRole } from "@/app/Providers/ContextProvider";
 import { toast } from "@/hooks/use-toast";
-import { validateFile } from "@/lib/utils";
+import { validateFile, contentLocale, translationForRead, ownContentTranslation, contentTranslationPayload } from "@/lib/utils";
 import ContactEditSection from "@/app/LocalComponents/ContactEditSection";
 
 const AudioPreview = ({ src, className = "" }: { src: string; className?: string }) => {
@@ -76,21 +76,23 @@ const isAdmin = role === "ADMIN";
       contact: updatedContact
     });
   };
-  const languageCode = params.locale === "bod" ? "bo" : "en";
+  const languageCode = contentLocale(params.locale);
   const currentTranslation = useMemo(() => {
-    if (!siteData?.translations) return null;
-    return siteData.translations.find((t: any) => t.languageCode === languageCode) ||
-      siteData.translations.find((t: any) => t.languageCode === "en") ||
-      siteData.translations[0];
-  }, [siteData?.translations, languageCode]);
+    return translationForRead(siteData?.translations, params.locale);
+  }, [siteData?.translations, params.locale]);
+  const ownTranslation = useMemo(
+    () => ownContentTranslation(siteData?.translations, params.locale),
+    [siteData?.translations, params.locale]
+  );
+  const isLocaleFallback = Boolean(currentTranslation && !ownTranslation);
 
   useEffect(() => {
-    if (currentTranslation && siteData) {
-      setEditedName(currentTranslation.name || "");
-      setEditedDescription(currentTranslation.description || "");
+    if (siteData) {
+      setEditedName(ownTranslation?.name || "");
+      setEditedDescription(ownTranslation?.description || "");
       setEditedGeoLocation(siteData.geo_location || "");
     }
-  }, [currentTranslation, siteData]);
+  }, [ownTranslation, siteData]);
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -154,8 +156,16 @@ const isAdmin = role === "ADMIN";
   };
 
   const handleSave = async () => {
-    if (!siteData || !currentTranslation) return;
-    
+    if (!siteData) return;
+    if (!editedName.trim()) {
+      toast({
+        title: "Error",
+        description: `Title is required for ${languageCode}`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setIsUpdating(true);
       
@@ -166,7 +176,7 @@ const isAdmin = role === "ADMIN";
         imageUrl = await createS3UploadUrl(imageFormData);
       }
   
-      let audioUrl = currentTranslation.description_audio;
+      let audioUrl = ownTranslation?.description_audio || "";
       if (newAudio) {
         const audioFormData = new FormData();
         audioFormData.append('file', newAudio);
@@ -177,19 +187,20 @@ const isAdmin = role === "ADMIN";
         image: imageUrl,
         geo_location: editedGeoLocation,
         contactId: siteData.contact.id,
-        translations: siteData.translations.map((t: any) => ({
-          languageCode: t.languageCode,
-          name: t.languageCode === languageCode ? editedName : t.name,
-          description: t.languageCode === languageCode ? editedDescription : t.description,
-          description_audio: t.languageCode === languageCode ? audioUrl : t.description_audio
-        }))
+        translations: [
+          contentTranslationPayload(params.locale, {
+            name: editedName,
+            description: editedDescription,
+            description_audio: audioUrl,
+          }),
+        ],
       };
     
-      await updatesite(params.id, updatedData);
+      const result = await updatesite(params.id, updatedData);
       setIsEditing(false);
       setNewImage(null);
       setNewAudio(null);
-      queryClient.setQueryData(["pilgrimsite", params.id], {
+      queryClient.setQueryData(["pilgrimsite", params.id], result.data || {
         ...siteData,
         image: imageUrl,
         geo_location: editedGeoLocation,
@@ -199,7 +210,7 @@ const isAdmin = role === "ADMIN";
       
       toast({
         title: "Success",
-        description: "Pilgrim site updated successfully",
+        description: `Saved ${languageCode} translation`,
       });
     } catch (error: any) {
       console.error('Update error:', error.response?.data || error);
@@ -217,9 +228,9 @@ const isAdmin = role === "ADMIN";
     setIsEditing(false);
     setNewImage(null);
     setNewAudio(null);
-    if (currentTranslation && siteData) {
-      setEditedName(currentTranslation.name || "");
-      setEditedDescription(currentTranslation.description || "");
+    if (siteData) {
+      setEditedName(ownTranslation?.name || "");
+      setEditedDescription(ownTranslation?.description || "");
       setEditedGeoLocation(siteData.geo_location || "");
     }
   };
@@ -233,7 +244,8 @@ const isAdmin = role === "ADMIN";
         Failed to load pilgrim site details
       </div>
     );
-  if (!siteData || !currentTranslation) return <div className="p-8">No data found</div>;
+  if (!siteData) return <div className="p-8">No data found</div>;
+  if (!currentTranslation && !isAdmin) return <div className="p-8">No data found</div>;
 
   const breadcrumbLabels = {
     en: {
@@ -252,7 +264,7 @@ const isAdmin = role === "ADMIN";
     details: "Details",
   };
 
-  const contactInfo = siteData.contact.translations.find(
+  const contactInfo = siteData.contact?.translations?.find(
     (t: any) => t.languageCode === "en"
   );
   
@@ -327,7 +339,7 @@ const isAdmin = role === "ADMIN";
                         params.locale === "bod" && "font-monlam"
                       }`}
                     >
-                      {currentTranslation?.name}
+                      {currentTranslation?.name || (isAdmin ? `(No ${languageCode} title yet)` : "")}
                     </CardTitle>
                   )}
                   <div className="flex gap-2">
@@ -382,6 +394,17 @@ const isAdmin = role === "ADMIN";
                       params.locale === "bod" && "font-monlam"
                     }`}
                   />
+                  {isLocaleFallback && (
+                    <p className="text-sm text-amber-700 dark:text-amber-400">
+                      No {languageCode} translation yet. The public page still shows English.
+                      Type {languageCode} here — Save only creates that language and will not change English.
+                    </p>
+                  )}
+                  {!currentTranslation && isAdmin && (
+                    <p className="text-sm text-amber-700 dark:text-amber-400">
+                      This site has no translations. Save will create {languageCode}.
+                    </p>
+                  )}
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <label className="text-sm font-medium">
@@ -392,13 +415,13 @@ const isAdmin = role === "ADMIN";
                         accept="audio/mpeg,audio/mp3"
                         onChange={(e) => handleFileChange(e, 'audio')}
                       />
-                      {(newAudio || currentTranslation?.description_audio) && (
+                      {(newAudio || ownTranslation?.description_audio) && (
                         <div className="mt-2">
                           <p className="text-sm text-gray-500 mb-2">
                             {newAudio ? `Selected: ${newAudio.name}` : 'Current Audio:'}
                           </p>
                           <AudioPreview 
-                            src={newAudio ? URL.createObjectURL(newAudio) : currentTranslation.description_audio} 
+                            src={newAudio ? URL.createObjectURL(newAudio) : ownTranslation?.description_audio || ""} 
                             className="rounded-md p-2"
                           />
                         </div>
