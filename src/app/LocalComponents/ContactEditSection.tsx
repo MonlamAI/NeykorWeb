@@ -14,7 +14,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { STATES, COUNTRIES, localeAlias } from '@/lib/utils';
+import { STATES, COUNTRIES, localeAlias, isTibetanLocale } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 
 const ContactEditSection = ({ 
@@ -60,6 +60,12 @@ const ContactEditSection = ({
   
   const stateT = useTranslations("state");
   const countryT = useTranslations("country");
+  const t = useTranslations("common");
+  const fontClass = isTibetanLocale(activeLocale) ? "font-monlam" : "";
+  const labelState = (value: string) =>
+    stateT.has(value) ? stateT(value) : value;
+  const labelCountry = (value: string) =>
+    countryT.has(value) ? countryT(value) : value;
 
   const activeTranslation = contact.translations.find((t: any) => 
     t.languageCode === (localeAlias[activeLocale] || activeLocale)
@@ -210,8 +216,8 @@ const ContactEditSection = ({
     <Card>
       <DynamicQRCode/>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className={`text-xl ${activeLocale === "bod" ? "font-monlam" : ""}`}>
-          {activeLocale === "bod" ? "འབྲེལ་གཏུག་གནས་ཚུལ།" : "Contact Information"}
+        <CardTitle className={`text-xl ${fontClass}`}>
+          {t("contactInfo")}
         </CardTitle>
         {isAdmin && !isEditing && (
           <Button
@@ -229,8 +235,8 @@ const ContactEditSection = ({
         {isEditing ? (
           <div className="space-y-4">
             <div className="space-y-2">
-              <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlam" : ""}`}>
-                {activeLocale === "bod" ? "ཡིག་འཕྲིན།" : "Email"}
+              <label className={`text-sm font-medium ${fontClass}`}>
+                {t("email")}
               </label>
               <Input
                 value={editedContact.email}
@@ -240,8 +246,8 @@ const ContactEditSection = ({
             </div>
 
             <div className="space-y-2">
-              <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlam" : ""}`}>
-                {activeLocale === "bod" ? "ཁ་པར།" : "Phone Number"}
+              <label className={`text-sm font-medium ${fontClass}`}>
+                {t("phoneNumber")}
               </label>
               <Input
                 value={editedContact.phone_number}
@@ -251,8 +257,8 @@ const ContactEditSection = ({
             </div>
 
             <div className="space-y-2">
-              <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlam" : ""}`}>
-                {activeLocale === "bod" ? "ཁ་བྱང་།" : "Address"}
+              <label className={`text-sm font-medium ${fontClass}`}>
+                {t("address")}
               </label>
               <Input
                 value={activeEditTranslation.address}
@@ -263,8 +269,8 @@ const ContactEditSection = ({
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlam" : ""}`}>
-                  {activeLocale === "bod" ? "གྲོང་ཁྱེར།" : "City"}
+                <label className={`text-sm font-medium ${fontClass}`}>
+                  {t("city")}
                 </label>
                 <Input
                   value={activeEditTranslation.city}
@@ -274,20 +280,20 @@ const ContactEditSection = ({
               </div>
 
               <div className="space-y-2">
-                <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlam" : ""}`}>
-                  {activeLocale === "bod" ? "མངའ་སྡེ།" : "State"}
+                <label className={`text-sm font-medium ${fontClass}`}>
+                  {t("stateLabel")}
                 </label>
                 <Select 
                   value={activeEditTranslation.state}
                   onValueChange={(value) => updateTranslation(activeLocale, "state", value)}
                 >
-                  <SelectTrigger className={` ${activeLocale === "bod" ? "font-monlam" : ""}`}>
-                    <SelectValue placeholder={activeLocale === "bod" ? "མངའ་སྡེ་འདེམས།" : "Select a state"} />
+                  <SelectTrigger className={` ${fontClass}`}>
+                    <SelectValue placeholder={t("selectState")} />
                   </SelectTrigger>
-                  <SelectContent  className={` ${activeLocale === "bod" ? "font-monlam" : ""}`}>
+                  <SelectContent  className={` ${fontClass}`}>
                     {STATES.map((state) => (
                       <SelectItem key={state} value={state}>
-                        {activeLocale === "bod" ? stateT(state) : state}
+                        {labelState(state)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -297,8 +303,8 @@ const ContactEditSection = ({
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlam" : ""}`}>
-                  {activeLocale === "bod" ? "འཕྲིན་ཡིག་ཨང་།" : "Postal Code"}
+                <label className={`text-sm font-medium ${fontClass}`}>
+                  {t("postalCode")}
                 </label>
                 <Input
                   value={activeEditTranslation.postal_code}
@@ -308,20 +314,20 @@ const ContactEditSection = ({
               </div>
 
               <div className="space-y-2">
-                <label className={`text-sm font-medium ${activeLocale === "bod" ? "font-monlam" : ""}`}>
-                  {activeLocale === "bod" ? "རྒྱལ་ཁབ།" : "Country"}
+                <label className={`text-sm font-medium ${fontClass}`}>
+                  {t("countryLabel")}
                 </label>
                 <Select 
                   value={activeEditTranslation.country}
                   onValueChange={(value) => updateTranslation(activeLocale, "country", value)}
                 >
-                  <SelectTrigger className={` ${activeLocale === "bod" ? "font-monlam" : ""}`}>
-                    <SelectValue placeholder={activeLocale === "bod" ? "རྒྱལ་ཁབ་འདེམས།" : "Select a country"} />
+                  <SelectTrigger className={` ${fontClass}`}>
+                    <SelectValue placeholder={t("selectCountry")} />
                   </SelectTrigger>
-                  <SelectContent className={` ${activeLocale === "bod" ? "font-monlam" : ""}`}>
+                  <SelectContent className={` ${fontClass}`}>
                     {COUNTRIES.map((country) => (
                       <SelectItem key={country} value={country}>
-                        {activeLocale === "bod" ? countryT(country) : country}
+                        {labelCountry(country)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -330,17 +336,17 @@ const ContactEditSection = ({
             </div>
 
             <div className="flex justify-end gap-2">
-              <Button variant="outline" className={` ${activeLocale === "bod" ? "font-monlam" : ""}`} onClick={handleCancel}>
-                {activeLocale === "bod" ? "ཕྱིར་འཐོན།" : "Cancel"}
+              <Button variant="outline" className={` ${fontClass}`} onClick={handleCancel}>
+                {t("cancel")}
               </Button>
-              <Button onClick={handleSave} className={` ${activeLocale === "bod" ? "font-monlam" : ""}`} disabled={isUpdating}>
+              <Button onClick={handleSave} className={` ${fontClass}`} disabled={isUpdating}>
                 {isUpdating ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {activeLocale === "bod" ? "ཉར་བཞིན་པ།" : "Saving..."}
+                    {t("saving")}
                   </>
                 ) : (
-                  activeLocale === "bod" ? "ཉར།" : "Save"
+                  t("save")
                 )}
               </Button>
             </div>
@@ -348,9 +354,9 @@ const ContactEditSection = ({
         ) : (
           <>
             {activeTranslation?.address && (
-              <div className= {`${activeLocale === "bod" ? "font-monlam" : ""}`}>
+              <div className= {`${fontClass}`}>
                 <p className={`font-medium `}>
-                  {activeLocale === "bod" ? "ཁ་བྱང་།" : "Address"}
+                  {t("address")}
                 </p>
                 <p className="text-gray-600 dark:text-gray-400">
                   {activeTranslation.address}
@@ -358,20 +364,20 @@ const ContactEditSection = ({
                   {activeTranslation.city}
                   {activeTranslation.state && (
                     <>
-                      , {activeLocale === "bod" ? stateT(activeTranslation.state) : activeTranslation.state}
+                      , {labelState(activeTranslation.state)}
                     </>
                   )}
                   {activeTranslation.postal_code && <> {activeTranslation.postal_code}</>}
                   <br />
-                  {activeTranslation.country && (activeLocale === "bod" ? countryT(activeTranslation.country) : activeTranslation.country)}
+                  {activeTranslation.country && labelCountry(activeTranslation.country)}
                 </p>
               </div>
             )}
 
             {contact.phone_number && (
               <div>
-                <p className={`font-medium ${activeLocale === "bod" ? "font-monlam" : ""}`}>
-                  {activeLocale === "bod" ? "ཁ་པར་།" : "Phone"}
+                <p className={`font-medium ${fontClass}`}>
+                  {t("phone")}
                 </p>
                 <p className="text-gray-600 dark:text-gray-400">
                   {contact.phone_number}
@@ -381,8 +387,8 @@ const ContactEditSection = ({
 
             {contact.email && (
               <div>
-                <p className={`font-medium ${activeLocale === "bod" ? "font-monlam" : ""}`}>
-                  {activeLocale === "bod" ? "ཡིག་འཕྲིན།" : "Email"}
+                <p className={`font-medium ${fontClass}`}>
+                  {t("email")}
                 </p>
                 <p className="text-gray-600 dark:text-gray-400">
                   {contact.email}

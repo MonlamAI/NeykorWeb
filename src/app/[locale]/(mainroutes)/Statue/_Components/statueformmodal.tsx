@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from "react";
 import {
   Dialog,
@@ -13,8 +14,10 @@ import { Plus, X, Loader2 } from "lucide-react";
 import { createS3UploadUrl, postStatue } from "@/app/actions/postactions";
 import { toast } from "@/hooks/use-toast";
 import { validateFile } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 const StatueFormModal = ({ onSuccess }: any) => {
+  const t = useTranslations("common");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   
@@ -209,7 +212,7 @@ const StatueFormModal = ({ onSuccess }: any) => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="gap-2">
-          <Plus size={16} /> Add Statue
+          <Plus size={16} /> {t("addStatue")}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -334,7 +337,7 @@ const StatueFormModal = ({ onSuccess }: any) => {
                 Adding Statue...
               </>
             ) : (
-              "Add Statue"
+              t("addStatue")
             )}
           </Button>
         </form>

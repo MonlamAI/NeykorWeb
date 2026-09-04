@@ -1,3 +1,4 @@
+'use client'
 import React, { useState, useEffect } from "react";
 import {
   Dialog,
@@ -22,8 +23,10 @@ import { toast } from "@/hooks/use-toast";
 import { getGonpaTypes } from "@/app/actions/getactions";
 import { validateFile } from "@/lib/utils";
 import { STATES, COUNTRIES } from '@/lib/utils';
+import { useTranslations } from "next-intl";
 
 const MonasteryModal = ({ id, onSuccess }: any) => {
+  const t = useTranslations("common");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [types, setTypes] = useState<string[]>([]);
@@ -352,7 +355,7 @@ const MonasteryModal = ({ id, onSuccess }: any) => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="gap-2">
-          <Plus size={16} /> Add Monastery
+          <Plus size={16} /> {t("addMonastery")}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -644,7 +647,7 @@ const MonasteryModal = ({ id, onSuccess }: any) => {
                 Adding Monastery...
               </>
             ) : (
-              "Add Monastery"
+              t("addMonastery")
             )}
           </Button>
         </form>

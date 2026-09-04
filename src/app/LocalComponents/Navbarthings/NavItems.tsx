@@ -12,7 +12,7 @@ import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 import { twMerge } from "tailwind-merge";
 import { usePathname } from "next/navigation";
-import { isHomePage } from "@/lib/utils";
+import { isHomePage, isTibetanLocale } from "@/lib/utils";
 
 const navlinks = [
   { key: "stas", href: "/Statue" },
@@ -31,7 +31,7 @@ const NavItems = () => {
   return (
     <NavigationMenu>
       <NavigationMenuList
-        className={`${localActive == "bod" && "font-monlam"}`}
+        className={`${isTibetanLocale(localActive) ? "font-monlam" : ""} space-x-0`}
       >
         {navlinks.map((link) => (
           <NavigationMenuItem key={link.key}>
@@ -39,8 +39,8 @@ const NavItems = () => {
               <NavigationMenuLink
                 className={twMerge(
                   navigationMenuTriggerStyle(),
-                  localActive == "bod" ? "text-lg" : "",
-                  "bg-transparent hover:bg-neutral-100/40",
+                  isTibetanLocale(localActive) ? "font-monlam" : "",
+                  "h-10 px-3 py-2 text-sm bg-transparent hover:bg-neutral-100/40",
                   checkcolor ? "text-neutral-800 hover:text-neutral-800" : "text-black dark:text-white"
                 )}
               >

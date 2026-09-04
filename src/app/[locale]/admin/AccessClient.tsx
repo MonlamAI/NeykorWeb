@@ -32,11 +32,14 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { MoreHorizontal, Pencil, Trash } from "lucide-react"
-import { signIn, signOut, useSession } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useToast } from '@/hooks/use-toast'
+import { useLocale, useTranslations } from 'next-intl'
 import { deleteuser } from '@/app/actions/delaction'
 import { updateUser } from '@/app/actions/updateaction'
+import { isTibetanLocale } from '@/lib/utils'
+import SessionControls from '@/app/LocalComponents/SessionControls'
 
 interface User {
   username: string;
@@ -50,8 +53,23 @@ interface AccessClientProps {
   isAdmin: boolean;
 }
 
+function GoogleMark() {
+  return (
+    <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+    </svg>
+  )
+}
+
 const AccessClient = ({ users: initialUsers, isAdmin }: AccessClientProps) => {
   const { data: session, status } = useSession()
+  const t = useTranslations("admin")
+  const tCommon = useTranslations("common")
+  const locale = useLocale()
+  const tibetan = isTibetanLocale(locale)
   const user = session?.user
   const { toast } = useToast()
   const [users, setUsers] = useState(initialUsers)
@@ -67,16 +85,16 @@ const AccessClient = ({ users: initialUsers, isAdmin }: AccessClientProps) => {
   const handleDelete = async (email: string) => {
     try {
       await deleteuser(email)
-      setUsers(users.filter(user => user.email !== email))
+      setUsers(users.filter(row => row.email !== email))
       toast({
-        title: "Success",
-        description: "User deleted successfully",
+        title: t("success"),
+        description: t("userDeleted"),
       })
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to delete user",
+        title: t("error"),
+        description: t("deleteFailed"),
       })
       console.error('Delete error:', error)
     }
@@ -84,187 +102,196 @@ const AccessClient = ({ users: initialUsers, isAdmin }: AccessClientProps) => {
 
   const handleUpdate = async (email: string) => {
     try {
-      const response = await updateUser(email, editForm)
-      setUsers(users.map(user =>
-        user.email === email ? { ...user, ...editForm } : user
+      await updateUser(email, editForm)
+      setUsers(users.map(row =>
+        row.email === email ? { ...row, ...editForm } : row
       ))
       setIsEditDialogOpen(false)
       toast({
-        title: "Success",
-        description: "User updated successfully",
+        title: t("success"),
+        description: t("userUpdated"),
       })
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to update user",
+        title: t("error"),
+        description: t("updateFailed"),
       })
       console.error('Update error:', error)
     }
   }
 
-  const openEditDialog = (user: User) => {
-    setSelectedUser(user)
+  const openEditDialog = (row: User) => {
+    setSelectedUser(row)
     setEditForm({
-      username: user.username,
-      email: user.email,
-      role: user.role
+      username: row.username,
+      email: row.email,
+      role: row.role
     })
     setIsEditDialogOpen(true)
   }
 
-  return (
-    <div className="w-full min-h-screen px-4 sm:px-6 lg:px-8 py-8">
-      <div className="">
-        <div className="p-6">
-          {user && isAdmin ? (
-            <>
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
-                  User Management <span className='text-sm font-normal text-neutral-700 dark:text-neutral-400'>Current Session: {user.name}</span>
-                </h2>
-                <button
-                  type="button"
-                  onClick={() => signOut({ callbackUrl: "/" })}
-                  className="text-sm border px-3 py-1.5 rounded-md"
-                >
-                  Sign out
-                </button>
-              </div>
-              <div className="overflow-hidden">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-gray-50 dark:bg-neutral-900">
-                      <TableHead className="w-[200px]">Username</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Role</TableHead>
-                      <TableHead className="w-[100px]">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {users?.map((user: User) => (
-                      <TableRow key={user.id} className="hover:bg-gray-50 dark:hover:bg-neutral-800">
-                        <TableCell className="font-medium">{user.username}</TableCell>
-                        <TableCell>{user.email}</TableCell>
-                        <TableCell>
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${user.role === "ADMIN" ? "bg-red-200 text-red-800" : "text-blue-800 bg-blue-100"
-                            }`}>
-                            {user.role}
-                          </span>
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" className="h-8 w-8 p-0">
-                                <span className="sr-only">Open menu</span>
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem
-                                onClick={() => openEditDialog(user)}
-                                className="cursor-pointer"
-                              >
-                                <Pencil className="mr-2 h-4 w-4" />
-                                Edit
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => handleDelete(user.email)}
-                                className="cursor-pointer text-red-600"
-                              >
-                                <Trash className="mr-2 h-4 w-4" />
-                                Delete
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
+  const fontClass = tibetan ? "font-monlam" : ""
 
-              <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Edit User</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4 py-4">
-                    <div className="space-y-2">
-                      <Label>Username</Label>
-                      <Input
-                        value={editForm.username}
-                        onChange={(e) => setEditForm({ ...editForm, username: e.target.value })}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Email</Label>
-                      <Input
-                        value={editForm.email}
-                        onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Role</Label>
-                      <Select
-                        value={editForm.role}
-                        onValueChange={(value) => setEditForm({ ...editForm, role: value })}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select role" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="USER">User</SelectItem>
-                          <SelectItem value="ADMIN">Admin</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-                      Cancel
-                    </Button>
-                    <Button onClick={() => handleUpdate(selectedUser?.email || '')}>
-                      Save Changes
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+  if (status === "loading") {
+    return (
+      <div className={`w-full max-w-5xl mx-auto px-4 py-16 text-center text-sm text-neutral-500 ${fontClass}`}>
+        …
+      </div>
+    )
+  }
+
+  if (!user || !isAdmin) {
+    return (
+      <div className="w-full max-w-md mx-auto px-4 py-16">
+        <div className={`rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-8 shadow-sm text-center ${fontClass}`}>
+          <h1 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
+            {t("unauthorized")}
+          </h1>
+          {!user ? (
+            <>
+              <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+                {t("signInHint")}
+              </p>
+              <button
+                type="button"
+                onClick={() => signIn("google")}
+                className="mt-6 inline-flex w-full items-center justify-center gap-3 h-11 px-5 rounded-md bg-white text-neutral-800 text-sm font-medium shadow-sm border border-neutral-200 hover:bg-neutral-50 dark:bg-neutral-950 dark:text-white dark:border-neutral-700 dark:hover:bg-neutral-800"
+              >
+                <GoogleMark />
+                {t("signInGoogle")}
+              </button>
             </>
           ) : (
-            status !== "loading" && (
-              <div className="text-center py-40">
-                <h1 className="text-xl text-neutral-900 dark:text-neutral-100">
-                  You are not authorized to access this page
-                </h1>
-                {!user ? (
-                  <button
-                    type="button"
-                    onClick={() => signIn("google")}
-                    className="text-sm text-neutral-900 dark:text-neutral-100 underline mt-2"
-                  >
-                    Sign in with Google
-                  </button>
-                ) : (
-                  <div className="flex flex-col items-center gap-2 mt-4">
-                    <button
-                      type="button"
-                      onClick={() => signOut({ callbackUrl: "/" })}
-                      className="text-sm underline"
-                    >
-                      Sign out
-                    </button>
-                    <Link href="/" className="text-sm text-neutral-900 dark:text-neutral-100">Go to Home</Link>
-                  </div>
-                )}
-              </div>
-            )
+            <div className="mt-6 flex flex-col items-center gap-3">
+              <SessionControls />
+              <Link
+                href={`/${locale}`}
+                className="text-sm text-neutral-700 dark:text-neutral-300 underline underline-offset-4"
+              >
+                {t("goHome")}
+              </Link>
+            </div>
           )}
         </div>
       </div>
+    )
+  }
+
+  return (
+    <div className={`w-full max-w-5xl mx-auto px-4 sm:px-6 py-8 ${fontClass}`}>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+          <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+            {t("userManagement")}
+          </h2>
+        </div>
+          <p className="text-sm font-normal text-neutral-600 dark:text-neutral-400 mt-1">
+            {t("currentSession")}: {user.name}
+          </p>
+        {/* <SessionControls /> */}
+      </div>
+
+      <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-gray-50 dark:bg-neutral-900">
+              <TableHead className="w-[200px]">{t("username")}</TableHead>
+              <TableHead>{tCommon("email")}</TableHead>
+              <TableHead>{t("role")}</TableHead>
+              <TableHead className="w-[100px]">{t("actions")}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {users?.map((row: User) => (
+              <TableRow key={row.id} className="hover:bg-gray-50 dark:hover:bg-neutral-800">
+                <TableCell className="font-medium">{row.username}</TableCell>
+                <TableCell>{row.email}</TableCell>
+                <TableCell>
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${row.role === "ADMIN" ? "bg-red-200 text-red-800" : "text-blue-800 bg-blue-100"}`}>
+                    {row.role === "ADMIN" ? t("roleAdmin") : t("roleUser")}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="h-8 w-8 p-0">
+                        <span className="sr-only">{t("openMenu")}</span>
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className={fontClass}>
+                      <DropdownMenuItem
+                        onClick={() => openEditDialog(row)}
+                        className="cursor-pointer"
+                      >
+                        <Pencil className="mr-2 h-4 w-4" />
+                        {t("edit")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => handleDelete(row.email)}
+                        className="cursor-pointer text-red-600"
+                      >
+                        <Trash className="mr-2 h-4 w-4" />
+                        {t("delete")}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className={fontClass}>
+          <DialogHeader>
+            <DialogTitle>{t("editUser")}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>{t("username")}</Label>
+              <Input
+                value={editForm.username}
+                onChange={(e) => setEditForm({ ...editForm, username: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>{tCommon("email")}</Label>
+              <Input
+                value={editForm.email}
+                onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>{t("role")}</Label>
+              <Select
+                value={editForm.role}
+                onValueChange={(value) => setEditForm({ ...editForm, role: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={t("selectRole")} />
+                </SelectTrigger>
+                <SelectContent className={fontClass}>
+                  <SelectItem value="USER">{t("roleUser")}</SelectItem>
+                  <SelectItem value="ADMIN">{t("roleAdmin")}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+              {tCommon("cancel")}
+            </Button>
+            <Button onClick={() => handleUpdate(selectedUser?.email || '')}>
+              {t("saveChanges")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
 
 export default AccessClient
-

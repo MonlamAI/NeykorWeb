@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import React, { useState, useMemo, useEffect } from "react";
 import CustomPagination from "@/app/LocalComponents/CustomPagination";
 import { SearchComponent } from "@/app/LocalComponents/Searchbar";
@@ -12,6 +12,7 @@ import { useRole } from "@/app/Providers/ContextProvider";
 const ITEMS_PER_PAGE = 9;
 const SideClient = ({ pilgrimData }: any) => {
   const activelocale = useLocale();
+  const tCommon = useTranslations("common");
   const [currentPage, setCurrentPage] = useState(1);
   const {role} = useRole();
   const isadmin = role === "ADMIN";
@@ -81,7 +82,7 @@ const SideClient = ({ pilgrimData }: any) => {
         <div className="flex items-center justify-between px-2">
           <SearchComponent
             onSearch={handleSearch}
-            placeholder="Search pilgrim sites..."
+            placeholder={tCommon("searchSites")}
             initialQuery={searchQuery}
           />
           {isadmin && (

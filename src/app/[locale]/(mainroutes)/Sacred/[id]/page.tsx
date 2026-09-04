@@ -15,8 +15,9 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Breadcrumb from "@/app/LocalComponents/Breadcrumb";
 import { useRole } from "@/app/Providers/ContextProvider";
 import { toast } from "@/hooks/use-toast";
-import { validateFile, contentLocale, translationForRead, ownContentTranslation, contentTranslationPayload } from "@/lib/utils";
+import { validateFile, contentLocale, translationForRead, ownContentTranslation, contentTranslationPayload, isTibetanLocale } from "@/lib/utils";
 import ContactEditSection from "@/app/LocalComponents/ContactEditSection";
+import { useTranslations } from "next-intl";
 
 const AudioPreview = ({ src, className = "" }: { src: string; className?: string }) => {
   return (
@@ -60,6 +61,8 @@ function PilgrimSiteContent({
   const { role } = useRole();
 
 const isAdmin = role === "ADMIN";
+  const tCommon = useTranslations("common");
+  const tNav = useTranslations("navbar");
 
   const {
     data: siteData,
@@ -248,20 +251,9 @@ const isAdmin = role === "ADMIN";
   if (!currentTranslation && !isAdmin) return <div className="p-8">No data found</div>;
 
   const breadcrumbLabels = {
-    en: {
-      home: "Home",
-      pilgrimage: "Sacred Sites",
-      details: "Details",
-    },
-    bod: {
-      home: "གཙོ་ངོས།",
-      pilgrimage: "གནས་ཡུལ།",
-      details: "ཞིབ་ཕྲ།",
-    },
-  }[params.locale] || {
-    home: "Home",
-    pilgrimage: "Sacred Sites",
-    details: "Details",
+    home: tCommon("home"),
+    pilgrimage: tNav("sacred"),
+    details: tCommon("details"),
   };
 
   const contactInfo = siteData.contact?.translations?.find(
@@ -331,12 +323,12 @@ const isAdmin = role === "ADMIN";
                     <Input
                       value={editedName}
                       onChange={(e) => setEditedName(e.target.value)}
-                      className={params.locale === "bod" ? "font-monlam" : ""}
+                      className={isTibetanLocale(params.locale) ? "font-monlam" : ""}
                     />
                   ) : (
                     <CardTitle
                       className={`text-2xl font-bold ${
-                        params.locale === "bod" && "font-monlam"
+                        isTibetanLocale(params.locale) && "font-monlam"
                       }`}
                     >
                       {currentTranslation?.name || (isAdmin ? `(No ${languageCode} title yet)` : "")}
@@ -391,7 +383,7 @@ const isAdmin = role === "ADMIN";
                       e.target.style.height = `${e.target.scrollHeight}px`;
                     }}
                     className={`min-h-[150px] overflow-hidden ${
-                      params.locale === "bod" && "font-monlam"
+                      isTibetanLocale(params.locale) && "font-monlam"
                     }`}
                   />
                   {isLocaleFallback && (
@@ -448,7 +440,7 @@ const isAdmin = role === "ADMIN";
                   
                   <p
                     className={`text-gray-700 dark:text-gray-400 text-justify leading-relaxed whitespace-pre-wrap ${
-                      params.locale === "bod" && "font-monlam"
+                      isTibetanLocale(params.locale) && "font-monlam"
                     }`}
                   >
                     {currentTranslation?.description}

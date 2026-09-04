@@ -2,6 +2,7 @@
 import React from "react";
 import Link from "next/link";
 import { ChevronRight, Home } from "lucide-react";
+import { isTibetanLocale } from "@/lib/utils";
 
 interface BreadcrumbItem {
   label: string;
@@ -21,7 +22,7 @@ const Breadcrumb = ({
   locale,
   labels = { home: "Home" },
 }: BreadcrumbProps) => {
-  const isLocaleBody = locale === "bod";
+  const isLocaleBody = isTibetanLocale(locale);
 
   return (
     <div className="sticky mt-2 top-0 bg-white dark:bg-neutral-950 z-10 ">

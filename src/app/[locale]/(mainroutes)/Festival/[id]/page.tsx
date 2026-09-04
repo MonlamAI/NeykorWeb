@@ -7,7 +7,7 @@ import { Volume2, Pause, Pen, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { getFestivalDetail } from "@/app/actions/getactions";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import LoadingSkeleton from "../../Statue/_Components/DetailSkeleton";
 import Breadcrumb from "@/app/LocalComponents/Breadcrumb";
@@ -15,7 +15,7 @@ import { useRole } from "@/app/Providers/ContextProvider";
 import { createS3UploadUrl } from "@/app/actions/postactions";
 import { toast } from "@/hooks/use-toast";
 import { updateFestival } from "@/app/actions/updateaction";
-import { formatDateForDisplay, formatDateForInput, validateFile, contentLocale, translationForRead, ownContentTranslation, contentTranslationPayload } from "@/lib/utils";
+import { formatDateForDisplay, formatDateForInput, validateFile, contentLocale, translationForRead, ownContentTranslation, contentTranslationPayload, isTibetanLocale } from "@/lib/utils";
 import DynamicQRCode from "@/app/LocalComponents/generators/Qrcode";
 
 const AudioPreview = ({ src, className = "" }: { src: string; className?: string }) => {
@@ -42,6 +42,8 @@ export default function FestivalPage({ params }: { params: { id: string  } }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const activeLocale = useLocale();
+  const tCommon = useTranslations("common");
+  const tNav = useTranslations("navbar");
   const { role } = useRole();
   const queryClient = useQueryClient();
   
@@ -223,11 +225,12 @@ const isAdmin = role === "ADMIN";
   if (!currentTranslation && !isAdmin) return <div className="p-8">No data found</div>;
 
   const breadcrumbLabels = {
-    en: { home: "Home", festivals: "Festivals", details: "Details" },
-    bod: { home: "གཙོ་ངོས།", festivals: "དུས་ཆེན།", details: "ཞིབ་ཕྲ།" },
-  }[activeLocale] || { home: "Home", festivals: "Festivals", details: "Details" };
+    home: tCommon("home"),
+    festivals: tNav("fes"),
+    details: tCommon("details"),
+  };
 
-  const fontClass = activeLocale === "bod" ? "font-monlam" : "";
+  const fontClass = isTibetanLocale(activeLocale) ? "font-monlam" : "";
 
   return (
     <div className="relative w-full">
@@ -279,7 +282,7 @@ const isAdmin = role === "ADMIN";
                   <>
                     <div className="space-y-2">
                       <label className={`block ${fontClass}`}>
-                        {activeLocale === "bod" ? "འགོ་འཛུགས་ཚེས་གྲངས།" : "Start Date"}
+                        {tCommon("startDate")}
                       </label>
                       <Input
                         type="date"
@@ -290,7 +293,7 @@ const isAdmin = role === "ADMIN";
                     </div>
                     <div className="space-y-2">
                       <label className={`block ${fontClass}`}>
-                        {activeLocale === "bod" ? "མཇུག་རྫོགས་ཚེས་གྲངས།" : "End Date"}
+                        {tCommon("endDate")}
                       </label>
                       <Input
                         type="date"
@@ -303,11 +306,11 @@ const isAdmin = role === "ADMIN";
                 ) : (
                   <>
                     <p className={fontClass}>
-                      {activeLocale === "bod" ? "འགོ་འཛུགས་ཚེས་གྲངས།" : "Start Date"}:{" "}
+                      {tCommon("startDate")}:{" "}
                       {formatDateForDisplay(data.start_date)}
                     </p>
                     <p className={fontClass}>
-                      {activeLocale === "bod" ? "མཇུག་རྫོགས་ཚེས་གྲངས།" : "End Date"}:{" "}
+                      {tCommon("endDate")}:{" "}
                       {formatDateForDisplay(data.end_date)}
                     </p>
                   </>

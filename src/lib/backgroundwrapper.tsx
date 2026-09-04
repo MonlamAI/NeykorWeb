@@ -1,7 +1,5 @@
 'use client'
 import { usePathname } from "next/navigation";
-import bgimage from "../../public/header.jpg";
-
 import { isHomePage } from "./utils";
 
 interface BackgroundWrapperProps {
@@ -14,21 +12,8 @@ const BackgroundWrapper = ({ children }: BackgroundWrapperProps) => {
   const shouldShowBackground = isHomePage(pathname);
 
   return (
-    <div className={`relative min-h-screen w-full overflow-x-hidden ${shouldShowBackground ? "bg-white" : ""}`}>
-      {shouldShowBackground && (
-        <div
-          className="fixed top-0 left-0 right-0 w-full pointer-events-none"
-          style={{
-            height: '40vh',
-            backgroundImage: `url(${bgimage.src})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center top',
-            backgroundRepeat: 'no-repeat',
-            zIndex: 0
-          }}
-        />
-      )}
-      <div className="relative z-10 min-h-screen flex flex-col w-full">
+    <div className={`relative min-h-dvh w-full overflow-x-hidden ${shouldShowBackground ? "bg-white" : ""}`}>
+      <div className="relative min-h-dvh flex flex-col w-full">
         {children}
       </div>
     </div>

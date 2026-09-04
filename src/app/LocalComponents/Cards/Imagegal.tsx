@@ -1,43 +1,50 @@
-import React from 'react';
-import Image from 'next/image';
-import { useLocale, useTranslations } from 'next-intl';
-import Link from 'next/link';
+import React from "react";
+import Image from "next/image";
+import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
+import { isTibetanLocale } from "@/lib/utils";
 
 const ImageGallery = () => {
-  const t = useTranslations('homescreen');
+  const t = useTranslations("homescreen");
   const activelocale = useLocale();
-  
+
   const images = [
-    { src: '/monastery.webp', alt: "monastery", links: "/Monastary", name: t('one') },
-    { src: '/Festivals.webp', alt: "festivals", links: "/Festival", name: t('two') },
-    { src: '/statues.webp', alt: "statues", links: "/Statue", name: t('three') },
-    { src: '/pilgrimage.webp', alt: "pilgrimage", links: "/Sacred", name: t('four') }
+    { src: "/monastery.webp", alt: "monastery", links: "/Monastary", name: t("one") },
+    { src: "/Festivals.webp", alt: "festivals", links: "/Festival", name: t("two") },
+    { src: "/statues.webp", alt: "statues", links: "/Statue", name: t("three") },
+    { src: "/pilgrimage.webp", alt: "pilgrimage", links: "/Sacred", name: t("four") },
   ];
 
   return (
-    <div className=" max-w-6xl mx-auto px-4 hidden md:block">
-      <div className="grid grid-cols-1 md:grid-cols-2 mt-8 gap-4">
-        {images.map((image, index) => (
-          <div key={index} className="flex flex-col items-center">
-            <Link href={image.links} className="block w-full">
-              <div className="relative w-40 h-28">
-                <Image
-                  src={image.src}
-                  alt={image.alt}
-                  className="object-cover rounded-md"
-                  fill
-                  priority
-                  sizes="(max-width: 768px) 50vw, 25vw"
-                />
-              </div>
-              <p className={`text-center text-black mt-2 text-sm ${activelocale === "bod" ? "font-monlam" : ""}`}>
-                {image.name}
-              </p>
-            </Link>
-          </div>
+    <nav className="w-full shrink-0 md:w-[min(100%,20rem)] lg:w-[22rem]">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+        {images.map((image) => (
+          <Link
+            key={image.links}
+            href={`/${activelocale}${image.links}`}
+            className="group flex flex-col items-center rounded-lg p-1 transition-colors hover:bg-neutral-50"
+          >
+            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md">
+              <Image
+                src={image.src}
+                alt={image.alt}
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                fill
+                priority
+                sizes="(max-width: 768px) 45vw, 11rem"
+              />
+            </div>
+            <p
+              className={`mt-2 text-center text-sm text-black ${
+                isTibetanLocale(activelocale) ? "font-monlam" : ""
+              }`}
+            >
+              {image.name}
+            </p>
+          </Link>
         ))}
       </div>
-    </div>
+    </nav>
   );
 };
 

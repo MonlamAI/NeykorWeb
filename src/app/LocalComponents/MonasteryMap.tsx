@@ -5,6 +5,8 @@ import type { LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
+import { useTranslations } from "next-intl";
+import { isTibetanLocale } from "@/lib/utils";
 
 const MapContainer = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),
@@ -36,6 +38,7 @@ const MonasteryMap: React.FC<MonasteryMapProps> = ({
   monasteryName,
   locale,
 }) => {
+  const t = useTranslations("common");
   const [lat, lng] = geoLocation
     .split(",")
     .map((coord) => parseFloat(coord.trim()));
@@ -44,12 +47,12 @@ const MonasteryMap: React.FC<MonasteryMapProps> = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className={`${locale === "bod" && "font-monlam"}`}>
-          {locale === "bod" ? "ས་བབ་གནས་ས།" : "Location"}
+        <CardTitle className={`${isTibetanLocale(locale) && "font-monlam"}`}>
+          {t("location")}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[400px] w-full">
+        <div className="relative z-0 isolate h-[400px] w-full">
           <MapContainer
             center={position}
             zoom={13}

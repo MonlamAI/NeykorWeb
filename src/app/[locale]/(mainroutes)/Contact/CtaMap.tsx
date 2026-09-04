@@ -40,7 +40,7 @@ const CtaMap: React.FC<MonasteryMapProps> = ({
   const position: LatLngExpression = [lat, lng];
 
   return (
-    <div className="h-full w-full">
+    <div className="relative z-0 isolate h-full w-full">
       <MapContainer
         center={position}
         zoom={16}

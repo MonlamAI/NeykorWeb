@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { deletegonpa } from "@/app/actions/delaction";
 import { useToast } from "@/hooks/use-toast";
+import { isTibetanLocale } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Loader, TrashIcon } from "lucide-react";
 
@@ -94,7 +95,7 @@ const MonasteryCard = ({
           <div className="flex justify-between items-start mb-2">
             <h3
               className={`text-lg font-semibold dark:text-neutral-300 text-neutral-800 ${
-                locale === "bod" ? "font-monlam" : ""
+                isTibetanLocale(locale) ? "font-monlam" : ""
               }`}
             >
               {translation.name}
@@ -103,7 +104,7 @@ const MonasteryCard = ({
           </div>
           <p
             className={`text-gray-600 dark:text-neutral-400 line-clamp-3 ${
-              locale === "bod" ? "font-monlam" : ""
+              isTibetanLocale(locale) ? "font-monlam" : ""
             }`}
           >
             {translation.description}

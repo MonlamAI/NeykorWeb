@@ -1,19 +1,21 @@
 'use client'
 
-import { usePathname } from "next/navigation";
 import React from "react";
-import { isHomePage } from "@/lib/utils";
+import { isTibetanLocale } from "@/lib/utils";
+import { useLocale, useTranslations } from "next-intl";
 
 const Footer = () => {
-  const pathname = usePathname();
-  const checkcolor = isHomePage(pathname);
-  
+  const tCommon = useTranslations("common");
+  const locale = useLocale();
+
   return (
-    checkcolor ? null : (
-      <div className="text-sm text-black dark:text-white w-full flex items-center text-center justify-center">
-        Department of Religion and Culture, Central Tibetan Administration
-      </div>
-    )
+    <footer
+      className={`mt-auto w-full py-4 px-4 text-sm text-center text-black dark:text-white ${
+        isTibetanLocale(locale) ? "font-monlam" : ""
+      }`}
+    >
+      {tCommon("deptName")}
+    </footer>
   );
 };
 
