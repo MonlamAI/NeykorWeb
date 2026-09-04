@@ -27,8 +27,9 @@ import { Input } from "@/components/ui/input";
 import { Loader2, Pause, Pen, Volume2,  } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { validateFile, contentLocale, translationForRead, ownContentTranslation, contentTranslationPayload } from '@/lib/utils';
+import { validateFile, contentLocale, translationForRead, ownContentTranslation, contentTranslationPayload, SECT_TRANSLATION_KEYS, isTibetanLocale } from '@/lib/utils';
 import ContactEditSection from '@/app/LocalComponents/ContactEditSection';
+import { useTranslations } from "next-intl";
 
 const SUPPORTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 const SUPPORTED_AUDIO_TYPES = ['audio/mpeg', 'audio/mp3'];
@@ -74,6 +75,9 @@ function MonasteryContent({ params }: { params: any }) {
   const { role } = useRole();
   const isAdmin = useMemo(() => role === "ADMIN", [role]);
   const activeLocale = params.locale;
+  const tCommon = useTranslations("common");
+  const tNav = useTranslations("navbar");
+  const tMon = useTranslations("monastery");
   const languageCode = useMemo(() => contentLocale(params.locale), [params.locale]);
 
   const {
@@ -148,30 +152,6 @@ function MonasteryContent({ params }: { params: any }) {
       textarea.style.height = `${textarea.scrollHeight}px`;
     }
   }, [isEditing, editedData.description]);
-
-  const breadcrumbLabels = {
-    en: {
-      home: "Home",
-      monastery: "Monastery",
-      details: "Details",
-    },
-    bod: {
-      home: "གཙོ་ངོས།",
-      monastery: "ཆོས་སྡེ།",
-      details: "ཞིབ་ཕྲ།",
-    },
-  };
-
-  const sectTranslations = {
-    KAGYU: { en: "Kagyu", bod: "བཀའ་བརྒྱུད།" },
-    NYINGMA: { en: "Nyingma", bod: "རྙིང་མ།" },
-    SAKYA: { en: "Sakya", bod: "ས་སྐྱ།" },
-    GELUG: { en: "Gelug", bod: "དགེ་ལུགས།" },
-    BHON: { en: "Bhon", bod: "བོན།" },
-    JONANG: { en: "Jonang", bod: "ཇོ་ནང།" },
-
-    OTHER: { en: "Other", bod: "གཞན།" },
-  };
 
   // Fetch types only once on mount
   useEffect(() => {
@@ -316,12 +296,12 @@ function MonasteryContent({ params }: { params: any }) {
   if (!monastery) return <div className="p-8">No data found</div>;
   if (!currentTranslation && !isAdmin) return <div className="p-8">No data found</div>;
 
-  const labels = breadcrumbLabels[activeLocale] || breadcrumbLabels.en;
-
+  const sectKey =
+    SECT_TRANSLATION_KEYS[monastery.sect as keyof typeof SECT_TRANSLATION_KEYS] || "m10";
   const breadcrumbItems = [
-    { label: labels.monastery, href: "/Monastary" },
-    { label: sectTranslations[monastery.sect]?.[activeLocale] || monastery.sect, href: `/Monastary/${params.id}` },
-    { label: currentTranslation?.name || labels.details },
+    { label: tNav("mons"), href: "/Monastary" },
+    { label: tMon(sectKey), href: `/Monastary/${params.id}` },
+    { label: currentTranslation?.name || tCommon("details") },
   ];
 
   return (
@@ -334,7 +314,7 @@ function MonasteryContent({ params }: { params: any }) {
       <Breadcrumb
         items={breadcrumbItems}
         locale={activeLocale}
-        labels={{ home: labels.home }}
+        labels={{ home: tCommon("home") }}
       />
       
       <div className="grid max-w-6xl p-4 mx-auto grid-cols-1 lg:grid-cols-3 gap-8">
@@ -374,10 +354,10 @@ function MonasteryContent({ params }: { params: any }) {
                     <Input
                       value={editedData.name}
                       onChange={(e) => setEditedData({ ...editedData, name: e.target.value })}
-                      className={activeLocale === "bod" ? "font-monlam" : ""}
+                      className={isTibetanLocale(activeLocale) ? "font-monlam" : ""}
                     />
                   ) : (
-                    <CardTitle className={`text-2xl font-bold ${activeLocale === "bod" ? "font-monlam" : ""}`}>
+                    <CardTitle className={`text-2xl font-bold ${isTibetanLocale(activeLocale) ? "font-monlam" : ""}`}>
                       {currentTranslation?.name || (isAdmin ? `(No ${languageCode} title yet)` : "")}
                     </CardTitle>
                   )}
@@ -481,7 +461,7 @@ function MonasteryContent({ params }: { params: any }) {
                       e.target.style.height = 'auto';
                       e.target.style.height = `${e.target.scrollHeight}px`;
                     }}
-                    className={`min-h-[150px] overflow-hidden ${activeLocale === "bod" ? "font-monlam" : ""}`}
+                    className={`min-h-[150px] overflow-hidden ${isTibetanLocale(activeLocale) ? "font-monlam" : ""}`}
                   />
                   {isLocaleFallback && (
                     <p className="text-sm text-amber-700 dark:text-amber-400">
@@ -539,7 +519,7 @@ function MonasteryContent({ params }: { params: any }) {
                 <div className="space-y-2">
                  
                   <p className={`text-gray-700 dark:text-gray-400 text-justify leading-relaxed whitespace-pre-wrap ${
-                    activeLocale === "bod" ? "font-monlam" : ""
+                    isTibetanLocale(activeLocale) ? "font-monlam" : ""
                   }`}>
                     {currentTranslation?.description}
                   </p>

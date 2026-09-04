@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { deleteSacred } from "@/app/actions/delaction";
 import { Loader, TrashIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { isTibetanLocale } from "@/lib/utils";
 
 const StatueCard = ({
   id,
@@ -79,14 +80,14 @@ const StatueCard = ({
         <CardContent className="p-4">
           <h3
             className={`text-xl font-semibold mb-2 ${
-              locale === "bod" ? "font-monlam" : ""
+              isTibetanLocale(locale) ? "font-monlam" : ""
             }`}
           >
             {translation.name}
           </h3>
           <p
             className={`text-gray-600 dark:text-gray-300 line-clamp-3 ${
-              locale === "bod" ? "font-monlam" : ""
+              isTibetanLocale(locale) ? "font-monlam" : ""
             }`}
           >
             {translation.description}

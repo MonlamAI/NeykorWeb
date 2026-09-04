@@ -1,13 +1,13 @@
 "use client";
 
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import React, { useState, useMemo, useEffect } from "react";
 import CustomPagination from "@/app/LocalComponents/CustomPagination";
 
 import { SearchComponent } from "@/app/LocalComponents/Searchbar";
 import MonasteryCard from "@/app/LocalComponents/Cards/MonasteryCard";
 import Breadcrumb from "@/app/LocalComponents/Breadcrumb";
-import { localeAlias, matchesContentSearch } from "@/lib/utils";
+import { localeAlias, matchesContentSearch, SECT_TRANSLATION_KEYS } from "@/lib/utils";
 import MonsModal from "./MonsModal";
 import { useRole } from "@/app/Providers/ContextProvider";
 
@@ -20,6 +20,9 @@ const MonasterySectClient = ({
   sect: string;
 }) => {
   const activelocale = useLocale();
+  const tCommon = useTranslations("common");
+  const tNav = useTranslations("navbar");
+  const tMon = useTranslations("monastery");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const {role}=useRole()
@@ -88,32 +91,11 @@ const isadmin = role === "ADMIN";
     return pages;
   }, [currentPage, totalPages]);
 
-  const sectTranslations: { [key: string]: { en: string; bod: string } } = {
-    kagyu: { en: "Kagyu", bod: "བཀའ་བརྒྱུད།" },
-    nyingma: { en: "Nyingma", bod: "རྙིང་མ།" },
-    sakya: { en: "Sakya", bod: "ས་སྐྱ།" },
-    gelug: { en: "Gelug", bod: "དགེ་ལུགས།" },
-    bhon: { en: "Bhon", bod: "བོན།" },
-    jonang: { en: "Jonang", bod: "ཇོ་ནང།" },
-    other: { en: "Other", bod: "གཞན།" },
-  };
-
-  const breadcrumbLabels = {
-    en: { 
-      home: "Home", 
-      monasteries: "Monasteries", 
-      sect: sectTranslations[sect.toLowerCase()]?.en || sect 
-    },
-    bod: { 
-      home: "གཙོ་ངོས།", 
-      monasteries: "ཆོས་སྡེ།", 
-      sect: sectTranslations[sect.toLowerCase()]?.bod || sect 
-    },
-  }[activelocale] || { home: "Home", monasteries: "Monasteries", sect };
-
+  const sectKey =
+    SECT_TRANSLATION_KEYS[sect.toUpperCase() as keyof typeof SECT_TRANSLATION_KEYS] || "m10";
   const breadcrumbItems = [
-    { label: breadcrumbLabels.monasteries, href: "/Monastary" },
-    { label: breadcrumbLabels.sect },
+    { label: tNav("mons"), href: "/Monastary" },
+    { label: tMon(sectKey) },
   ];
   return (
     <div className="container mx-auto py-8">
@@ -122,11 +104,11 @@ const isadmin = role === "ADMIN";
           <Breadcrumb
             items={breadcrumbItems}
             locale={activelocale}
-            labels={{ home: breadcrumbLabels.home }}
+            labels={{ home: tCommon("home") }}
           />
           <SearchComponent
             onSearch={handleSearch}
-            placeholder="Search monasteries..."
+            placeholder={tCommon("searchMonasteries")}
             initialQuery={searchQuery}
           />
           {isadmin && (

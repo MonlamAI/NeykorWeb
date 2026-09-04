@@ -1,5 +1,5 @@
 "use client";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import React, { useState, useMemo, useEffect } from "react";
 import CustomPagination from "@/app/LocalComponents/CustomPagination";
 import { SearchComponent } from "@/app/LocalComponents/Searchbar";
@@ -24,6 +24,7 @@ interface Statue {
 const ITEMS_PER_PAGE = 9;
 const StatuesClient = ({ statuesData }: { statuesData: Statue[] }) => {
   const activelocale = useLocale();
+  const tCommon = useTranslations("common");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const queryClient = useQueryClient();
@@ -103,7 +104,7 @@ const StatuesClient = ({ statuesData }: { statuesData: Statue[] }) => {
         <div className="flex items-center">
           <SearchComponent
             onSearch={handleSearch}
-            placeholder="Search statues..."
+            placeholder={tCommon("searchStatues")}
             initialQuery={searchQuery}
           />
           {isadmin && (

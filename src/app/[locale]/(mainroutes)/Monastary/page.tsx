@@ -5,7 +5,7 @@ import { getGonpa } from "@/app/actions/getactions";
 import { Card } from "@/components/ui/card";
 import LoadingSkeleton from "./Skeleton";
 import { getTranslations } from 'next-intl/server';
-import { BACKGROUND_IMAGES, OTHER_SECTS, SECT_TRANSLATION_KEYS } from "@/lib/utils";
+import { BACKGROUND_IMAGES, OTHER_SECTS, SECT_TRANSLATION_KEYS, isTibetanLocale } from "@/lib/utils";
 
 const MAIN_SECTS = ['NYINGMA', 'KAGYU', 'SAKYA', 'GELUG', 'BHON', 'JONANG'];
 
@@ -28,12 +28,14 @@ const SectCard = ({
   sect,
   monasteries,
   locale,
-  t
+  t,
+  tCommon
 }: {
   sect: string;
   monasteries: Monastery[];
   locale: string;
   t: (key: string) => string;
+  tCommon: (key: string, values?: Record<string, string | number>) => string;
 }) => {
   const getBackgroundImage = (sect: string) => {
     const lowerSect = sect.toLowerCase();
@@ -42,10 +44,10 @@ const SectCard = ({
 
   return (
     <Link
-      href={`/Monastary/${sect}`}
-      className="group block overflow-hidden"
+      href={`/${locale}/Monastary/${sect}`}
+      className="group block h-full w-full overflow-hidden"
     >
-      <Card className="relative w-96 h-60 overflow-hidden">
+      <Card className="relative h-52 w-full overflow-hidden sm:h-60">
         <div className="relative w-full h-full">
           <Image
             src={getBackgroundImage(sect)}
@@ -61,17 +63,17 @@ const SectCard = ({
         <div className="absolute inset-0 p-6 flex flex-col justify-end z-20">
           <div className="space-y-2">
             <h3 className={`text-2xl font-semibold text-white ${
-              locale === 'bod' ? 'font-monlam' : 'font-bold'
+              isTibetanLocale(locale) ? 'font-monlam' : 'font-bold'
             }`}>
               {t(SECT_TRANSLATION_KEYS[sect as keyof typeof SECT_TRANSLATION_KEYS])}
             </h3>
             <p className="text-white/80 text-sm">
-              {monasteries.length} Monasteries
+              {tCommon("monasteryCount", { count: monasteries.length })}
             </p>
           </div>
           <div className="mt-4">
             <span className="inline-flex items-center rounded-full bg-white/10 px-4 py-1 text-sm text-white backdrop-blur-sm">
-              View Monastery
+              {tCommon("viewMonastery")}
             </span>
           </div>
         </div>
@@ -97,12 +99,13 @@ const groupMonasteriesBySect = cache((monasteries: Monastery[]): SectGrouping =>
 
 async function MonasteryDashboardContent({ locale }: LocaleProps) {
   const t = await getTranslations('monastery');
+  const tCommon = await getTranslations('common');
   const gonpadata = await getGonpa() as Monastery[];
   const groupedMonasteries = groupMonasteriesBySect(gonpadata);
   
   return (
-    <div className=" mx-auto ">
-      <div className="mt-6 gap-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 [&>*:last-child]:lg:col-start-2">
+    <div className="w-full">
+      <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2 lg:grid-cols-3">
         {Object.entries(groupedMonasteries).map(([sect, monasteries]) => (
           <SectCard
             key={sect}
@@ -110,6 +113,7 @@ async function MonasteryDashboardContent({ locale }: LocaleProps) {
             monasteries={monasteries}
             locale={locale}
             t={t}
+            tCommon={tCommon}
           />
         ))}
       </div>

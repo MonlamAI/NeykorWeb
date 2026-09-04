@@ -84,6 +84,10 @@ export async function getRole(email: string) {
     );
     return response.data.role;
   } catch (error) {
-    handleApiError(error, `user role for ${lookupEmail}`);
+    console.error(
+      `API Error (user role for ${lookupEmail}):`,
+      error instanceof AxiosError ? error.message : error
+    );
+    return;
   }
 }

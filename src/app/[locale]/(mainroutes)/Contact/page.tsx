@@ -10,6 +10,7 @@ import { sendEmail } from "@/app/actions/resendaction";
 import { useToast } from "@/hooks/use-toast";
 import CtaMap from "./CtaMap";
 import { useLocale, useTranslations } from "next-intl";
+import { isTibetanLocale } from "@/lib/utils";
 
 interface FormData {
   name: string;
@@ -59,15 +60,15 @@ const ContactPage = () => {
     return error ? (error.message as string) : undefined;
   };
   const t = useTranslations("contact");
-  const inputClass = `w-full ${activelocale === "bod" ? "font-monlam" : ""}`;
+  const inputClass = `w-full ${isTibetanLocale(activelocale) ? "font-monlam" : ""}`;
 
   return (
-    <div className="container  w-screen py-8">
+    <div className="container w-full max-w-6xl py-8 px-4">
       <main className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <Card>
             <CardContent className="p-6">
-              <div className="flex h-64 w-full rounded-lg overflow-hidden">
+              <div className="relative z-0 isolate flex h-64 w-full overflow-hidden rounded-lg">
                 <CtaMap
                   geoLocation={"32.22609238023078, 76.32543320353723"}
                   monasteryName={"Department of Religion & Culture, CTA"}
@@ -77,7 +78,7 @@ const ContactPage = () => {
           </Card>
           <Card>
             <CardContent className="p-6">
-              <h2 className={`text-xl font-semibold mb-4 ${activelocale === "bod" && "font-monlam"}`}>{t("detail")}</h2>
+              <h2 className={`text-xl font-semibold mb-4 ${isTibetanLocale(activelocale) && "font-monlam"}`}>{t("detail")}</h2>
               <div className="space-y-2">
                 <p>Central Tibetan Administration</p>
                 <p>Gangchen Kyishong, Dharamshala</p>
@@ -92,7 +93,7 @@ const ContactPage = () => {
 
         <Card className="mb-8">
           <CardContent className="p-6">
-            <h2 className={`text-xl font-semibold mb-6 ${activelocale === "bod" && "font-monlam"}`}>{t("form")}</h2>
+            <h2 className={`text-xl font-semibold mb-6 ${isTibetanLocale(activelocale) && "font-monlam"}`}>{t("form")}</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
                 <Input

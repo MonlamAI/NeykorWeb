@@ -1,6 +1,7 @@
 import { deletefest } from "@/app/actions/delaction";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { isTibetanLocale } from "@/lib/utils";
 import { Loader, TrashIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -75,14 +76,14 @@ const FestivalCard = ({ id, image, translation, locale, isadmin, onDelete }: any
       <div className="p-4">
         <h3
           className={`text-xl font-semibold mb-2 ${
-            locale === "bod" && "font-monlam"
+            isTibetanLocale(locale) && "font-monlam"
           }`}
         >
           {translation.name}
         </h3>
         <p
           className={`${
-            locale === "bod" && "font-monlam"
+            isTibetanLocale(locale) && "font-monlam"
           } text-gray-600 dark:text-gray-300 line-clamp-3`}
         >
           {translation.description}

@@ -8,14 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { getStatuesDetail } from "@/app/actions/getactions";
 import LoadingSkeleton from "../_Components/DetailSkeleton";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Breadcrumb from "@/app/LocalComponents/Breadcrumb";
 import { useRole } from "@/app/Providers/ContextProvider";
 import { updatestatue } from "@/app/actions/updateaction";
 import { createS3UploadUrl } from "@/app/actions/postactions";
 import { toast } from "@/hooks/use-toast";
-import { validateFile, contentLocale, translationForRead, ownContentTranslation, contentTranslationPayload } from "@/lib/utils";
+import { validateFile, contentLocale, translationForRead, ownContentTranslation, contentTranslationPayload, isTibetanLocale } from "@/lib/utils";
 import DynamicQRCode from "@/app/LocalComponents/generators/Qrcode";
 
 const AudioPreview = ({ src, className = "" }: { src: string; className?: string }) => {
@@ -40,6 +40,8 @@ export default function StatuePage({ params }: { params: { id: string } }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const activeLocale = useLocale();
+  const tCommon = useTranslations("common");
+  const tNav = useTranslations("navbar");
   const { role } = useRole();
   const queryClient = useQueryClient();
   
@@ -202,11 +204,12 @@ const isAdmin = role === "ADMIN";
   if (!currentTranslation && !isAdmin) return <div className="p-8">No data found</div>;
 
   const breadcrumbLabels = {
-    en: { home: "Home", statues: "Statues", details: "Details" },
-    bod: { home: "གཙོ་ངོས།", statues: "རྟེན་བཤད།", details: "ཞིབ་ཕྲ།" },
-  }[activeLocale] || { home: "Home", statues: "Statues", details: "Details" };
+    home: tCommon("home"),
+    statues: tNav("stas"),
+    details: tCommon("details"),
+  };
 
-  const fontClass = activeLocale === "bod" ? "font-monlam" : "";
+  const fontClass = isTibetanLocale(activeLocale) ? "font-monlam" : "";
 
   return (
     <div className="relative w-full">

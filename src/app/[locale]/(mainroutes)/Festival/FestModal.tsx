@@ -14,8 +14,10 @@ import { Plus, X, Loader2 } from "lucide-react";
 import { createS3UploadUrl, postfestival } from "@/app/actions/postactions";
 import { toast } from "@/hooks/use-toast";
 import { validateFile } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 const FestModal = ({ onSuccess }: any) => {
+  const t = useTranslations("common");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   
@@ -214,7 +216,7 @@ const FestModal = ({ onSuccess }: any) => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="gap-2">
-          <Plus size={16} /> Add Festival
+          <Plus size={16} /> {t("addFestival")}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -360,7 +362,7 @@ const FestModal = ({ onSuccess }: any) => {
                 Adding Festival Data...
               </>
             ) : (
-              "Add Festival"
+              t("addFestival")
             )}
           </Button>
         </form>

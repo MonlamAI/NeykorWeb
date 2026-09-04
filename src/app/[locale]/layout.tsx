@@ -32,15 +32,57 @@ const tsumachu = localFont({
   variable: "--font-tsumachu",
 });
 
-export const metadata: Metadata = {
-  title: "གནས་སྐོར། | Neykor",
-  description:
-    "Neykor is a platform designed for one-stop access to detailed information about holy places, festivals, and sacred statues",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const locale = params.locale === "bod" ? "bo" : params.locale;
+  const messages = await getMessages(locale);
+  const name = messages?.navbar?.name || "Neykor";
+  const description =
+    messages?.index?.des ||
+    "Neykor is a platform designed for one-stop access to detailed information about holy places, festivals, and sacred statues";
+  const siteUrl = process.env.AUTH_URL || process.env.NEXTAUTH_URL;
+  const canonicalPath = `/${locale}`;
+
+  return {
+    title: `${name} | Neykor`,
+    description,
+    ...(siteUrl
+      ? {
+        metadataBase: new URL(siteUrl),
+        alternates: {
+          canonical: canonicalPath,
+          languages: {
+            en: "/en",
+            bo: "/bo",
+            hi: "/hi",
+            "x-default": "/bo",
+          },
+        },
+        openGraph: {
+          title: `${name} | Neykor`,
+          description,
+          locale: locale === "hi" ? "hi_IN" : locale === "bo" ? "bo" : "en_US",
+          url: canonicalPath,
+          siteName: "Neykor",
+          type: "website",
+        },
+        twitter: {
+          card: "summary_large_image",
+          title: `${name} | Neykor`,
+          description,
+        },
+      }
+      : {}),
+  };
+}
 
 async function getMessages(locale: string) {
+  const fileLocale = locale === "bod" ? "bo" : locale;
   try {
-    return (await import(`../../../messages/${locale}.json`)).default;
+    return (await import(`../../../messages/${fileLocale}.json`)).default;
   } catch (error) {
     return (await import(`../../../messages/en.json`)).default;
   }
@@ -57,7 +99,7 @@ export default async function RootLayout({
 }>) {
   const messages = await getMessages(locale);
   return (
-    <html lang={locale}>
+    <html lang={locale === "bod" ? "bo" : locale}>
       <body
         className={`${inter.className} ${monlamuchen.variable} ${monlam22.variable} ${tsumachu.variable} ${monlamTb.variable} antialiased `}
       >
@@ -70,19 +112,19 @@ export default async function RootLayout({
           <NextIntlClientProvider locale={locale} messages={messages}>
             <QueryProviders>
               <AuthProvider>
-              <RoleProvider>
-             
-<div className="relative">
-  <BackgroundWrapper>
-    <div className=" items-center px-2  mx-auto flex flex-col justify-between h-screen ">
-      <Navbar />
-      {children}
-      <Footer />
-    </div>
-    <Toaster />
-  </BackgroundWrapper>
+                <RoleProvider>
 
-        </div>
+                  <div className="relative">
+                    <BackgroundWrapper>
+                      <div className="items-center px-2 mx-auto flex flex-col min-h-dvh w-full">
+                        <Navbar />
+                        {children}
+                        <Footer />
+                      </div>
+                      <Toaster />
+                    </BackgroundWrapper>
+
+                  </div>
                 </RoleProvider>
               </AuthProvider>
             </QueryProviders>

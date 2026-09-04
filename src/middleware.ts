@@ -1,14 +1,19 @@
 import createMiddleware from "next-intl/middleware";
+import { NextResponse, type NextRequest } from "next/server";
+import { routing } from "./i18n/routing";
 
-export default createMiddleware({
-  // Supported locales
-  locales: ["en", "bod", "hi"],
+const intlMiddleware = createMiddleware(routing);
 
-  // Default locale
-  defaultLocale: "bod",
-});
+export default function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  if (pathname === "/bod" || pathname.startsWith("/bod/")) {
+    const url = request.nextUrl.clone();
+    url.pathname = pathname.replace(/^\/bod(?=\/|$)/, "/bo");
+    return NextResponse.redirect(url, 308);
+  }
+  return intlMiddleware(request);
+}
 
 export const config = {
-  // Match all paths except static files and API routes
   matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
 };

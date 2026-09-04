@@ -4,7 +4,7 @@ import { useLocale } from "next-intl";
 import { useRouter, usePathname as useRoutingPathname } from "@/i18n/routing";
 import { usePathname } from "next/navigation";
 import { useTransition } from "react";
-import { isHomePage } from "@/lib/utils";
+import { isHomePage, isTibetanLocale } from "@/lib/utils";
 
 import {
   Select,
@@ -36,17 +36,16 @@ export function LocaleSelector({ tibtext }: { tibtext: string }) {
       disabled={isPending}
     >
       <SelectTrigger
-        className={`${localActive === "bod" && "font-monlam"} border-none  ${!checkcolor ? " text-black bg-neutral-100/40 dark:bg-neutral-900 dark:hover:bg-neutral-950  dark:text-white" : "text-white bg-neutral-100/40 "} w-[120px] focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none`}
+        className={`${isTibetanLocale(localActive) && "font-monlam"} border-none h-10 px-3 py-2 text-sm ${!checkcolor ? " text-black bg-neutral-100/40 dark:bg-neutral-900 dark:hover:bg-neutral-950 dark:text-white" : "text-black md:text-white bg-neutral-100/40 "} w-[120px] focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none`}
       >
         <SelectValue placeholder="Select language" />
       </SelectTrigger>
-      <SelectContent className={` border-none ${!checkcolor ? " text-black bg-neutral-100/40 dark:bg-neutral-900 dark:hover:bg-neutral-950  dark:text-white" : "text-white  bg-neutral-100/40 "}`}>
+      <SelectContent className="z-[1200] border-none bg-popover text-popover-foreground">
         <SelectItem value="en">English</SelectItem>
         <SelectItem
-          value="bod"
-          className={` font-monlam ${localActive === "bod" && "font-monlam"}`}
+          value="bo"
+          className={` font-monlam ${isTibetanLocale(localActive) && "font-monlam"}`}
         >
-          {/* {tibtext} */}
           བོད་ཡིག
         </SelectItem>
         <SelectItem value="hi">हिंदी</SelectItem>

@@ -1,5 +1,5 @@
 "use client";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import React, { useState, useMemo, useEffect } from "react";
 import CustomPagination from "@/app/LocalComponents/CustomPagination";
 import { SearchComponent } from "@/app/LocalComponents/Searchbar";
@@ -22,6 +22,7 @@ interface Festival {
 
 const FestivalClient = ({ fesdata }: { fesdata: Festival[] }) => {
   const activelocale = useLocale();
+  const tCommon = useTranslations("common");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [festival, setfestival] = useState<Festival[]>(fesdata);
@@ -90,7 +91,7 @@ const FestivalClient = ({ fesdata }: { fesdata: Festival[] }) => {
         <div className=" flex justify-between items-center px-6">
         <SearchComponent
           onSearch={handleSearch}
-          placeholder="Search festivals..."
+          placeholder={tCommon("searchFestivals")}
           initialQuery={searchQuery}
         />
           {isadmin && (

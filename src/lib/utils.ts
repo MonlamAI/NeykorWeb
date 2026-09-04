@@ -6,14 +6,20 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const isHomePage = (pathname: string) => {
-  return ["/", "/en", "/bod", "/hi"].includes(pathname);
+  return ["/", "/en", "/bo", "/bod", "/hi"].includes(pathname);
 };
 
+/** Legacy UI locale `bod` still maps to API `bo`. New UI locale is already `bo`. */
 export const localeAlias: { [key: string]: string } = {
   bod: "bo",
 };
 
-/** UI locale (en | bod | hi) → content languageCode (en | bo | hi). */
+/** Tibetan UI: current `bo` plus leftover `bod` during /bod → /bo redirects. */
+export function isTibetanLocale(locale: string | undefined | null): boolean {
+  return locale === "bo" || locale === "bod";
+}
+
+/** UI locale (en | bo | hi, or legacy bod) → content languageCode (en | bo | hi). */
 export function contentLocale(uiLocale: string): string {
   return localeAlias[uiLocale] || uiLocale;
 }
