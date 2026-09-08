@@ -3,7 +3,7 @@ import { useLocale, useTranslations } from "next-intl";
 import React, { useState, useMemo, useEffect } from "react";
 import CustomPagination from "@/app/LocalComponents/CustomPagination";
 import { SearchComponent } from "@/app/LocalComponents/Searchbar";
-import { localeAlias, matchesContentSearch } from "@/lib/utils";
+import { localeAlias, sortListedContent } from "@/lib/utils";
 import StatueCard from "@/app/LocalComponents/Cards/StatueCard";
 import StatueFormModal from "./_Components/statueformmodal";
 import { useRole } from "@/app/Providers/ContextProvider";
@@ -13,6 +13,7 @@ import { getStatues } from "@/app/actions/getactions";
 interface Statue {
   id: string;
   image: string;
+  createdAt?: string;
   translations: Array<{
     languageCode: string;
     name: string;
@@ -45,10 +46,10 @@ const StatuesClient = ({ statuesData }: { statuesData: Statue[] }) => {
   };
 
   const filteredStatues = useMemo(() => {
-    if (!searchQuery.trim()) return statues;
-
-    return statues.filter((statue: any) =>
-      matchesContentSearch(statue.translations, searchQuery)
+    return sortListedContent(
+      statues,
+      searchQuery,
+      (statue) => statue.translations
     );
   }, [statues, searchQuery]);
 
@@ -71,7 +72,13 @@ const StatuesClient = ({ statuesData }: { statuesData: Statue[] }) => {
   };
 
   const handleSuccess = (newStatue: Statue) => {
-    queryClient.setQueryData(['statues'], (oldData: Statue[] | undefined) => [newStatue, ...(oldData || [])]);
+    queryClient.setQueryData(['statues'], (oldData: Statue[] | undefined) =>
+      sortListedContent(
+        [newStatue, ...(oldData || [])],
+        "",
+        (statue) => statue.translations
+      )
+    );
     setSearchQuery("");
   };
 

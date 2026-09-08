@@ -71,6 +71,54 @@ export function matchesContentSearch(
   return fields.some((field) => field && textMatchesQuery(field, query));
 }
 
+export function titleMatchesContentSearch(
+  translations: Array<{ name?: string }> | undefined,
+  query: string
+): boolean {
+  if (!query.trim()) return false;
+  return (translations || []).some(
+    (t) => t.name && textMatchesQuery(t.name, query)
+  );
+}
+
+function createdAtTime(value: unknown): number {
+  if (!value) return 0;
+  const time = new Date(value as string | Date).getTime();
+  return Number.isNaN(time) ? 0 : time;
+}
+
+/** Oldest first. Missing createdAt sorts first (legacy rows). */
+export function byCreatedAtAsc(
+  a: { createdAt?: string | Date | null },
+  b: { createdAt?: string | Date | null }
+): number {
+  return createdAtTime(a.createdAt) - createdAtTime(b.createdAt);
+}
+
+/** Filter by query, title hits before description/extra hits, then createdAt asc. */
+export function sortListedContent<T extends { createdAt?: string | Date | null }>(
+  items: T[],
+  query: string,
+  translationsOf: (item: T) => Array<{ name?: string; description?: string }> | undefined,
+  extraFieldsOf: (item: T) => Array<string | undefined> = () => []
+): T[] {
+  const q = query.trim();
+  const matched = !q
+    ? [...items]
+    : items.filter((item) =>
+        matchesContentSearch(translationsOf(item), q, extraFieldsOf(item))
+      );
+
+  return matched.sort((a, b) => {
+    if (q) {
+      const aTitle = titleMatchesContentSearch(translationsOf(a), q) ? 0 : 1;
+      const bTitle = titleMatchesContentSearch(translationsOf(b), q) ? 0 : 1;
+      if (aTitle !== bTitle) return aTitle - bTitle;
+    }
+    return byCreatedAtAsc(a, b);
+  });
+}
+
 /** The row for this UI locale, or undefined — never a fallback language. */
 export function ownContentTranslation<T extends { languageCode: string }>(
   translations: T[] | undefined,

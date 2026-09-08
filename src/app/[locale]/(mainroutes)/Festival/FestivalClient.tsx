@@ -3,7 +3,7 @@ import { useLocale, useTranslations } from "next-intl";
 import React, { useState, useMemo, useEffect } from "react";
 import CustomPagination from "@/app/LocalComponents/CustomPagination";
 import { SearchComponent } from "@/app/LocalComponents/Searchbar";
-import { localeAlias, matchesContentSearch } from "@/lib/utils";
+import { localeAlias, sortListedContent } from "@/lib/utils";
 import FestivalCard from "@/app/LocalComponents/Cards/Festivalcard";
 import { useRole } from "@/app/Providers/ContextProvider";
 import FestModal from "./FestModal";
@@ -12,6 +12,7 @@ const ITEMS_PER_PAGE = 9;
 interface Festival {
   id: string;
   image: string;
+  createdAt?: string;
   translations: Array<{
     languageCode: string;
     name: string;
@@ -37,10 +38,10 @@ const FestivalClient = ({ fesdata }: { fesdata: Festival[] }) => {
     setfestival((prev: Festival[]) => prev.filter((fes) => fes.id !== deletedId));
   };
   const filteredfestival = useMemo(() => {
-    if (!searchQuery.trim()) return festival;
-
-    return festival.filter((fes: any) =>
-      matchesContentSearch(fes.translations, searchQuery)
+    return sortListedContent(
+      festival,
+      searchQuery,
+      (fes) => fes.translations
     );
   }, [festival, searchQuery]);
 

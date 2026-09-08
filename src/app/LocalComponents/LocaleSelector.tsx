@@ -2,7 +2,7 @@
 
 import { useLocale } from "next-intl";
 import { useRouter, usePathname as useRoutingPathname } from "@/i18n/routing";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 import { isHomePage, isTibetanLocale } from "@/lib/utils";
 
@@ -20,10 +20,17 @@ export function LocaleSelector({ tibtext }: { tibtext: string }) {
   const localActive = useLocale();
   const routingPathname = useRoutingPathname();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const handleSelect = (nextLocale: string) => {
+    const query = Object.fromEntries(searchParams.entries());
     startTransition(() => {
-      router.replace(routingPathname, { locale: nextLocale });
+      router.replace(
+        Object.keys(query).length
+          ? { pathname: routingPathname, query }
+          : routingPathname,
+        { locale: nextLocale }
+      );
     });
   };
 

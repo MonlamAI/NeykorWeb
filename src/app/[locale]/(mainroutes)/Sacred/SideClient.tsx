@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import React, { useState, useMemo, useEffect } from "react";
 import CustomPagination from "@/app/LocalComponents/CustomPagination";
 import { SearchComponent } from "@/app/LocalComponents/Searchbar";
-import { localeAlias, matchesContentSearch } from "@/lib/utils";
+import { localeAlias, sortListedContent } from "@/lib/utils";
 import PilgrimSiteCard from "@/app/LocalComponents/Cards/Pligrimcard";
 import SacredModal from "./SacredModal";
 import { useRole } from "@/app/Providers/ContextProvider";
@@ -28,10 +28,10 @@ const SideClient = ({ pilgrimData }: any) => {
   }, [pilgrimData]);
 
   const filteredPilgrimSites = useMemo(() => {
-    if (!searchQuery.trim()) return place;
-
-    return place.filter((site: any) =>
-      matchesContentSearch(site.translations, searchQuery)
+    return sortListedContent(
+      place,
+      searchQuery,
+      (site) => site.translations
     );
   }, [place, searchQuery]);
 
@@ -88,7 +88,9 @@ const SideClient = ({ pilgrimData }: any) => {
           {isadmin && (
             <SacredModal
               onSuccess={(newplace: any) => {
-                setplace((prev: any[]) => [newplace, ...prev]);
+                setplace((prev: any[]) =>
+                  sortListedContent( [newplace, ...prev], "", (site) => site.translations )
+                );
                 setSearchQuery("");
               }}
             />
