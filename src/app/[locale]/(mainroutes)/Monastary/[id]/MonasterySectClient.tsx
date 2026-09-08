@@ -7,7 +7,7 @@ import CustomPagination from "@/app/LocalComponents/CustomPagination";
 import { SearchComponent } from "@/app/LocalComponents/Searchbar";
 import MonasteryCard from "@/app/LocalComponents/Cards/MonasteryCard";
 import Breadcrumb from "@/app/LocalComponents/Breadcrumb";
-import { localeAlias, matchesContentSearch, SECT_TRANSLATION_KEYS } from "@/lib/utils";
+import { localeAlias, sortListedContent, SECT_TRANSLATION_KEYS } from "@/lib/utils";
 import MonsModal from "./MonsModal";
 import { useRole } from "@/app/Providers/ContextProvider";
 
@@ -34,19 +34,17 @@ const isadmin = role === "ADMIN";
 };
 
   const filteredMonasteries = useMemo(() => {
-    if (!searchQuery.trim()) return monastery;
-
-    return monastery.filter((item: any) =>
-      matchesContentSearch(
-        item.translations,
-        searchQuery,
+    return sortListedContent(
+      monastery,
+      searchQuery,
+      (item: any) => item.translations,
+      (item: any) =>
         (item.contact?.translations || []).flatMap((t: any) => [
           t.address,
           t.city,
           t.state,
           t.country,
         ])
-      )
     );
   }, [monastery, searchQuery]);
 
@@ -115,7 +113,13 @@ const isadmin = role === "ADMIN";
             <MonsModal
             id={sect}
             onSuccess={(newmons: any) => {
-              setmonastery(prev => [newmons, ...prev]);
+              setmonastery((prev) =>
+                sortListedContent(
+                  [newmons, ...prev],
+                  "",
+                  (item: any) => item.translations
+                )
+              );
               setSearchQuery("");
               }}
             />
