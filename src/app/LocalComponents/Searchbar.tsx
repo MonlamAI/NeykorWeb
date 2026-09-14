@@ -1,50 +1,41 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
-import { usePathname } from "@/i18n/routing";
 
 interface SearchProps {
-  onSearch: (query: string) => void;
+  value: string;
+  onChange: (query: string) => void;
   placeholder?: string;
-  initialQuery?: string;
   className?: string;
+  debounceMs?: number;
 }
 
 export const SearchComponent: React.FC<SearchProps> = ({
-  onSearch,
+  value,
+  onChange,
   placeholder = "Search...",
-  initialQuery = "",
   className = "",
+  debounceMs = 300,
 }) => {
-  const pathname = usePathname();
-  const storageKey = `neykor.search:${pathname}`;
-  const [searchQuery, setSearchQuery] = useState(initialQuery);
-  const [hydrated, setHydrated] = useState(false);
+  const [draft, setDraft] = useState(value);
 
   useEffect(() => {
-    const saved = sessionStorage.getItem(storageKey);
-    if (saved != null && saved !== "") {
-      setSearchQuery(saved);
-    }
-    setHydrated(true);
-  }, [storageKey]);
+    setDraft(value);
+  }, [value]);
 
   useEffect(() => {
-    if (!hydrated) return;
-    sessionStorage.setItem(storageKey, searchQuery);
-  }, [hydrated, storageKey, searchQuery]);
-
-  useEffect(() => {
-    if (!hydrated) return;
     const timeoutId = setTimeout(() => {
-      onSearch(searchQuery);
-    }, 300);
+      if (draft !== value) {
+        onChange(draft);
+      }
+    }, debounceMs);
 
     return () => clearTimeout(timeoutId);
-  }, [hydrated, searchQuery, onSearch]);
+  }, [draft, debounceMs, onChange, value]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
+    setDraft(event.target.value);
   };
 
   return (
@@ -52,7 +43,7 @@ export const SearchComponent: React.FC<SearchProps> = ({
       <Input
         type="search"
         placeholder={placeholder}
-        value={searchQuery}
+        value={draft}
         onChange={handleSearchChange}
         className="w-full"
       />

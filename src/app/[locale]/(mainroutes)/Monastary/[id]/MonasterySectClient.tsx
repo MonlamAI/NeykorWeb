@@ -1,17 +1,18 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import CustomPagination from "@/app/LocalComponents/CustomPagination";
-
 import { SearchComponent } from "@/app/LocalComponents/Searchbar";
 import MonasteryCard from "@/app/LocalComponents/Cards/MonasteryCard";
 import Breadcrumb from "@/app/LocalComponents/Breadcrumb";
+import { useListUrlState } from "@/hooks/useListUrlState";
 import { localeAlias, sortListedContent, SECT_TRANSLATION_KEYS } from "@/lib/utils";
 import MonsModal from "./MonsModal";
 import { useRole } from "@/app/Providers/ContextProvider";
 
 const ITEMS_PER_PAGE = 9;
+
 const MonasterySectClient = ({
   monasteriesData,
   sect,
@@ -23,20 +24,20 @@ const MonasterySectClient = ({
   const tCommon = useTranslations("common");
   const tNav = useTranslations("navbar");
   const tMon = useTranslations("monastery");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
-  const {role}=useRole()
-const isadmin = role === "ADMIN";
+  const { q, page, setQ, setPage, clearQ, clampPage } = useListUrlState();
+  const { role } = useRole();
+  const isadmin = role === "ADMIN";
 
- const [monastery,setmonastery]=useState(monasteriesData);
- const handledeletemons = (deletedId: string) => {
-  setmonastery(prev => prev.filter((mons: any) => mons.id !== deletedId));
-};
+  const [monastery, setmonastery] = useState(monasteriesData);
+
+  const handledeletemons = (deletedId: string) => {
+    setmonastery((prev) => prev.filter((mons: any) => mons.id !== deletedId));
+  };
 
   const filteredMonasteries = useMemo(() => {
     return sortListedContent(
       monastery,
-      searchQuery,
+      q,
       (item: any) => item.translations,
       (item: any) =>
         (item.contact?.translations || []).flatMap((t: any) => [
@@ -46,103 +47,79 @@ const isadmin = role === "ADMIN";
           t.country,
         ])
     );
-  }, [monastery, searchQuery]);
+  }, [monastery, q]);
 
   const totalPages = Math.ceil(filteredMonasteries.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const startIndex = (page - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentMonasteries = filteredMonasteries.slice(startIndex, endIndex);
 
   useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery]);
+    clampPage(totalPages);
+  }, [totalPages, clampPage]);
 
-  const handlePageChange = (page: number) => {
-    if (page < 1 || page > totalPages) return;
-    setCurrentPage(page);
+  const handlePageChange = (nextPage: number) => {
+    if (nextPage < 1 || nextPage > totalPages) return;
+    setPage(nextPage);
   };
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-  };
-
-  const visiblePages = useMemo(() => {
-    if (totalPages <= 5) {
-      return Array.from({ length: totalPages }, (_, i) => i + 1);
-    }
-
-    const pages: (number | string)[] = [1];
-    if (currentPage > 3) pages.push("...");
-
-    const start = Math.max(2, currentPage - 1);
-    const end = Math.min(totalPages - 1, currentPage + 1);
-
-    if (start <= end) {
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
-    }
-
-    if (currentPage < totalPages - 2) pages.push("...");
-    pages.push(totalPages);
-
-    return pages;
-  }, [currentPage, totalPages]);
 
   const sectKey =
-    SECT_TRANSLATION_KEYS[sect.toUpperCase() as keyof typeof SECT_TRANSLATION_KEYS] || "m10";
+    SECT_TRANSLATION_KEYS[sect.toUpperCase() as keyof typeof SECT_TRANSLATION_KEYS] ||
+    "m10";
   const breadcrumbItems = [
     { label: tNav("mons"), href: "/Monastary" },
     { label: tMon(sectKey) },
   ];
+
   return (
     <div className="container mx-auto py-8">
-      <div className="sticky  top-0 bg-white dark:bg-neutral-950 z-30 py-4 ">
-        <div className=" flex items-center justify-between ">
+      <div className="sticky top-0 z-30 bg-white py-4 dark:bg-neutral-950">
+        <div className="flex items-center justify-between">
           <Breadcrumb
             items={breadcrumbItems}
             locale={activelocale}
             labels={{ home: tCommon("home") }}
           />
           <SearchComponent
-            onSearch={handleSearch}
+            value={q}
+            onChange={setQ}
             placeholder={tCommon("searchMonasteries")}
-            initialQuery={searchQuery}
           />
           {isadmin && (
             <MonsModal
-            id={sect}
-            onSuccess={(newmons: any) => {
-              setmonastery((prev) =>
-                sortListedContent(
-                  [newmons, ...prev],
-                  "",
-                  (item: any) => item.translations
-                )
-              );
-              setSearchQuery("");
+              id={sect}
+              onSuccess={(newmons: any) => {
+                setmonastery((prev) =>
+                  sortListedContent(
+                    [newmons, ...prev],
+                    "",
+                    (item: any) => item.translations
+                  )
+                );
+                clearQ();
               }}
             />
           )}
         </div>
-
-        <div />
       </div>
 
       <div className="pt-4">
         {filteredMonasteries.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
+          <div className="py-8 text-center text-gray-500">
             No monasteries found matching your search.
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+            <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2 lg:grid-cols-3">
               {currentMonasteries.map((monastery: any) => {
                 const backendLocale = localeAlias[activelocale] || activelocale;
-                const translation = monastery.translations.find(
-                  (t: any) => t.languageCode === backendLocale
-                ) ||
-                  monastery.translations.find((t: any) => t.languageCode === "en") ||
+                const translation =
+                  monastery.translations.find(
+                    (t: any) => t.languageCode === backendLocale
+                  ) ||
+                  monastery.translations.find(
+                    (t: any) => t.languageCode === "en"
+                  ) ||
                   monastery.translations[0] || {
                     name: "Unnamed Monastery",
                     description: "No description available",
@@ -153,7 +130,8 @@ const isadmin = role === "ADMIN";
                   ) ||
                   monastery.contact?.translations?.find(
                     (t: any) => t.languageCode === "en"
-                  ) || monastery.contact?.translations?.[0];
+                  ) ||
+                  monastery.contact?.translations?.[0];
 
                 return (
                   <MonasteryCard
@@ -171,9 +149,9 @@ const isadmin = role === "ADMIN";
                 );
               })}
             </div>
-              
+
             <CustomPagination
-              currentPage={currentPage}
+              currentPage={page}
               totalPages={totalPages}
               onPageChange={handlePageChange}
               className="my-6"
