@@ -158,7 +158,13 @@ export function upsertContentTranslation<T extends { languageCode: string }>(
   );
 }
 
-export const IMAGE_BASE_URL = process.env.IMAGE_BASE_URL;
+const DEFAULT_IMAGE_BASE_URL = "https://s3.ap-south-1.amazonaws.com/gompa.tour";
+
+/** Public env required for client components; server may also set IMAGE_BASE_URL. */
+export const IMAGE_BASE_URL =
+  process.env.NEXT_PUBLIC_IMAGE_BASE_URL ??
+  process.env.IMAGE_BASE_URL ??
+  DEFAULT_IMAGE_BASE_URL;
 export const validateFile = (file: File, type: 'image' | 'audio') => {
   const maxSize = 10 * 1024 * 1024;
   
@@ -207,6 +213,15 @@ export const SECT_TRANSLATION_KEYS = {
   'JONANG': 'm7',
   'OTHER': 'm10'
 };
+
+export const MAIN_SECTS = [
+  "NYINGMA",
+  "KAGYU",
+  "SAKYA",
+  "GELUG",
+  "BHON",
+  "JONANG",
+] as const;
 
 export const OTHER_SECTS = ['REMEY', 'SHALU', 'BODONG', 'OTHER'];
 
