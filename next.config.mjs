@@ -41,6 +41,9 @@ const nextConfig = {
   swcMinify: true,
   experimental: {
     optimizeCss: true,
+    serverActions: {
+      bodySizeLimit: "12mb",
+    },
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {

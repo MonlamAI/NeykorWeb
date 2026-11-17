@@ -12,9 +12,10 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import LoadingSkeleton from "../../Statue/_Components/DetailSkeleton";
 import Breadcrumb from "@/app/LocalComponents/Breadcrumb";
 import { useRole } from "@/app/Providers/ContextProvider";
-import { createS3UploadUrl } from "@/app/actions/postactions";
+import { uploadCmsMediaFile } from "@/lib/cmsUpload";
 import { toast } from "@/hooks/use-toast";
 import { updateFestival } from "@/app/actions/updateaction";
+import { formatActionError } from "@/lib/serverActionError";
 import { formatDateForDisplay, formatDateForInput, validateFile, contentLocale, translationForRead, ownContentTranslation, contentTranslationPayload, isTibetanLocale } from "@/lib/utils";
 import DynamicQRCode from "@/app/LocalComponents/generators/Qrcode";
 
@@ -123,16 +124,12 @@ const isAdmin = role === "ADMIN";
       
       let imageUrl = data.image;
       if (newImage) {
-        const imageFormData = new FormData();
-        imageFormData.append('file', newImage);
-        imageUrl = await createS3UploadUrl(imageFormData);
+        imageUrl = await uploadCmsMediaFile(newImage);
       }
 
       let audioUrl = ownTranslation?.description_audio || "";
       if (newAudio) {
-        const audioFormData = new FormData();
-        audioFormData.append('file', newAudio);
-        audioUrl = await createS3UploadUrl(audioFormData);
+        audioUrl = await uploadCmsMediaFile(newAudio);
       }
 
       const payload = {
@@ -159,10 +156,10 @@ const isAdmin = role === "ADMIN";
         title: "Success",
         description: `Saved ${writeLocale} translation`,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Error",
-        description: error.message || "Failed to update festival",
+        description: formatActionError(error, "Failed to update festival"),
         variant: "destructive",
       });
     } finally {

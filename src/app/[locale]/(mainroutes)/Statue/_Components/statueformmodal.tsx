@@ -11,7 +11,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, X, Loader2 } from "lucide-react";
-import { createS3UploadUrl, postStatue } from "@/app/actions/postactions";
+import { postStatue } from "@/app/actions/postactions";
+import { uploadCmsMediaFile } from "@/lib/cmsUpload";
+import { formatActionError } from "@/lib/serverActionError";
 import { toast } from "@/hooks/use-toast";
 import { validateFile } from "@/lib/utils";
 import { useTranslations } from "next-intl";
@@ -139,18 +141,14 @@ const StatueFormModal = ({ onSuccess }: any) => {
     try {
       let imageUrl = "";
       if (formData.image) {
-        const imageFormData = new FormData();
-        imageFormData.append('file', formData.image);
-        imageUrl = await createS3UploadUrl(imageFormData);
+        imageUrl = await uploadCmsMediaFile(formData.image);
       }
       const translationsWithAudioUrls = await Promise.all(
         formData.translations.map(async (translation) => {
           let audioUrl = translation.description_audio;
           
           if (translation.audioFile) {
-            const audioFormData = new FormData();
-            audioFormData.append('file', translation.audioFile);
-            audioUrl = await createS3UploadUrl(audioFormData);
+            audioUrl = await uploadCmsMediaFile(translation.audioFile);
           }
 
           return {
@@ -168,15 +166,23 @@ const StatueFormModal = ({ onSuccess }: any) => {
       };
   
       const result = await postStatue(preparedData);
-  
-      if (result) {
+
+      if (!result.ok) {
         toast({
-          title: "Success",
-          description: "Statue added successfully",
+          title: "Error",
+          description: result.error,
+          variant: "destructive",
         });
-  
-        setOpen(false);
-        onSuccess(result.data);
+        return;
+      }
+
+      toast({
+        title: "Success",
+        description: "Statue added successfully",
+      });
+
+      setOpen(false);
+      onSuccess(result.data);
         setFormData({
           image: null,
           translations: [
@@ -196,11 +202,10 @@ const StatueFormModal = ({ onSuccess }: any) => {
             }
           ],
         });
-      }
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Error",
-        description: error.message || "Failed to add statue",
+        description: formatActionError(error, "Failed to add statue"),
         variant: "destructive",
       });
     } finally {

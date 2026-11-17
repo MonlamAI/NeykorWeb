@@ -11,8 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, X, Loader2 } from "lucide-react";
-import { createS3UploadUrl, postfestival } from "@/app/actions/postactions";
+import { postfestival } from "@/app/actions/postactions";
+import { uploadCmsMediaFile } from "@/lib/cmsUpload";
 import { toast } from "@/hooks/use-toast";
+import { formatActionError } from "@/lib/serverActionError";
 import { validateFile } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 
@@ -139,9 +141,7 @@ const FestModal = ({ onSuccess }: any) => {
     try {
       let imageUrl = "";
       if (formData.image) {
-        const imageFormData = new FormData();
-        imageFormData.append('file', formData.image);
-        imageUrl = await createS3UploadUrl(imageFormData);
+        imageUrl = await uploadCmsMediaFile(formData.image);
       }
 
       const translationsWithAudioUrls = await Promise.all(
@@ -149,9 +149,7 @@ const FestModal = ({ onSuccess }: any) => {
           let audioUrl = translation.description_audio;
           
           if (translation.audioFile) {
-            const audioFormData = new FormData();
-            audioFormData.append('file', translation.audioFile);
-            audioUrl = await createS3UploadUrl(audioFormData);
+            audioUrl = await uploadCmsMediaFile(translation.audioFile);
           }
 
           return {
@@ -171,40 +169,48 @@ const FestModal = ({ onSuccess }: any) => {
       };
   
       const result = await postfestival(preparedData);
-  
-      if (result) {
+
+      if (!result.ok) {
         toast({
-          title: "Success",
-          description: "Festival added successfully",
+          title: "Error",
+          description: result.error,
+          variant: "destructive",
         });
-  
-        setOpen(false);
-        setFormData({
-          start_date: "",
-          end_date: "",
-          image: null,
-          translations: [
-            {
-              languageCode: "en",
-              name: "",
-              description: "",
-              description_audio: "",
-              audioFile: null,
-            },
-            {
-              languageCode: "bo",
-              name: "",
-              description: "",
-              description_audio: "",
-              audioFile: null,
-            }
-          ],
-        });
+        return;
       }
+
+      toast({
+        title: "Success",
+        description: "Festival added successfully",
+      });
+
+      setOpen(false);
+      onSuccess(result.data);
+      setFormData({
+        start_date: "",
+        end_date: "",
+        image: null,
+        translations: [
+          {
+            languageCode: "en",
+            name: "",
+            description: "",
+            description_audio: "",
+            audioFile: null,
+          },
+          {
+            languageCode: "bo",
+            name: "",
+            description: "",
+            description_audio: "",
+            audioFile: null,
+          }
+        ],
+      });
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message || "Failed to add Festival",
+        description: formatActionError(error, "Failed to add Festival"),
         variant: "destructive",
       });
     } finally {

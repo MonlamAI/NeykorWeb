@@ -41,7 +41,30 @@ async function fetchData<T>(endpoint: string): Promise<T> {
   }
 }
 
-export const getStatues = () => fetchData<Statue[]>("/statue");
+function isTransientFetchError(error: unknown): boolean {
+  if (!(error instanceof AxiosError)) return false;
+  const code = error.code;
+  const message = error.message ?? "";
+  return (
+    code === "ECONNRESET" ||
+    code === "ETIMEDOUT" ||
+    code === "ECONNABORTED" ||
+    message.includes("ECONNRESET")
+  );
+}
+
+export async function getStatues(): Promise<Statue[]> {
+  try {
+    return await fetchData<Statue[]>("/statue");
+  } catch (error) {
+    if (isTransientFetchError(error)) {
+      console.error("API Error (/statue): transient failure, returning empty list");
+      return [];
+    }
+    handleApiError(error, "/statue");
+    throw error;
+  }
+}
 
 export const getStatuesDetail = (id: string) => fetchData<Statue>(`/statue/${id}`);
 

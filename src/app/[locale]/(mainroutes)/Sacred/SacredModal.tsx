@@ -11,8 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, X, Loader2 } from "lucide-react";
-import { createcontact, createS3UploadUrl, createSacred } from "@/app/actions/postactions";
+import { createcontact, createSacred } from "@/app/actions/postactions";
+import { uploadCmsMediaFile } from "@/lib/cmsUpload";
 import { toast } from "@/hooks/use-toast";
+import { formatActionError } from "@/lib/serverActionError";
 import { validateFile } from "@/lib/utils";
 import {
   Select,
@@ -221,15 +223,13 @@ const SacredModal = ({onSuccess }: any) => {
     
     try {
         const contactResult = await createcontact(contactData);
-        if (!contactResult.success) {
-          throw new Error("Failed to create contact");
-        }  
+        if (!contactResult.ok) {
+          throw new Error(contactResult.error || "Failed to create contact");
+        }
         const contactId = contactResult.data;
       let imageUrl = "";
       if (formData.image) {
-        const imageFormData = new FormData();
-        imageFormData.append('file', formData.image);
-        imageUrl = await createS3UploadUrl(imageFormData);
+        imageUrl = await uploadCmsMediaFile(formData.image);
       }
 
       const translationsWithAudioUrls = await Promise.all(
@@ -237,9 +237,7 @@ const SacredModal = ({onSuccess }: any) => {
           let audioUrl = translation.description_audio;
           
           if (translation.audioFile) {
-            const audioFormData = new FormData();
-            audioFormData.append('file', translation.audioFile);
-            audioUrl = await createS3UploadUrl(audioFormData);
+            audioUrl = await uploadCmsMediaFile(translation.audioFile);
           }
 
           return {
@@ -258,15 +256,23 @@ const SacredModal = ({onSuccess }: any) => {
         translations: translationsWithAudioUrls,
       };
       const result = await createSacred(preparedData);
-  
-      if (result) {
+
+      if (!result.ok) {
         toast({
-          title: "Success",
-          description: "Sacred Site added successfully",
+          title: "Error",
+          description: result.error,
+          variant: "destructive",
         });
-  
-        setOpen(false);
-        onSuccess(result.data);
+        return;
+      }
+
+      toast({
+        title: "Success",
+        description: "Sacred Site added successfully",
+      });
+
+      setOpen(false);
+      onSuccess(result.data);
         setFormData({
           image: null,
           geo_location: "",
@@ -309,12 +315,11 @@ const SacredModal = ({onSuccess }: any) => {
                 country: "",
               }
             ],
-          })
-      }
+          });
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message || "Failed to add Sacred Site",
+        description: formatActionError(error, "Failed to add sacred site"),
         variant: "destructive",
       });
     } finally {

@@ -8,13 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { getSiteDetail } from "@/app/actions/getactions";
 import { updatesite } from "@/app/actions/updateaction";
-import { createS3UploadUrl } from "@/app/actions/postactions";
+import { uploadCmsMediaFile } from "@/lib/cmsUpload";
 import MonasteryMap from "@/app/LocalComponents/MonasteryMap";
 import LoadingSkeleton from "../../Statue/_Components/DetailSkeleton";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Breadcrumb from "@/app/LocalComponents/Breadcrumb";
 import { useRole } from "@/app/Providers/ContextProvider";
 import { toast } from "@/hooks/use-toast";
+import { formatActionError } from "@/lib/serverActionError";
 import { validateFile, contentLocale, translationForRead, ownContentTranslation, contentTranslationPayload, isTibetanLocale } from "@/lib/utils";
 import ContactEditSection from "@/app/LocalComponents/ContactEditSection";
 import { useTranslations } from "next-intl";
@@ -174,16 +175,12 @@ const isAdmin = role === "ADMIN";
       
       let imageUrl = siteData.image;
       if (newImage) {
-        const imageFormData = new FormData();
-        imageFormData.append('file', newImage);
-        imageUrl = await createS3UploadUrl(imageFormData);
+        imageUrl = await uploadCmsMediaFile(newImage);
       }
   
       let audioUrl = ownTranslation?.description_audio || "";
       if (newAudio) {
-        const audioFormData = new FormData();
-        audioFormData.append('file', newAudio);
-        audioUrl = await createS3UploadUrl(audioFormData);
+        audioUrl = await uploadCmsMediaFile(newAudio);
       }
   
       const updatedData = {
@@ -219,7 +216,7 @@ const isAdmin = role === "ADMIN";
       console.error('Update error:', error.response?.data || error);
       toast({
         title: "Error",
-        description: error.message || "Failed to update pilgrim site",
+        description: formatActionError(error, "Failed to update pilgrim site"),
         variant: "destructive",
       });
     } finally {

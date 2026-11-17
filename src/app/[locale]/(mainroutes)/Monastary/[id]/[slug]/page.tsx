@@ -20,13 +20,14 @@ import Breadcrumb from "@/app/LocalComponents/Breadcrumb";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRole } from "@/app/Providers/ContextProvider";
 import { toast } from "@/hooks/use-toast";
-import { createS3UploadUrl } from "@/app/actions/postactions";
+import { uploadCmsMediaFile } from "@/lib/cmsUpload";
 import { updategonpa } from "@/app/actions/updateaction";
 import LoadingSkeleton from "../../Skeleton";
 import { Input } from "@/components/ui/input";
 import { Loader2, Pause, Pen, Volume2,  } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { formatActionError } from "@/lib/serverActionError";
 import { validateFile, contentLocale, translationForRead, ownContentTranslation, contentTranslationPayload, SECT_TRANSLATION_KEYS, isTibetanLocale } from '@/lib/utils';
 import ContactEditSection from '@/app/LocalComponents/ContactEditSection';
 import { useTranslations } from "next-intl";
@@ -222,16 +223,12 @@ function MonasteryContent({ params }: { params: any }) {
 
       let imageUrl = monastery.image;
       if (newImage) {
-        const imageFormData = new FormData();
-        imageFormData.append('file', newImage);
-        imageUrl = await createS3UploadUrl(imageFormData);
+        imageUrl = await uploadCmsMediaFile(newImage);
       }
 
       let audioUrl = ownTranslation?.description_audio || "";
       if (newAudio) {
-        const audioFormData = new FormData();
-        audioFormData.append('file', newAudio);
-        audioUrl = await createS3UploadUrl(audioFormData);
+        audioUrl = await uploadCmsMediaFile(newAudio);
       }
 
       const updatedData = {
@@ -272,7 +269,7 @@ function MonasteryContent({ params }: { params: any }) {
       console.error('Update error:', error);
       toast({
         title: "Error",
-        description: error.message || "Failed to update monastery",
+        description: formatActionError(error, "Failed to update monastery"),
         variant: "destructive",
       });
     } finally {

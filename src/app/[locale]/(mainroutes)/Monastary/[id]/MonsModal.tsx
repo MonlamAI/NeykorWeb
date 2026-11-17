@@ -18,9 +18,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, X, Loader2 } from "lucide-react";
-import { createcontact, creategonpa, createS3UploadUrl, postStatue } from "@/app/actions/postactions";
+import { createcontact, creategonpa } from "@/app/actions/postactions";
+import { uploadCmsMediaFile } from "@/lib/cmsUpload";
 import { toast } from "@/hooks/use-toast";
 import { getGonpaTypes } from "@/app/actions/getactions";
+import { formatActionError } from "@/lib/serverActionError";
 import { validateFile } from "@/lib/utils";
 import { STATES, COUNTRIES } from '@/lib/utils';
 import { useTranslations } from "next-intl";
@@ -245,15 +247,13 @@ const MonasteryModal = ({ id, onSuccess }: any) => {
     
     try {
         const contactResult = await createcontact(contactData);
-        if (!contactResult.success) {
-          throw new Error("Failed to create contact");
-        }  
+        if (!contactResult.ok) {
+          throw new Error(contactResult.error || "Failed to create contact");
+        }
         const contactId = contactResult.data;
       let imageUrl = "";
       if (formData.image) {
-        const imageFormData = new FormData();
-        imageFormData.append('file', formData.image);
-        imageUrl = await createS3UploadUrl(imageFormData);
+        imageUrl = await uploadCmsMediaFile(formData.image);
       }
 
       const translationsWithAudioUrls = await Promise.all(
@@ -261,9 +261,7 @@ const MonasteryModal = ({ id, onSuccess }: any) => {
           let audioUrl = translation.description_audio;
           
           if (translation.audioFile) {
-            const audioFormData = new FormData();
-            audioFormData.append('file', translation.audioFile);
-            audioUrl = await createS3UploadUrl(audioFormData);
+            audioUrl = await uploadCmsMediaFile(translation.audioFile);
           }
 
           return {
@@ -285,16 +283,24 @@ const MonasteryModal = ({ id, onSuccess }: any) => {
       };
   
       const result = await creategonpa(preparedData);
-  
-      if (result) {
+
+      if (!result.ok) {
         toast({
-          title: "Success",
-          description: "Monastery added successfully",
+          title: "Error",
+          description: result.error,
+          variant: "destructive",
         });
-  
-        setOpen(false);
-        onSuccess(result.data);
-        setFormData({
+        return;
+      }
+
+      toast({
+        title: "Success",
+        description: "Monastery added successfully",
+      });
+
+      setOpen(false);
+      onSuccess(result.data);
+      setFormData({
           image: null,
           geo_location: "",
           sect: id.toUpperCase(),
@@ -338,12 +344,11 @@ const MonasteryModal = ({ id, onSuccess }: any) => {
                 country: "",
               }
             ],
-          })
-      }
+          });
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message || "Failed to add monastery",
+        description: formatActionError(error, "Failed to add monastery"),
         variant: "destructive",
       });
     } finally {
